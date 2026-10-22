@@ -8,6 +8,7 @@ import 'package:nfc_manager/nfc_manager_ios.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
 import '../widgets/common.dart';
+import '../../l10n/l10n.dart';
 
 /// Hardware-scan seam.
 ///
@@ -143,7 +144,7 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
         // The card is ISO14443 (MIFARE) per spec §5.4; poll all so the session
         // opens on either platform — reading is driven by the tag tech.
         pollingOptions: NfcPollingOption.values.toSet(),
-        alertMessageIos: 'Approchez la carte du téléphone',
+        alertMessageIos: l10n.scannerApprochezCarteTelephone,
         onDiscovered: (tag) async {
           final uid = nfcUidFromTag(tag);
           if (uid != null && isValidNfcUid(uid)) {
@@ -156,22 +157,19 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
             // Read something, but not a UID we recognize — keep the session
             // open and let the agent retry or switch to manual entry.
             if (mounted) {
-              setState(
-                () => _error =
-                    'Carte non reconnue. Réessayez ou saisissez l’UID.',
-              );
+              setState(() => _error = l10n.scannerCarteNonReconnueReessayez);
             }
           }
         },
         onSessionErrorIos: (e) {
           if (mounted) {
-            setState(() => _error = 'Lecture NFC interrompue. Réessayez.');
+            setState(() => _error = l10n.scannerLectureNfcInterrompueReessayez);
           }
         },
       );
     } catch (_) {
       if (mounted) {
-        setState(() => _error = 'Le lecteur NFC est indisponible.');
+        setState(() => _error = l10n.scannerLecteurNfcIndisponible);
       }
     }
   }
@@ -225,7 +223,7 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
             children: [
               Expanded(
                 child: Text(
-                  'Scanner la carte',
+                  l10n.commonScannerCarte,
                   style: AppText.ui(size: 18, weight: FontWeight.w700),
                 ),
               ),
@@ -253,7 +251,7 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Approchez la carte du dos du téléphone pour la lire.',
+            l10n.scannerApprochezCarteDosTelephone,
             textAlign: TextAlign.center,
             style: AppText.ui(size: 14, color: AppColors.inkMid, height: 1.5),
           ),
@@ -270,7 +268,7 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
             child: TextButton(
               onPressed: _switchToManual,
               child: Text(
-                'Saisir l’UID manuellement',
+                l10n.scannerSaisirUidManuellement,
                 style: AppText.ui(
                   size: 14,
                   weight: FontWeight.w600,
@@ -338,7 +336,7 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
             children: [
               Expanded(
                 child: Text(
-                  'Saisir l’UID',
+                  l10n.scannerSaisirUid,
                   style: AppText.ui(size: 18, weight: FontWeight.w700),
                 ),
               ),
@@ -350,7 +348,7 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Saisissez l’identifiant (UID) de la carte à 14 caractères hexadécimaux.',
+            l10n.scannerSaisissezIdentifiantUidCarte,
             style: AppText.ui(size: 13, color: AppColors.inkMid, height: 1.5),
           ),
           const SizedBox(height: 16),
@@ -385,13 +383,13 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
             Padding(
               padding: const EdgeInsets.only(top: 6, left: 4),
               child: Text(
-                'UID invalide : 14 caractères hex attendus.',
+                l10n.scannerUidInvalide14Caracteres,
                 style: AppText.ui(size: 12, color: AppColors.danger),
               ),
             ),
           const SizedBox(height: 14),
           LipaButton(
-            label: 'Confirmer',
+            label: l10n.commonConfirmer,
             size: BtnSize.lg,
             full: true,
             onPressed: valid

@@ -1,0 +1,15 @@
+swagger_parser:
+  schema_path: openapi/agent.json
+  output_directory: lib/api/generated
+  name: lipa_agent_api
+  json_serializer: json_serializable
+  root_client: true
+  root_client_name: LipaApi
+  put_clients_in_folder: true
+  unknown_enum_value: true
+  enums_to_json: true
+  mark_files_as_generated: true
+  use_multipart_file: true
+  # Set by ApiClient on every request.
+  skipped_parameters:
+    - X-Correlation-Id

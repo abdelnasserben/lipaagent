@@ -1,61 +1,71 @@
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
-import '../../data/models/enums.dart';
-import '../../data/models/transaction.dart';
 import 'formatters.dart';
+import '../../l10n/l10n.dart';
 
 /// Builds the share/PDF artefacts for an agent transaction receipt and the
 /// account statement. Pure presentation logic so the activity detail and the
 /// statement screen reuse the exact same rendering. Mirrors the Lipa customer
 /// app's `transaction_receipt.dart`, adapted to the agent's account-scoped
-/// [AgentTransaction] / [StatementEntry] models.
+/// [AgentTransactionResponse] / [AgentStatementEntryResponse] models.
 
 /// PDF theme backed by a real TrueType font. The default PDF font (Helvetica)
 /// lacks the Unicode minus sign U+2212 used in amounts (it renders as a missing
-/// glyph / tofu box), so we load Open Sans — which covers it — via printing's
-/// Google Fonts helper. The font bytes are cached after the first download.
+/// glyph / tofu box), so we use Open Sans, shipped in assets/fonts: receipts
+/// work offline.
 Future<pw.ThemeData> _pdfTheme() async => pw.ThemeData.withFont(
-  base: await PdfGoogleFonts.openSansRegular(),
-  bold: await PdfGoogleFonts.openSansBold(),
+  base: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-Regular.ttf')),
+  bold: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-Bold.ttf')),
 );
 
-/// French status label, matching `TxStatusPill`.
+/// Status label, matching `TxStatusPill`.
 String _statusLabelFr(TransactionStatus s) => switch (s) {
-  TransactionStatus.completed => 'Effectué',
-  TransactionStatus.pending => 'En attente',
-  TransactionStatus.authorized => 'Autorisé',
-  TransactionStatus.declined => 'Refusé',
-  TransactionStatus.reversed => 'Annulé',
+  TransactionStatus.completed => l10n.commonEffectue,
+  TransactionStatus.pending => l10n.commonAttente,
+  TransactionStatus.authorized => l10n.commonAutorise,
+  TransactionStatus.declined => l10n.commonRefuse,
+  TransactionStatus.reversed => l10n.commonAnnule,
   TransactionStatus.unknown => '—',
 };
 
 /// A plain-text recap suitable for the native share sheet.
-String receiptShareText(AgentTransaction t) {
+String receiptShareText(AgentTransactionResponse t) {
   final incoming = t.incoming;
   final sign = incoming ? '+' : '−';
   final at = t.effectiveAt;
   final lines = <String>[
     'Reçu Lipa',
     '',
-    'Opération : ${t.type.frLabel}',
-    'Montant : $sign${fmtKmfNoUnit(t.requestedAmount)} KMF',
-    'Statut : ${_statusLabelFr(t.status)}',
-    if (at != null) 'Date : ${fmtDateTimeFr(at)}',
-    if (t.feeAmount > 0) 'Frais : ${fmtKmfNoUnit(t.feeAmount)} KMF',
-    if (t.commissionAmount > 0)
-      'Commission : ${fmtKmfNoUnit(t.commissionAmount)} KMF',
-    'Montant net : ${fmtKmfNoUnit(t.netAmountToDestination)} KMF',
-    'Référence : ${t.id}',
+    l10n.transactionReceiptOperation(t.kind.label),
+    l10n.transactionReceiptMontantKmf(
+      sign,
+      fmtKmfNoUnit(t.requestedAmount ?? 0),
+    ),
+    l10n.transactionReceiptStatut(_statusLabelFr(t.state)),
+    if (at != null) l10n.transactionReceiptDate(fmtDateTimeFr(at)),
+    if ((t.feeAmount ?? 0) > 0)
+      l10n.transactionReceiptFraisKmf(fmtKmfNoUnit(t.feeAmount ?? 0)),
+    if ((t.commissionAmount ?? 0) > 0)
+      l10n.transactionReceiptCommissionKmf(
+        fmtKmfNoUnit(t.commissionAmount ?? 0),
+      ),
+    l10n.transactionReceiptMontantNetKmf(
+      fmtKmfNoUnit(t.netAmountToDestination ?? 0),
+    ),
+    l10n.transactionReceiptReference(t.id ?? ''),
   ];
   return lines.join('\n');
 }
 
 /// Renders the agent receipt as a printable/shareable PDF document.
-Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
+Future<Uint8List> receiptPdfBytes(AgentTransactionResponse t) async {
   final doc = pw.Document(theme: await _pdfTheme());
   final incoming = t.incoming;
   final sign = incoming ? '+' : '−';
@@ -103,7 +113,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            'Lipa',
+            l10n.commonLipa,
             style: pw.TextStyle(
               color: brand,
               fontSize: 22,
@@ -112,12 +122,12 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
           ),
           pw.SizedBox(height: 2),
           pw.Text(
-            'Reçu de transaction',
+            l10n.transactionReceiptRecuTransaction,
             style: const pw.TextStyle(color: inkLow, fontSize: 12),
           ),
           pw.SizedBox(height: 28),
           pw.Text(
-            t.type.frLabel,
+            t.kind.label,
             style: pw.TextStyle(
               color: ink,
               fontSize: 16,
@@ -126,7 +136,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
           ),
           pw.SizedBox(height: 18),
           pw.Text(
-            '$sign${fmtKmfNoUnit(t.requestedAmount)} KMF',
+            '$sign${fmtKmfNoUnit(t.requestedAmount ?? 0)} KMF',
             style: pw.TextStyle(
               color: ink,
               fontSize: 30,
@@ -134,17 +144,24 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
             ),
           ),
           pw.SizedBox(height: 28),
-          row('Statut', _statusLabelFr(t.status)),
-          if (at != null) row('Date', fmtDateTimeFr(at)),
-          row('Type', t.type.frLabel),
-          if (t.feeAmount > 0) row('Frais', '${fmtKmfNoUnit(t.feeAmount)} KMF'),
-          if (t.commissionAmount > 0)
-            row('Commission', '${fmtKmfNoUnit(t.commissionAmount)} KMF'),
-          row('Montant net', '${fmtKmfNoUnit(t.netAmountToDestination)} KMF'),
-          row('Référence', t.id, last: true),
+          row(l10n.commonStatut2, _statusLabelFr(t.state)),
+          if (at != null) row(l10n.transactionReceiptDate2, fmtDateTimeFr(at)),
+          row(l10n.commonType, t.kind.label),
+          if ((t.feeAmount ?? 0) > 0)
+            row(l10n.commonFrais, '${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF'),
+          if ((t.commissionAmount ?? 0) > 0)
+            row(
+              l10n.commonCommission,
+              '${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF',
+            ),
+          row(
+            l10n.transactionReceiptMontantNet,
+            '${fmtKmfNoUnit(t.netAmountToDestination ?? 0)} KMF',
+          ),
+          row(l10n.transactionReceiptReference2, t.id ?? '', last: true),
           pw.Spacer(),
           pw.Text(
-            'Ce reçu est généré par l’application Lipa à titre informatif.',
+            l10n.transactionReceiptRecuGenereApplicationLipa,
             style: const pw.TextStyle(color: inkLow, fontSize: 9),
           ),
         ],
@@ -158,7 +175,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
 /// Renders a account statement (a date window's entries with running balance)
 /// as a printable/shareable PDF. [from]/[to] are the chosen window, null = all.
 Future<Uint8List> statementPdfBytes(
-  List<StatementEntry> entries, {
+  List<AgentStatementEntryResponse> entries, {
   DateTime? from,
   DateTime? to,
 }) async {
@@ -173,7 +190,7 @@ Future<Uint8List> statementPdfBytes(
   const headerBg = PdfColor.fromInt(0xFFF1EFE8);
 
   final period = (from == null && to == null)
-      ? 'Toute la période'
+      ? l10n.commonToutePeriode
       : '${from != null ? fmtDateTimeFr(from) : '…'} → '
             '${to != null ? fmtDateTimeFr(to) : '…'}';
 
@@ -197,16 +214,20 @@ Future<Uint8List> statementPdfBytes(
     children: [
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
-        child: cell('Date', bold: true, color: inkMid),
-      ),
-      pw.Padding(
-        padding: const pw.EdgeInsets.all(6),
-        child: cell('Description', bold: true, color: inkMid),
+        child: cell(l10n.transactionReceiptDate2, bold: true, color: inkMid),
       ),
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
         child: cell(
-          'Montant',
+          l10n.transactionReceiptDescription,
+          bold: true,
+          color: inkMid,
+        ),
+      ),
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(6),
+        child: cell(
+          l10n.commonMontant,
           align: pw.TextAlign.right,
           bold: true,
           color: inkMid,
@@ -215,7 +236,7 @@ Future<Uint8List> statementPdfBytes(
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
         child: cell(
-          'Solde',
+          l10n.transactionReceiptSolde,
           align: pw.TextAlign.right,
           bold: true,
           color: inkMid,
@@ -224,8 +245,8 @@ Future<Uint8List> statementPdfBytes(
     ],
   );
 
-  pw.TableRow entryRow(StatementEntry e) {
-    final isCredit = e.side.isCredit;
+  pw.TableRow entryRow(AgentStatementEntryResponse e) {
+    final isCredit = e.entrySide.isCredit;
     return pw.TableRow(
       decoration: const pw.BoxDecoration(
         border: pw.Border(top: pw.BorderSide(color: line, width: 0.6)),
@@ -240,12 +261,12 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
-          child: cell(e.descriptionFr),
+          child: cell(e.kind.label),
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
           child: cell(
-            '${isCredit ? '+' : '−'}${fmtKmfNoUnit(e.amount)}',
+            '${isCredit ? '+' : '−'}${fmtKmfNoUnit(e.amount ?? 0)}',
             align: pw.TextAlign.right,
             color: isCredit ? credit : ink,
           ),
@@ -253,7 +274,7 @@ Future<Uint8List> statementPdfBytes(
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
           child: cell(
-            fmtKmfNoUnit(e.runningBalance),
+            fmtKmfNoUnit(e.runningBalance ?? 0),
             align: pw.TextAlign.right,
             color: inkMid,
           ),
@@ -272,20 +293,20 @@ Future<Uint8List> statementPdfBytes(
               alignment: pw.Alignment.centerRight,
               margin: const pw.EdgeInsets.only(bottom: 8),
               child: pw.Text(
-                'Relevé Lipa',
+                l10n.transactionReceiptReleveLipa,
                 style: const pw.TextStyle(color: inkLow, fontSize: 9),
               ),
             ),
       footer: (context) => pw.Container(
         alignment: pw.Alignment.centerRight,
         child: pw.Text(
-          'Page ${context.pageNumber}/${context.pagesCount}',
+          l10n.transactionReceiptPage(context.pageNumber, context.pagesCount),
           style: const pw.TextStyle(color: inkLow, fontSize: 9),
         ),
       ),
       build: (context) => [
         pw.Text(
-          'Lipa',
+          l10n.commonLipa,
           style: pw.TextStyle(
             color: brand,
             fontSize: 22,
@@ -294,18 +315,18 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.SizedBox(height: 2),
         pw.Text(
-          'Relevé du compte',
+          l10n.transactionReceiptReleveCompte,
           style: const pw.TextStyle(color: inkLow, fontSize: 12),
         ),
         pw.SizedBox(height: 4),
         pw.Text(
-          'Période : $period',
+          l10n.transactionReceiptPeriode(period),
           style: const pw.TextStyle(color: inkMid, fontSize: 10),
         ),
         pw.SizedBox(height: 16),
         if (entries.isEmpty)
           pw.Text(
-            'Aucune écriture sur cette période.',
+            l10n.transactionReceiptAucuneEcriturePeriode,
             style: const pw.TextStyle(color: inkLow, fontSize: 11),
           )
         else

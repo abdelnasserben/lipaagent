@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import '../../l10n/l10n.dart';
 
 /// Formatting helpers, shared with the Lipa Customer design system.
 /// All amounts are KMF integer minor-units.
@@ -45,17 +46,17 @@ String shortId(String s) {
   return '${s.substring(0, 4)}…${s.substring(s.length - 4)}';
 }
 
-/// French relative time, e.g. "à l'instant", "il y a 5 min", "il y a 3 h".
+/// Relative time (texts in lib/l10n), e.g. "à l'instant", "il y a 5 min", "il y a 3 h".
 String fmtRelativeFr(DateTime when, {DateTime? now}) {
   final ref = now ?? DateTime.now();
   final sec = ref.difference(when).inSeconds;
-  if (sec < 60) return 'à l’instant';
+  if (sec < 60) return l10n.formattersInstant;
   final min = sec ~/ 60;
-  if (min < 60) return 'il y a $min min';
+  if (min < 60) return l10n.formattersIlYMin(min);
   final h = min ~/ 60;
-  if (h < 24) return 'il y a $h h';
+  if (h < 24) return l10n.formattersIlYH(h);
   final days = h ~/ 24;
-  if (days < 7) return 'il y a $days j';
+  if (days < 7) return l10n.formattersIlYJ(days);
   return DateFormat('dd MMM', 'fr_FR').format(when);
 }
 

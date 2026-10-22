@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/// The token bundle returned by agent login / refresh (spec §7.1).
+import '../../api/generated/export.dart';
+
+/// The session tokens returned by login, MFA verification and refresh, as
+/// stored on the device.
 class AuthTokens {
   const AuthTokens({
     required this.accessToken,
@@ -15,6 +18,42 @@ class AuthTokens {
   final DateTime accessTokenExpiresAt;
   final String refreshToken;
   final DateTime refreshTokenExpiresAt;
+
+  /// From a login / MFA answer; null when a field is missing.
+  static AuthTokens? fromTokens(Tokens? t) => _of(
+    t?.accessToken,
+    t?.accessTokenExpiresAt,
+    t?.refreshToken,
+    t?.refreshTokenExpiresAt,
+  );
+
+  /// From a refresh answer; null when a field is missing.
+  static AuthTokens? fromTokenResponse(TokenResponse? t) => _of(
+    t?.accessToken,
+    t?.accessTokenExpiresAt,
+    t?.refreshToken,
+    t?.refreshTokenExpiresAt,
+  );
+
+  static AuthTokens? _of(
+    String? access,
+    DateTime? accessExpiresAt,
+    String? refresh,
+    DateTime? refreshExpiresAt,
+  ) {
+    if (access == null ||
+        accessExpiresAt == null ||
+        refresh == null ||
+        refreshExpiresAt == null) {
+      return null;
+    }
+    return AuthTokens(
+      accessToken: access,
+      accessTokenExpiresAt: accessExpiresAt,
+      refreshToken: refresh,
+      refreshTokenExpiresAt: refreshExpiresAt,
+    );
+  }
 
   bool get isAccessExpired => DateTime.now().isAfter(accessTokenExpiresAt);
 

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -10,9 +13,8 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/cash_result.dart';
-import '../../data/models/enums.dart';
 import 'cash_in_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Cash-in (deposit) flow: confirm the customer, then the amount. The agent
 /// float is debited; the customer account is credited (spec §5.4 / §11.1).
@@ -36,8 +38,8 @@ class CashInScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Dépôt client',
-              subtitle: 'Cash-in',
+              title: l10n.commonDepotClient,
+              subtitle: l10n.commonCashIn,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -76,13 +78,12 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
-        const InfoBanner(
+        InfoBanner(
           icon: Icons.info_outline,
-          text:
-              'Saisissez le numéro du client pour confirmer son identité avant le dépôt.',
+          text: l10n.cashInSaisissezNumeroClientConfirmer,
         ),
         const SizedBox(height: 18),
-        const FieldLabel('Numéro du client'),
+        FieldLabel(l10n.commonNumeroClient),
         const SizedBox(height: 8),
         PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
         if (state.errorMessage != null) ...[
@@ -94,7 +95,7 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
         ],
         const SizedBox(height: 18),
         LipaButton(
-          label: 'Rechercher le client',
+          label: l10n.commonRechercherClient,
           size: BtnSize.lg,
           full: true,
           loading: state.looking,
@@ -128,10 +129,11 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
       children: [
         if (customer != null)
           PartyCard(
-            name: customer.fullName,
+            name: customer.fullName ?? '',
             subtitle: customer.phonePretty,
-            statusLabel: customer.status.frLabel,
-            statusActive: customer.status == CustomerStatus.active,
+            statusLabel: CustomerStatus.parse(customer.status?.json).label,
+            statusActive:
+                customer.status == CustomerLookupResponseStatus.active,
           ),
         const SizedBox(height: 8),
         Align(
@@ -140,14 +142,14 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
             onPressed: submitting ? null : notifier.backToLookup,
             icon: const Icon(Icons.swap_horiz_rounded, size: 16),
             label: Text(
-              'Changer de client',
+              l10n.cashInChangerClient,
               style: AppText.ui(size: 13, color: AppColors.inkMid),
             ),
           ),
         ),
         const SizedBox(height: 18),
         Text(
-          'Montant à déposer',
+          l10n.cashInMontantDeposer,
           textAlign: TextAlign.center,
           style: AppText.ui(size: 13.5, color: AppColors.inkMid),
         ),
@@ -164,8 +166,8 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
         const SizedBox(height: 28),
         LipaButton(
           label: state.amount > 0
-              ? 'Déposer ${fmtKmf(state.amount)}'
-              : 'Déposer',
+              ? l10n.cashInDeposer(fmtKmf(state.amount))
+              : l10n.cashInDeposer2,
           size: BtnSize.lg,
           full: true,
           loading: submitting,
@@ -173,7 +175,7 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
         ),
         const SizedBox(height: 10),
         Text(
-          'Votre float sera débité du montant déposé.',
+          l10n.cashInFloatSeraDebiteMontant,
           textAlign: TextAlign.center,
           style: AppText.ui(size: 12, color: AppColors.inkLow),
         ),
@@ -184,49 +186,52 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
 
 class _DoneScreen extends ConsumerWidget {
   const _DoneScreen({required this.result, required this.customerName});
-  final AgentCashInResult result;
+  final AgentCashResponse result;
   final String customerName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ResultScreen(
-      title: 'Dépôt',
-      headline: 'Dépôt effectué',
+      title: l10n.commonDepot,
+      headline: l10n.cashInDepotEffectue,
       subtitle: customerName.isEmpty
           ? null
-          : '${fmtKmf(result.requestedAmount)} crédités à $customerName.',
-      replayed: result.replayed,
+          : l10n.cashInCredites(
+              fmtKmf(result.requestedAmount ?? 0),
+              customerName,
+            ),
+      replayed: result.replayed ?? false,
       onDone: () => Navigator.of(context).pop(),
       detail: LipaCard(
         padding: EdgeInsets.zero,
         child: Column(
           children: [
             DetailRow(
-              label: 'Montant',
-              value: fmtKmf(result.requestedAmount),
+              label: l10n.commonMontant,
+              value: fmtKmf(result.requestedAmount ?? 0),
               mono: true,
             ),
-            if (result.feeAmount > 0)
+            if ((result.feeAmount ?? 0) > 0)
               DetailRow(
-                label: 'Frais',
-                value: fmtKmf(result.feeAmount),
+                label: l10n.commonFrais,
+                value: fmtKmf(result.feeAmount ?? 0),
                 mono: true,
               ),
-            if (result.commissionAmount > 0)
+            if ((result.commissionAmount ?? 0) > 0)
               DetailRow(
-                label: 'Commission',
-                value: fmtKmf(result.commissionAmount),
+                label: l10n.commonCommission,
+                value: fmtKmf(result.commissionAmount ?? 0),
                 mono: true,
                 valueColor: AppColors.brandDeep,
               ),
             DetailRow(
-              label: 'Crédité au client',
-              value: fmtKmf(result.netAmountToDestination),
+              label: l10n.cashInCrediteClient,
+              value: fmtKmf(result.netAmountToDestination ?? 0),
               mono: true,
             ),
             DetailRow(
-              label: 'Réf.',
-              value: shortId(result.transactionId),
+              label: l10n.commonRef,
+              value: shortId(result.transactionId ?? ''),
               mono: true,
               last: true,
             ),

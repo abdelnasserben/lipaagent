@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
+import '../../l10n/l10n.dart';
 
 enum BtnVariant {
   primary,
@@ -508,7 +509,7 @@ class ErrorRetry extends StatelessWidget {
           if (onRetry != null) ...[
             const SizedBox(height: 12),
             LipaButton(
-              label: 'Réessayer',
+              label: l10n.commonReessayer,
               variant: BtnVariant.secondary,
               size: BtnSize.sm,
               onPressed: onRetry,

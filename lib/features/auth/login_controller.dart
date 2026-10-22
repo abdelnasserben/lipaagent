@@ -1,10 +1,14 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/auth/token_store.dart';
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/login_response.dart';
 import '../security/security_controller.dart';
 import 'session_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Which auth step the UI is currently showing.
 enum AuthStep { login, mfa, pinSetup, forgotPin, sessionExpired, locked }
@@ -51,11 +55,9 @@ class LoginState {
   );
 }
 
-class LoginController extends StateNotifier<LoginState> {
-  LoginController(this._ref, {AuthStep initial = AuthStep.login})
-    : super(LoginState(step: initial));
-
-  final Ref _ref;
+class LoginController extends Notifier<LoginState> {
+  @override
+  LoginState build() => const LoginState();
   static const _countryCode = '269';
 
   void goToStep(AuthStep step) =>
@@ -68,21 +70,28 @@ class LoginController extends StateNotifier<LoginState> {
       phoneNumber: phoneNumber,
     );
     try {
-      final res = await _ref
-          .read(authRepositoryProvider)
-          .login(
-            phoneCountryCode: _countryCode,
-            phoneNumber: _digits(phoneNumber),
-            pin: pin,
+      final answer = await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthController.login(
+              body: LoginRequest(
+                phoneCountryCode: _countryCode,
+                phoneNumber: _digits(phoneNumber),
+                pin: pin,
+              ),
+            ),
           );
+      final res = requireData(answer.data);
+      if (res.branch == LoginBranch.session) await _saveSession(res);
+      if (!ref.mounted) return;
       switch (res.branch) {
         case LoginBranch.session:
-          _ref.read(sessionControllerProvider.notifier).markAuthenticated();
+          ref.read(sessionControllerProvider.notifier).markAuthenticated();
           state = state.copyWith(submitting: false);
         case LoginBranch.mfa:
           // An MFA challenge proves this agent has TOTP enrolled — the
           // authoritative cross-device signal for the Security screen.
-          _ref.read(totpEnrolledProvider.notifier).state = true;
+          ref.read(totpEnrolledProvider.notifier).set(true);
           state = state.copyWith(
             submitting: false,
             step: AuthStep.mfa,
@@ -97,22 +106,24 @@ class LoginController extends StateNotifier<LoginState> {
         case LoginBranch.unknown:
           state = state.copyWith(
             submitting: false,
-            errorMessage: 'Réponse inattendue du serveur.',
+            errorMessage: l10n.commonReponseInattendueServeur,
           );
       }
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       if (e.code == 'AUTH_PIN_LOCKED') {
         state = state.copyWith(submitting: false, step: AuthStep.locked);
       } else {
         state = state.copyWith(
           submitting: false,
-          errorMessage: frenchMessageForError(e),
+          errorMessage: apiErrorMessage(e),
         );
       }
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -122,20 +133,28 @@ class LoginController extends StateNotifier<LoginState> {
     if (challengeId == null) return;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await _ref
-          .read(authRepositoryProvider)
-          .verifyMfa(challengeId: challengeId, code: code);
-      _ref.read(sessionControllerProvider.notifier).markAuthenticated();
+      final answer = await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthController.verifyMfa(
+              body: VerifyMfaRequest(challengeId: challengeId, code: code),
+            ),
+          );
+      await _saveSession(requireData(answer.data));
+      if (!ref.mounted) return;
+      ref.read(sessionControllerProvider.notifier).markAuthenticated();
       state = state.copyWith(submitting: false);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -147,19 +166,27 @@ class LoginController extends StateNotifier<LoginState> {
     if (token == null) return;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await _ref
-          .read(authRepositoryProvider)
-          .setupPin(pinSetupToken: token, pin: pin);
+      await ref
+          .read(apiClientProvider)
+          .sendWithBearer(
+            token,
+            (api) => api.agentAuthPinController.setup1(
+              body: SetAuthPinRequest(pin: pin),
+            ),
+          );
+      if (!ref.mounted) return;
       state = state.copyWith(submitting: false, step: AuthStep.login);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -178,36 +205,50 @@ class LoginController extends StateNotifier<LoginState> {
       phoneNumber: phoneNumber,
     );
     try {
-      await _ref
-          .read(authRepositoryProvider)
-          .resetPinViaTotp(
-            phoneCountryCode: _countryCode,
-            phoneNumber: _digits(phoneNumber),
-            totpCode: totpCode,
-            newPin: newPin,
+      await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthPinController.reset(
+              body: ResetAuthPinRequest(
+                phoneCountryCode: _countryCode,
+                phoneNumber: _digits(phoneNumber),
+                totpCode: totpCode,
+                newPin: newPin,
+              ),
+            ),
           );
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         step: AuthStep.login,
         pinResetDone: true,
       );
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
+  }
+
+  /// Stores the session tokens of a login or MFA answer.
+  Future<void> _saveSession(LoginResponse res) async {
+    final tokens = AuthTokens.fromTokens(res.tokens);
+    if (tokens == null) throw ApiError.emptyResponse();
+    await ref.read(tokenStoreProvider).save(tokens);
   }
 
   String _digits(String s) => s.replaceAll(RegExp(r'\D'), '');
 }
 
 final loginControllerProvider =
-    StateNotifierProvider.autoDispose<LoginController, LoginState>((ref) {
-      return LoginController(ref);
-    });
+    NotifierProvider.autoDispose<LoginController, LoginState>(
+      LoginController.new,
+    );

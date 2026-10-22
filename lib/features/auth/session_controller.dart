@@ -22,18 +22,17 @@ class SessionState {
       );
 }
 
-class SessionController extends StateNotifier<SessionState> {
-  SessionController(this._ref)
-    : super(const SessionState(status: SessionStatus.unknown)) {
+class SessionController extends Notifier<SessionState> {
+  @override
+  SessionState build() {
     _bootstrap();
+    return const SessionState(status: SessionStatus.unknown);
   }
-
-  final Ref _ref;
 
   Future<void> _bootstrap() async {
     // Wire the API client's involuntary-logout signal back to us.
-    _ref.read(apiClientProvider).onSessionExpired = _onSessionExpired;
-    final tokenStore = _ref.read(tokenStoreProvider);
+    ref.read(apiClientProvider).onSessionExpired = _onSessionExpired;
+    final tokenStore = ref.read(tokenStoreProvider);
     final tokens = await tokenStore.load();
     final hasValidRefresh =
         tokens != null && DateTime.now().isBefore(tokens.refreshTokenExpiresAt);
@@ -61,8 +60,13 @@ class SessionController extends StateNotifier<SessionState> {
 
   Future<void> logout() async {
     try {
-      await _ref.read(authRepositoryProvider).logout();
+      await ref
+          .read(apiClientProvider)
+          .send((api) => api.agentAuthController.logout());
+    } catch (_) {
+      // The device forgets the session anyway.
     } finally {
+      await ref.read(tokenStoreProvider).clear();
       state = const SessionState(status: SessionStatus.unauthenticated);
       _resetUserScopedState();
     }
@@ -70,14 +74,11 @@ class SessionController extends StateNotifier<SessionState> {
 
   /// Tears down per-user state that would otherwise leak across accounts.
   ///
-  /// [agentRepositoryProvider] is a long-lived singleton; we rebuild it so the
-  /// next agent starts clean. The `autoDispose` data
-  /// providers unmount with the shell at logout and start fresh on re-login.
+  /// The `autoDispose` data providers unmount with the shell at logout and start fresh on re-login.
   /// (Cf. the Lipa customer app's user-scoped state reset.)
   void _resetUserScopedState() {
-    _ref.invalidate(agentRepositoryProvider);
     // Session-scoped TOTP flag must not leak to the next agent.
-    _ref.read(totpEnrolledProvider.notifier).state = false;
+    ref.read(totpEnrolledProvider.notifier).set(false);
   }
 
   void clearExpiredNotice() {
@@ -88,6 +89,4 @@ class SessionController extends StateNotifier<SessionState> {
 }
 
 final sessionControllerProvider =
-    StateNotifierProvider<SessionController, SessionState>((ref) {
-      return SessionController(ref);
-    });
+    NotifierProvider<SessionController, SessionState>(SessionController.new);

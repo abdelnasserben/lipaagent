@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
@@ -8,8 +10,8 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/transaction_receipt.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/transaction.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Wallet ledger statement (spec §5.3) — a date window + the ledger entries
 /// with their running balance, filterable by date and downloadable as PDF
@@ -35,8 +37,8 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Relevé',
-              subtitle: 'Écritures du compte',
+              title: l10n.commonReleve,
+              subtitle: l10n.statementEcrituresCompte,
               onBack: () => Navigator.of(context).pop(),
               action: CircleButton(
                 onTap: (loaded == null || loaded.isEmpty)
@@ -78,7 +80,7 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
                             Expanded(
                               child: Text(
                                 _range == null
-                                    ? 'Toute la période'
+                                    ? l10n.commonToutePeriode
                                     : '${_fmt(_range!.start)} – ${_fmt(_range!.end)}',
                                 style: AppText.ui(size: 13.5),
                               ),
@@ -109,21 +111,23 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
                     child: CircularProgressIndicator(color: AppColors.brand),
                   ),
                   error: (_, _) => ListView(
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16),
-                        child: ErrorRetry(message: 'Relevé indisponible.'),
+                        child: ErrorRetry(
+                          message: l10n.statementReleveIndisponible,
+                        ),
                       ),
                     ],
                   ),
                   data: (entries) {
                     if (entries.isEmpty) {
                       return ListView(
-                        children: const [
+                        children: [
                           EmptyState(
                             icon: Icons.description_outlined,
-                            title: 'Relevé vide',
-                            message: 'Aucune écriture pour cette période.',
+                            title: l10n.statementReleveVide,
+                            message: l10n.statementAucuneEcriturePeriode,
                           ),
                         ],
                       );
@@ -148,7 +152,7 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
 
   /// Generates the statement PDF for the currently-loaded entries and opens
   /// the system print/preview sheet (save/share from there).
-  Future<void> _downloadPdf(List<StatementEntry> entries) async {
+  Future<void> _downloadPdf(List<AgentStatementEntryResponse> entries) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await Printing.layoutPdf(
@@ -158,7 +162,7 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
       );
     } catch (_) {
       messenger.showSnackBar(
-        const SnackBar(content: Text('Impossible de générer le relevé PDF.')),
+        SnackBar(content: Text(l10n.statementImpossibleGenererRelevePdf)),
       );
     }
   }
@@ -177,11 +181,11 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
 
 class _EntryRow extends StatelessWidget {
   const _EntryRow({required this.entry});
-  final StatementEntry entry;
+  final AgentStatementEntryResponse entry;
 
   @override
   Widget build(BuildContext context) {
-    final credit = entry.side.isCredit;
+    final credit = entry.entrySide.isCredit;
     return LipaCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -206,7 +210,7 @@ class _EntryRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.descriptionFr,
+                  entry.kind.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppText.ui(size: 14, weight: FontWeight.w600),
@@ -233,7 +237,7 @@ class _EntryRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'Solde ${fmtKmfNoUnit(entry.runningBalance)}',
+                l10n.statementSolde(fmtKmfNoUnit(entry.runningBalance ?? 0)),
                 style: AppText.mono(size: 11, color: AppColors.inkLow),
               ),
             ],

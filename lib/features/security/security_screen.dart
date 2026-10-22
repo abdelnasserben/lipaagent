@@ -8,6 +8,7 @@ import 'change_pin_screen.dart';
 import 'security_controller.dart';
 import 'totp_enroll_screen.dart';
 import 'totp_revoke_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Security hub: change PIN, manage TOTP (spec §3.6 / §3.7).
 class SecurityScreen extends ConsumerWidget {
@@ -22,18 +23,17 @@ class SecurityScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Sécurité',
-              subtitle: 'PIN et authentification',
+              title: l10n.securitySecurite,
+              subtitle: l10n.securityPinAuthentification,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                 children: [
-                  const InfoBanner(
+                  InfoBanner(
                     icon: Icons.shield_outlined,
-                    text:
-                        'Protégez votre compte agent : un PIN fort et le TOTP réduisent les risques de fraude au comptoir.',
+                    text: l10n.securityProtegezCompteAgentPin,
                   ),
                   const SizedBox(height: 18),
                   LipaCard(
@@ -42,8 +42,8 @@ class SecurityScreen extends ConsumerWidget {
                       children: [
                         _Row(
                           icon: Icons.password_rounded,
-                          title: 'Changer mon PIN',
-                          subtitle: 'Nécessite votre PIN actuel',
+                          title: l10n.commonChangerMonPin,
+                          subtitle: l10n.securityNecessitePinActuel,
                           onTap: () => _push(context, const ChangePinScreen()),
                         ),
                         // Offer revoke only when TOTP is active, and enroll only
@@ -53,13 +53,15 @@ class SecurityScreen extends ConsumerWidget {
                               ? Icons.no_encryption_rounded
                               : Icons.qr_code_2_rounded,
                           title: totpOn
-                              ? 'Révoquer le TOTP'
-                              : 'Configurer le TOTP',
+                              ? l10n.commonRevoquerTotp
+                              : l10n.commonConfigurerTotp,
                           subtitle: totpOn
-                              ? 'Désactiver le double facteur (code requis)'
-                              : 'Activer le double facteur d’authentification',
+                              ? l10n.securityDesactiverDoubleFacteurCode
+                              : l10n.securityActiverDoubleFacteurAuthentification,
                           trailing: StatusPill(
-                            label: totpOn ? 'Activé' : 'Inactif',
+                            label: totpOn
+                                ? l10n.securityActive
+                                : l10n.securityInactif,
                             kind: totpOn ? PillKind.success : PillKind.neutral,
                           ),
                           danger: totpOn,

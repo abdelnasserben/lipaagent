@@ -8,6 +8,7 @@ import '../cards/cards_screen.dart';
 import '../home/home_screen.dart';
 import '../operations/operations_hub_screen.dart';
 import '../profile/profile_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// The agent app shell: a tab body and the 5-entry tab bar with the central
 /// "Opérer" FAB. Mirrors the Lipa customer shell's structure (per-tab nav
@@ -92,12 +93,12 @@ class _TabBar extends StatelessWidget {
   final int index;
   final ValueChanged<int> onSelect;
 
-  static const _items = [
-    (Icons.grid_view_rounded, 'Accueil'),
-    (Icons.list_alt, 'Activité'),
-    (Icons.bolt_rounded, 'Opérer'),
-    (Icons.credit_card_rounded, 'Cartes'),
-    (Icons.person_rounded, 'Profil'),
+  static final _items = [
+    (Icons.grid_view_rounded, l10n.agentShellAccueil),
+    (Icons.list_alt, l10n.commonActivite),
+    (Icons.bolt_rounded, l10n.commonOperer),
+    (Icons.credit_card_rounded, l10n.commonCartes),
+    (Icons.person_rounded, l10n.commonProfil),
   ];
 
   @override

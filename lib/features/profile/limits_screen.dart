@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/agent_profile.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Assigned transaction limits (spec §5.2). Null when no profile is assigned.
 class LimitsScreen extends ConsumerWidget {
@@ -22,8 +24,8 @@ class LimitsScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Plafonds',
-              subtitle: 'Limites de transaction',
+              title: l10n.commonPlafonds,
+              subtitle: l10n.limitsLimitesTransaction,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -31,16 +33,15 @@ class LimitsScreen extends ConsumerWidget {
                 loading: () => const Center(
                   child: CircularProgressIndicator(color: AppColors.brand),
                 ),
-                error: (_, _) => const Padding(
+                error: (_, _) => Padding(
                   padding: EdgeInsets.all(16),
-                  child: ErrorRetry(message: 'Plafonds indisponibles.'),
+                  child: ErrorRetry(message: l10n.limitsPlafondsIndisponibles),
                 ),
                 data: (l) => l == null
-                    ? const EmptyState(
+                    ? EmptyState(
                         icon: Icons.speed_rounded,
-                        title: 'Aucun plafond configuré',
-                        message:
-                            'Aucun profil de limites n’est attribué à votre compte.',
+                        title: l10n.limitsAucunPlafondConfigure,
+                        message: l10n.limitsAucunProfilLimitesN,
                       )
                     : _Body(limits: l),
               ),
@@ -54,7 +55,7 @@ class LimitsScreen extends ConsumerWidget {
 
 class _Body extends StatelessWidget {
   const _Body({required this.limits});
-  final AgentLimits limits;
+  final AgentLimitsResponse limits;
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +77,13 @@ class _Body extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      limits.profileName,
+                      limits.profileName ?? '',
                       style: AppText.ui(size: 15, weight: FontWeight.w700),
                     ),
                     Text(
-                      'KYC requis : ${limits.requiredKycLevel.frLabel}',
+                      l10n.limitsKycRequis(
+                        KycLevel.parse(limits.requiredKycLevel).label,
+                      ),
                       style: AppText.ui(size: 12.5, color: AppColors.inkMid),
                     ),
                   ],
@@ -91,7 +94,7 @@ class _Body extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Par transaction',
+          l10n.limitsTransaction,
           style: AppText.ui(size: 13, weight: FontWeight.w700),
         ),
         const SizedBox(height: 10),
@@ -99,24 +102,30 @@ class _Body extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              _row('Minimum', limits.minTransactionAmount),
-              _row('Maximum', limits.maxTransactionAmount, last: true),
+              _row(l10n.limitsMinimum, limits.minTransactionAmount),
+              _row(l10n.limitsMaximum, limits.maxTransactionAmount, last: true),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        Text('Cumuls', style: AppText.ui(size: 13, weight: FontWeight.w700)),
+        Text(
+          l10n.limitsCumuls,
+          style: AppText.ui(size: 13, weight: FontWeight.w700),
+        ),
         const SizedBox(height: 10),
         LipaCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              _row('Plafond journalier', limits.maxDailyAmount),
-              _row('Plafond hebdomadaire', limits.maxWeeklyAmount),
-              _row('Plafond mensuel', limits.maxMonthlyAmount),
-              _countRow('Transactions / jour', limits.maxDailyTransactionCount),
+              _row(l10n.limitsPlafondJournalier, limits.maxDailyAmount),
+              _row(l10n.limitsPlafondHebdomadaire, limits.maxWeeklyAmount),
+              _row(l10n.limitsPlafondMensuel, limits.maxMonthlyAmount),
               _countRow(
-                'Transactions / mois',
+                l10n.limitsTransactionsJour,
+                limits.maxDailyTransactionCount,
+              ),
+              _countRow(
+                l10n.limitsTransactionsMois,
                 limits.maxMonthlyTransactionCount,
                 last: true,
               ),
@@ -129,14 +138,14 @@ class _Body extends StatelessWidget {
 
   Widget _row(String label, int? value, {bool last = false}) => DetailRow(
     label: label,
-    value: value == null ? 'Non défini' : fmtKmf(value),
+    value: value == null ? l10n.limitsNonDefini : fmtKmf(value),
     mono: value != null,
     last: last,
   );
 
   Widget _countRow(String label, int? value, {bool last = false}) => DetailRow(
     label: label,
-    value: value == null ? 'Non défini' : '$value',
+    value: value == null ? l10n.limitsNonDefini : '$value',
     mono: value != null,
     last: last,
   );

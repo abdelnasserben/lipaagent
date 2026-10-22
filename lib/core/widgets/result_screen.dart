@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
 import 'common.dart';
+import '../../l10n/l10n.dart';
 
 /// A success / outcome screen shown after a completed operation (cash-in,
 /// cash-out, card sale/replacement, enrollment). A green check hero, the key
@@ -104,11 +105,10 @@ class ResultScreen extends StatelessWidget {
                     ],
                     if (replayed) ...[
                       const SizedBox(height: 14),
-                      const InfoBanner(
+                      InfoBanner(
                         kind: PillKind.info,
                         icon: Icons.replay_rounded,
-                        text:
-                            'Opération déjà traitée — résultat précédent renvoyé (idempotent).',
+                        text: l10n.resultOperationDejaTraiteeResultat,
                       ),
                     ],
                     if (detail != null) ...[
@@ -127,7 +127,7 @@ class ResultScreen extends StatelessWidget {
                       const SizedBox(height: 10),
                     ],
                     LipaButton(
-                      label: 'Terminé',
+                      label: l10n.resultTermine,
                       size: BtnSize.lg,
                       full: true,
                       onPressed: onDone,

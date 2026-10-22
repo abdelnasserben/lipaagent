@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/code_field.dart';
 import '../../core/widgets/common.dart';
-import '../../core/widgets/lipa_brand.dart';
 import 'security_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// TOTP enrollment (spec §3.7): start → show secret/QR → confirm with a code.
 /// Offers a path to revoke an existing enrollment.
@@ -30,7 +31,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'TOTP activé',
+              l10n.totpEnrollTotpActive,
               style: AppText.ui(color: Colors.white),
             ),
             backgroundColor: AppColors.brandDeep,
@@ -48,7 +49,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Configurer le TOTP',
+              title: l10n.commonConfigurerTotp,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -56,14 +57,13 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
                   if (setup == null) ...[
-                    const InfoBanner(
+                    InfoBanner(
                       icon: Icons.qr_code_2_rounded,
-                      text:
-                          'Activez le double facteur (TOTP) avec une application comme Google Authenticator. Il sera demandé à chaque connexion et permet de réinitialiser votre PIN vous-même.',
+                      text: l10n.totpEnrollActivezDoubleFacteurTotp,
                     ),
                     const SizedBox(height: 18),
                     LipaButton(
-                      label: 'Commencer l’activation',
+                      label: l10n.totpEnrollCommencerActivation,
                       size: BtnSize.lg,
                       full: true,
                       loading: state.loading,
@@ -86,19 +86,19 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                           borderRadius: BorderRadius.circular(AppRadius.lg),
                           border: Border.all(color: AppColors.border),
                         ),
-                        child: FakeQr(size: 180, seedText: setup.secret),
+                        child: QrImageView(data: setup.qrUri ?? '', size: 180),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Clé secrète',
+                      l10n.totpEnrollCleSecrete,
                       style: AppText.ui(size: 13, weight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
-                    _SecretBox(secret: setup.secret),
+                    _SecretBox(secret: setup.secret ?? ''),
                     const SizedBox(height: 8),
                     Text(
-                      'Scannez le QR (illustratif) ou saisissez la clé dans votre application, puis entrez le code à 6 chiffres.',
+                      l10n.totpEnrollScannezQrSaisissezCle,
                       style: AppText.ui(
                         size: 12.5,
                         color: AppColors.inkMid,
@@ -106,7 +106,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const FieldLabelInline('Code de vérification'),
+                    FieldLabelInline(l10n.totpEnrollCodeVerification),
                     const SizedBox(height: 10),
                     CodeField(onChanged: (v) => setState(() => _code = v)),
                     if (state.error != null) ...[
@@ -118,7 +118,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                     ],
                     const SizedBox(height: 22),
                     LipaButton(
-                      label: 'Activer le TOTP',
+                      label: l10n.totpEnrollActiverTotp,
                       size: BtnSize.lg,
                       full: true,
                       loading: state.loading,
@@ -158,7 +158,10 @@ class _SecretBox extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: secret));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Clé copiée', style: AppText.ui(color: Colors.white)),
+            content: Text(
+              l10n.totpEnrollCleCopiee,
+              style: AppText.ui(color: Colors.white),
+            ),
             backgroundColor: AppColors.nearBlack,
             duration: const Duration(seconds: 1),
           ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/agent_profile.dart';
 import '../agent/agent_providers.dart';
 import '../cards/card_lookup_screen.dart';
 import '../cards/card_sale_screen.dart';
@@ -12,6 +13,7 @@ import '../cashin/cash_in_screen.dart';
 import '../cashout/cash_out_screen.dart';
 import '../enroll/enroll_screen.dart';
 import '../enroll/kyc_customer_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// The "Opérer" hub (central FAB) — the launchpad for every agent operation,
 /// grouped by area and gated on the agent's capabilities (spec §11.3).
@@ -24,15 +26,18 @@ class OperationsHubScreen extends ConsumerWidget {
 
     return Column(
       children: [
-        const ScreenHeader(title: 'Opérer', subtitle: 'Toutes vos opérations'),
+        ScreenHeader(
+          title: l10n.commonOperer,
+          subtitle: l10n.operationsHubToutesOperations,
+        ),
         Expanded(
           child: profile.when(
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.brand),
             ),
-            error: (_, _) => const Padding(
+            error: (_, _) => Padding(
               padding: EdgeInsets.all(16),
-              child: ErrorRetry(message: 'Profil indisponible.'),
+              child: ErrorRetry(message: l10n.commonProfilIndisponible),
             ),
             data: (p) => _Body(profile: p),
           ),
@@ -44,7 +49,7 @@ class OperationsHubScreen extends ConsumerWidget {
 
 class _Body extends StatelessWidget {
   const _Body({required this.profile});
-  final AgentProfile profile;
+  final AgentProfileResponse profile;
 
   @override
   Widget build(BuildContext context) {
@@ -52,62 +57,59 @@ class _Body extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
         _Section(
-          title: 'Espèces',
+          title: l10n.operationsHubEspeces,
           children: [
-            if (profile.canDoCashIn)
+            if (profile.canDoCashIn ?? false)
               _OpRow(
                 icon: Icons.south_west_rounded,
-                title: 'Dépôt client (cash-in)',
-                subtitle: 'Créditer le compte d’un client',
+                title: l10n.operationsHubDepotClientCashIn,
+                subtitle: l10n.operationsHubCrediterCompteClient,
                 onTap: () => _push(context, const CashInScreen()),
               ),
-            if (profile.canDoCashOut)
+            if (profile.canDoCashOut ?? false)
               _OpRow(
                 icon: Icons.north_east_rounded,
-                title: 'Retrait marchand (cash-out)',
-                subtitle: 'Décaisser pour un marchand',
+                title: l10n.commonRetraitMarchandCashOut,
+                subtitle: l10n.operationsHubDecaisserMarchand,
                 onTap: () => _push(context, const CashOutScreen()),
               ),
-            if (!profile.canDoCashIn && !profile.canDoCashOut)
-              const _Disabled(
-                text:
-                    'Les opérations espèces ne sont pas activées sur votre compte.',
-              ),
+            if (!profile.hasAnyCashOps)
+              _Disabled(text: l10n.operationsHubOperationsEspecesNeSont),
           ],
         ),
         const SizedBox(height: 18),
         _Section(
-          title: 'Clients',
+          title: l10n.operationsHubClients,
           children: [
             _OpRow(
               icon: Icons.person_add_alt_1_rounded,
-              title: 'Enrôler un client',
-              subtitle: 'Créer un compte + KYC',
+              title: l10n.commonEnrolerClient,
+              subtitle: l10n.operationsHubCreerCompteKyc,
               onTap: () => _push(context, const EnrollScreen()),
             ),
             _OpRow(
               icon: Icons.badge_outlined,
-              title: 'KYC client',
-              subtitle: 'Compléter le dossier d’un client existant',
+              title: l10n.commonKycClient,
+              subtitle: l10n.operationsHubCompleterDossierClientExistant,
               onTap: () => _push(context, const KycCustomerScreen()),
             ),
           ],
         ),
         const SizedBox(height: 18),
         _Section(
-          title: 'Cartes',
+          title: l10n.commonCartes,
           children: [
             _OpRow(
               icon: Icons.search_rounded,
-              title: 'Rechercher une carte',
-              subtitle: 'Par UID NFC — perte, vol, remplacement',
+              title: l10n.commonRechercherCarte,
+              subtitle: l10n.operationsHubUidNfcPerteVol,
               onTap: () => _push(context, const CardLookupScreen()),
             ),
-            if (profile.canSellCards)
+            if (profile.canSellCards ?? false)
               _OpRow(
                 icon: Icons.add_card_rounded,
-                title: 'Vendre une carte',
-                subtitle: 'Depuis votre stock attribué',
+                title: l10n.commonVendreCarte,
+                subtitle: l10n.operationsHubDepuisStockAttribue,
                 onTap: () => _push(context, const CardSaleScreen()),
               ),
           ],
