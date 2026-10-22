@@ -40,7 +40,9 @@ class _CodeFieldState extends State<CodeField> {
               final active = i == code.length;
               return Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(right: i < widget.length - 1 ? 10 : 0),
+                  padding: EdgeInsets.only(
+                    right: i < widget.length - 1 ? 10 : 0,
+                  ),
                   child: Container(
                     height: 64,
                     alignment: Alignment.center,
@@ -54,9 +56,10 @@ class _CodeFieldState extends State<CodeField> {
                         width: 1.5,
                       ),
                     ),
-                    child: Text(filled ? code[i] : '',
-                        style:
-                            AppText.mono(size: 26, weight: FontWeight.w600)),
+                    child: Text(
+                      filled ? code[i] : '',
+                      style: AppText.mono(size: 26, weight: FontWeight.w600),
+                    ),
                   ),
                 ),
               );

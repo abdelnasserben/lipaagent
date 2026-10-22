@@ -6,18 +6,18 @@ class EnrollCustomerResult {
   const EnrollCustomerResult({
     required this.customerId,
     required this.externalRef,
-    required this.walletId,
+    required this.accountId,
   });
 
   final String customerId;
   final String externalRef;
-  final String walletId;
+  final String accountId;
 
   factory EnrollCustomerResult.fromJson(Map<String, dynamic> json) =>
       EnrollCustomerResult(
         customerId: (json['customerId'] ?? '') as String,
         externalRef: (json['externalRef'] ?? '') as String,
-        walletId: (json['walletId'] ?? '') as String,
+        accountId: (json['accountId'] ?? '') as String,
       );
 }
 
@@ -38,12 +38,12 @@ class KycDocument {
   final DateTime? uploadedAt;
 
   factory KycDocument.fromJson(Map<String, dynamic> json) => KycDocument(
-        id: (json['id'] ?? '') as String,
-        documentType: KycDocumentType.parse(json['documentType'] as String?),
-        status: KycDocumentStatus.parse(json['status'] as String?),
-        contentHash: (json['contentHash'] ?? '') as String,
-        uploadedAt: tryParseInstant(json['uploadedAt']),
-      );
+    id: (json['id'] ?? '') as String,
+    documentType: KycDocumentType.parse(json['documentType'] as String?),
+    status: KycDocumentStatus.parse(json['status'] as String?),
+    contentHash: (json['contentHash'] ?? '') as String,
+    uploadedAt: tryParseInstant(json['uploadedAt']),
+  );
 }
 
 /// Local form payload for `EnrollCustomerRequest` (spec §6.3). Validated in the
@@ -72,17 +72,17 @@ class EnrollCustomerForm {
   final String? addressDistrict;
 
   Map<String, dynamic> toJson() => {
-        'fullName': fullName,
-        'dateOfBirth': dateOfBirth,
-        'phoneCountryCode': phoneCountryCode,
-        'phoneNumber': phoneNumber,
-        'nationalIdNumber': nationalIdNumber,
-        'nationalIdType': nationalIdType,
-        if (addressIsland != null && addressIsland!.isNotEmpty)
-          'addressIsland': addressIsland,
-        if (addressCity != null && addressCity!.isNotEmpty)
-          'addressCity': addressCity,
-        if (addressDistrict != null && addressDistrict!.isNotEmpty)
-          'addressDistrict': addressDistrict,
-      };
+    'fullName': fullName,
+    'dateOfBirth': dateOfBirth,
+    'phoneCountryCode': phoneCountryCode,
+    'phoneNumber': phoneNumber,
+    'nationalIdNumber': nationalIdNumber,
+    'nationalIdType': nationalIdType,
+    if (addressIsland != null && addressIsland!.isNotEmpty)
+      'addressIsland': addressIsland,
+    if (addressCity != null && addressCity!.isNotEmpty)
+      'addressCity': addressCity,
+    if (addressDistrict != null && addressDistrict!.isNotEmpty)
+      'addressDistrict': addressDistrict,
+  };
 }

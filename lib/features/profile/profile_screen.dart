@@ -28,7 +28,8 @@ class ProfileScreen extends ConsumerWidget {
         Expanded(
           child: profile.when(
             loading: () => const Center(
-                child: CircularProgressIndicator(color: AppColors.brand)),
+              child: CircularProgressIndicator(color: AppColors.brand),
+            ),
             error: (_, _) => const Padding(
               padding: EdgeInsets.all(16),
               child: ErrorRetry(message: 'Profil indisponible.'),
@@ -63,28 +64,34 @@ class _Body extends ConsumerWidget {
                   color: AppColors.nearBlack,
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
-                child: Text(_initials(profile.fullName),
-                    style: AppText.ui(
-                        size: 20,
-                        weight: FontWeight.w700,
-                        color: Colors.white)),
+                child: Text(
+                  _initials(profile.fullName),
+                  style: AppText.ui(
+                    size: 20,
+                    weight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(profile.fullName,
-                        style:
-                            AppText.ui(size: 17, weight: FontWeight.w700)),
+                    Text(
+                      profile.fullName,
+                      style: AppText.ui(size: 17, weight: FontWeight.w700),
+                    ),
                     const SizedBox(height: 3),
-                    Text(profile.phonePretty,
-                        style:
-                            AppText.mono(size: 13, color: AppColors.inkMid)),
+                    Text(
+                      profile.phonePretty,
+                      style: AppText.mono(size: 13, color: AppColors.inkMid),
+                    ),
                     const SizedBox(height: 8),
                     GenericStatusPill(
-                        label: profile.status.frLabel,
-                        active: profile.status.isActive),
+                      label: profile.status.frLabel,
+                      active: profile.status.isActive,
+                    ),
                   ],
                 ),
               ),
@@ -105,18 +112,21 @@ class _Body extends ConsumerWidget {
               if (profile.contractRef != null)
                 DetailRow(label: 'Contrat', value: profile.contractRef!),
               DetailRow(
-                  label: 'Seuil d’alerte float',
-                  value: fmtKmf(profile.floatAlertThreshold),
-                  mono: true,
-                  last: true),
+                label: 'Seuil d’alerte float',
+                value: fmtKmf(profile.floatAlertThreshold),
+                mono: true,
+                last: true,
+              ),
             ],
           ),
         ),
         const SizedBox(height: 16),
 
         // Capabilities (spec §10.3 gating flags).
-        Text('Autorisations',
-            style: AppText.ui(size: 13, weight: FontWeight.w700)),
+        Text(
+          'Autorisations',
+          style: AppText.ui(size: 13, weight: FontWeight.w700),
+        ),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
@@ -130,24 +140,26 @@ class _Body extends ConsumerWidget {
         const SizedBox(height: 20),
 
         // Navigation.
-        _NavCard(children: [
-          _NavRow(
-            icon: Icons.savings_outlined,
-            label: 'Commissions',
-            onTap: () => _push(context, const CommissionsScreen()),
-          ),
-          _NavRow(
-            icon: Icons.speed_rounded,
-            label: 'Plafonds',
-            onTap: () => _push(context, const LimitsScreen()),
-          ),
-          _NavRow(
-            icon: Icons.shield_outlined,
-            label: 'Sécurité (PIN, TOTP)',
-            onTap: () => _push(context, const SecurityScreen()),
-            last: true,
-          ),
-        ]),
+        _NavCard(
+          children: [
+            _NavRow(
+              icon: Icons.savings_outlined,
+              label: 'Commissions',
+              onTap: () => _push(context, const CommissionsScreen()),
+            ),
+            _NavRow(
+              icon: Icons.speed_rounded,
+              label: 'Plafonds',
+              onTap: () => _push(context, const LimitsScreen()),
+            ),
+            _NavRow(
+              icon: Icons.shield_outlined,
+              label: 'Sécurité (PIN, TOTP)',
+              onTap: () => _push(context, const SecurityScreen()),
+              last: true,
+            ),
+          ],
+        ),
         const SizedBox(height: 20),
 
         LipaButton(
@@ -170,22 +182,33 @@ class _Body extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Se déconnecter',
-            style: AppText.ui(size: 17, weight: FontWeight.w700)),
-        content: Text('Voulez-vous vraiment vous déconnecter ?',
-            style: AppText.ui(size: 14, color: AppColors.inkMid)),
+        title: Text(
+          'Se déconnecter',
+          style: AppText.ui(size: 17, weight: FontWeight.w700),
+        ),
+        content: Text(
+          'Voulez-vous vraiment vous déconnecter ?',
+          style: AppText.ui(size: 14, color: AppColors.inkMid),
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text('Annuler',
-                  style: AppText.ui(size: 14, color: AppColors.inkMid))),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              'Annuler',
+              style: AppText.ui(size: 14, color: AppColors.inkMid),
+            ),
+          ),
           TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text('Déconnexion',
-                  style: AppText.ui(
-                      size: 14,
-                      weight: FontWeight.w700,
-                      color: AppColors.danger))),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              'Déconnexion',
+              style: AppText.ui(
+                size: 14,
+                weight: FontWeight.w700,
+                color: AppColors.danger,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -215,21 +238,25 @@ class _Cap extends StatelessWidget {
       decoration: BoxDecoration(
         color: on ? AppColors.brandSoft : AppColors.surfaceAlt,
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(
-            color: on ? AppColors.brandSoft : AppColors.border),
+        border: Border.all(color: on ? AppColors.brandSoft : AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(on ? Icons.check_circle : Icons.remove_circle_outline,
-              size: 15,
-              color: on ? AppColors.brandDeep : AppColors.inkLow),
+          Icon(
+            on ? Icons.check_circle : Icons.remove_circle_outline,
+            size: 15,
+            color: on ? AppColors.brandDeep : AppColors.inkLow,
+          ),
           const SizedBox(width: 6),
-          Text(label,
-              style: AppText.ui(
-                  size: 12.5,
-                  weight: FontWeight.w600,
-                  color: on ? AppColors.brandDeep : AppColors.inkMid)),
+          Text(
+            label,
+            style: AppText.ui(
+              size: 12.5,
+              weight: FontWeight.w600,
+              color: on ? AppColors.brandDeep : AppColors.inkMid,
+            ),
+          ),
         ],
       ),
     );
@@ -240,8 +267,10 @@ class _NavCard extends StatelessWidget {
   const _NavCard({required this.children});
   final List<Widget> children;
   @override
-  Widget build(BuildContext context) =>
-      LipaCard(padding: EdgeInsets.zero, child: Column(children: children));
+  Widget build(BuildContext context) => LipaCard(
+    padding: EdgeInsets.zero,
+    child: Column(children: children),
+  );
 }
 
 class _NavRow extends StatelessWidget {
@@ -272,8 +301,10 @@ class _NavRow extends StatelessWidget {
             Icon(icon, size: 20, color: AppColors.ink),
             const SizedBox(width: 14),
             Expanded(
-              child: Text(label,
-                  style: AppText.ui(size: 14.5, weight: FontWeight.w600)),
+              child: Text(
+                label,
+                style: AppText.ui(size: 14.5, weight: FontWeight.w600),
+              ),
             ),
             const Icon(Icons.chevron_right_rounded, color: AppColors.inkLow),
           ],

@@ -36,24 +36,30 @@ class CommissionsScreen extends ConsumerWidget {
                 },
                 child: commissions.when(
                   loading: () => const Center(
-                      child:
-                          CircularProgressIndicator(color: AppColors.brand)),
-                  error: (_, _) => ListView(children: const [
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: ErrorRetry(message: 'Commissions indisponibles.'),
-                    ),
-                  ]),
+                    child: CircularProgressIndicator(color: AppColors.brand),
+                  ),
+                  error: (_, _) => ListView(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: ErrorRetry(
+                          message: 'Commissions indisponibles.',
+                        ),
+                      ),
+                    ],
+                  ),
                   data: (items) {
                     if (items.isEmpty) {
-                      return ListView(children: const [
-                        EmptyState(
-                          icon: Icons.savings_outlined,
-                          title: 'Aucune commission',
-                          message:
-                              'Vos commissions sur dépôts, retraits et ventes apparaîtront ici.',
-                        ),
-                      ]);
+                      return ListView(
+                        children: const [
+                          EmptyState(
+                            icon: Icons.savings_outlined,
+                            title: 'Aucune commission',
+                            message:
+                                'Vos commissions sur dépôts, retraits et ventes apparaîtront ici.',
+                          ),
+                        ],
+                      );
                     }
                     final total = items
                         .where((c) => c.status == PayoutStatus.paid)
@@ -91,25 +97,33 @@ class _TotalCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('TOTAL VERSÉ',
-                style: AppText.ui(
-                    size: 12,
-                    weight: FontWeight.w600,
-                    color: Colors.white54,
-                    letterSpacing: 1)),
+            Text(
+              'TOTAL VERSÉ',
+              style: AppText.ui(
+                size: 12,
+                weight: FontWeight.w600,
+                color: Colors.white54,
+                letterSpacing: 1,
+              ),
+            ),
             const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(fmtKmfNoUnit(total),
-                    style: AppText.mono(
-                        size: 30,
-                        weight: FontWeight.w600,
-                        color: Colors.white)),
+                Text(
+                  fmtKmfNoUnit(total),
+                  style: AppText.mono(
+                    size: 30,
+                    weight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
                 const SizedBox(width: 8),
-                Text('KMF',
-                    style: AppText.mono(size: 13, color: Colors.white54)),
+                Text(
+                  'KMF',
+                  style: AppText.mono(size: 13, color: Colors.white54),
+                ),
               ],
             ),
           ],
@@ -140,16 +154,21 @@ class _CommissionRow extends StatelessWidget {
                 color: AppColors.brandSoft,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: const Icon(Icons.savings_outlined,
-                  size: 20, color: AppColors.brandDeep),
+              child: const Icon(
+                Icons.savings_outlined,
+                size: 20,
+                color: AppColors.brandDeep,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Sur ${fmtKmf(c.basisAmount)}',
-                      style: AppText.ui(size: 13.5, weight: FontWeight.w600)),
+                  Text(
+                    'Sur ${fmtKmf(c.basisAmount)}',
+                    style: AppText.ui(size: 13.5, weight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     '${c.settlementMode.frLabel}${c.createdAt != null ? ' · ${fmtDateFr(c.createdAt!)}' : ''}',
@@ -162,11 +181,14 @@ class _CommissionRow extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(fmtKmf(c.amount, signed: true),
-                    style: AppText.mono(
-                        size: 14,
-                        weight: FontWeight.w600,
-                        color: AppColors.brandDeep)),
+                Text(
+                  fmtKmf(c.amount, signed: true),
+                  style: AppText.mono(
+                    size: 14,
+                    weight: FontWeight.w600,
+                    color: AppColors.brandDeep,
+                  ),
+                ),
                 const SizedBox(height: 4),
                 PayoutStatusPill(status: c.status),
               ],

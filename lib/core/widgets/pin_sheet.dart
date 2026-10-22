@@ -56,7 +56,11 @@ class _PinSheetState extends State<PinSheet> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.fromLTRB(
-          16, 14, 16, 24 + MediaQuery.of(context).viewInsets.bottom),
+        16,
+        14,
+        16,
+        24 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,8 +79,10 @@ class _PinSheetState extends State<PinSheet> {
           Row(
             children: [
               Expanded(
-                child: Text(widget.title,
-                    style: AppText.ui(size: 18, weight: FontWeight.w700)),
+                child: Text(
+                  widget.title,
+                  style: AppText.ui(size: 18, weight: FontWeight.w700),
+                ),
               ),
               CircleButton(
                 onTap: () => Navigator.of(context).maybePop(),
@@ -85,9 +91,10 @@ class _PinSheetState extends State<PinSheet> {
             ],
           ),
           const SizedBox(height: 12),
-          Text(widget.subtitle,
-              style:
-                  AppText.ui(size: 13.5, color: AppColors.inkMid, height: 1.5)),
+          Text(
+            widget.subtitle,
+            style: AppText.ui(size: 13.5, color: AppColors.inkMid, height: 1.5),
+          ),
           const SizedBox(height: 22),
           // Dots.
           Row(
@@ -109,9 +116,11 @@ class _PinSheetState extends State<PinSheet> {
           ),
           if (widget.errorMessage != null) ...[
             const SizedBox(height: 12),
-            Text(widget.errorMessage!,
-                textAlign: TextAlign.center,
-                style: AppText.ui(size: 13, color: AppColors.danger)),
+            Text(
+              widget.errorMessage!,
+              textAlign: TextAlign.center,
+              style: AppText.ui(size: 13, color: AppColors.danger),
+            ),
           ],
           const SizedBox(height: 22),
           _Keypad(onPress: _press),
@@ -121,8 +130,7 @@ class _PinSheetState extends State<PinSheet> {
             size: BtnSize.lg,
             full: true,
             loading: widget.submitting,
-            onPressed:
-                _pin.length >= _min ? () => widget.onSubmit(_pin) : null,
+            onPressed: _pin.length >= _min ? () => widget.onSubmit(_pin) : null,
           ),
         ],
       ),
@@ -135,7 +143,7 @@ class _Keypad extends StatelessWidget {
   final ValueChanged<String> onPress;
 
   static const _keys = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫' //
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫', //
   ];
 
   @override
@@ -163,9 +171,13 @@ class _Keypad extends StatelessWidget {
                         border: Border.all(color: AppColors.border),
                       ),
                       child: Center(
-                        child: Text(k,
-                            style: AppText.mono(
-                                size: 22, weight: FontWeight.w500)),
+                        child: Text(
+                          k,
+                          style: AppText.mono(
+                            size: 22,
+                            weight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
                   ),

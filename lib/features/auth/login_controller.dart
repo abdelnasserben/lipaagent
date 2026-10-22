@@ -40,21 +40,20 @@ class LoginState {
     String? pinSetupToken,
     String? phoneNumber,
     bool pinResetDone = false,
-  }) =>
-      LoginState(
-        step: step ?? this.step,
-        submitting: submitting ?? this.submitting,
-        errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-        challengeId: challengeId ?? this.challengeId,
-        pinSetupToken: pinSetupToken ?? this.pinSetupToken,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        pinResetDone: pinResetDone,
-      );
+  }) => LoginState(
+    step: step ?? this.step,
+    submitting: submitting ?? this.submitting,
+    errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+    challengeId: challengeId ?? this.challengeId,
+    pinSetupToken: pinSetupToken ?? this.pinSetupToken,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    pinResetDone: pinResetDone,
+  );
 }
 
 class LoginController extends StateNotifier<LoginState> {
   LoginController(this._ref, {AuthStep initial = AuthStep.login})
-      : super(LoginState(step: initial));
+    : super(LoginState(step: initial));
 
   final Ref _ref;
   static const _countryCode = '269';
@@ -64,9 +63,14 @@ class LoginController extends StateNotifier<LoginState> {
 
   Future<void> login({required String phoneNumber, required String pin}) async {
     state = state.copyWith(
-        submitting: true, clearError: true, phoneNumber: phoneNumber);
+      submitting: true,
+      clearError: true,
+      phoneNumber: phoneNumber,
+    );
     try {
-      final res = await _ref.read(authRepositoryProvider).login(
+      final res = await _ref
+          .read(authRepositoryProvider)
+          .login(
             phoneCountryCode: _countryCode,
             phoneNumber: _digits(phoneNumber),
             pin: pin,
@@ -80,29 +84,36 @@ class LoginController extends StateNotifier<LoginState> {
           // authoritative cross-device signal for the Security screen.
           _ref.read(totpEnrolledProvider.notifier).state = true;
           state = state.copyWith(
-              submitting: false,
-              step: AuthStep.mfa,
-              challengeId: res.challengeId);
+            submitting: false,
+            step: AuthStep.mfa,
+            challengeId: res.challengeId,
+          );
         case LoginBranch.pinSetup:
           state = state.copyWith(
-              submitting: false,
-              step: AuthStep.pinSetup,
-              pinSetupToken: res.pinSetupToken);
+            submitting: false,
+            step: AuthStep.pinSetup,
+            pinSetupToken: res.pinSetupToken,
+          );
         case LoginBranch.unknown:
           state = state.copyWith(
-              submitting: false,
-              errorMessage: 'Réponse inattendue du serveur.');
+            submitting: false,
+            errorMessage: 'Réponse inattendue du serveur.',
+          );
       }
     } on ApiError catch (e) {
       if (e.code == 'AUTH_PIN_LOCKED') {
         state = state.copyWith(submitting: false, step: AuthStep.locked);
       } else {
         state = state.copyWith(
-            submitting: false, errorMessage: frenchMessageForError(e));
+          submitting: false,
+          errorMessage: frenchMessageForError(e),
+        );
       }
     } catch (_) {
       state = state.copyWith(
-          submitting: false, errorMessage: 'Une erreur est survenue.');
+        submitting: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -118,10 +129,14 @@ class LoginController extends StateNotifier<LoginState> {
       state = state.copyWith(submitting: false);
     } on ApiError catch (e) {
       state = state.copyWith(
-          submitting: false, errorMessage: frenchMessageForError(e));
+        submitting: false,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          submitting: false, errorMessage: 'Une erreur est survenue.');
+        submitting: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -138,10 +153,14 @@ class LoginController extends StateNotifier<LoginState> {
       state = state.copyWith(submitting: false, step: AuthStep.login);
     } on ApiError catch (e) {
       state = state.copyWith(
-          submitting: false, errorMessage: frenchMessageForError(e));
+        submitting: false,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          submitting: false, errorMessage: 'Une erreur est survenue.');
+        submitting: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -154,22 +173,34 @@ class LoginController extends StateNotifier<LoginState> {
     required String newPin,
   }) async {
     state = state.copyWith(
-        submitting: true, clearError: true, phoneNumber: phoneNumber);
+      submitting: true,
+      clearError: true,
+      phoneNumber: phoneNumber,
+    );
     try {
-      await _ref.read(authRepositoryProvider).resetPinViaTotp(
+      await _ref
+          .read(authRepositoryProvider)
+          .resetPinViaTotp(
             phoneCountryCode: _countryCode,
             phoneNumber: _digits(phoneNumber),
             totpCode: totpCode,
             newPin: newPin,
           );
       state = state.copyWith(
-          submitting: false, step: AuthStep.login, pinResetDone: true);
+        submitting: false,
+        step: AuthStep.login,
+        pinResetDone: true,
+      );
     } on ApiError catch (e) {
       state = state.copyWith(
-          submitting: false, errorMessage: frenchMessageForError(e));
+        submitting: false,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          submitting: false, errorMessage: 'Une erreur est survenue.');
+        submitting: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -178,5 +209,5 @@ class LoginController extends StateNotifier<LoginState> {
 
 final loginControllerProvider =
     StateNotifierProvider.autoDispose<LoginController, LoginState>((ref) {
-  return LoginController(ref);
-});
+      return LoginController(ref);
+    });

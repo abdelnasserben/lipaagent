@@ -35,8 +35,10 @@ class NotificationsScreen extends ConsumerWidget {
                   ref.invalidate(notificationsProvider);
                   ref.invalidate(unreadCountProvider);
                 },
-                child: Text('Tout lire',
-                    style: AppText.ui(size: 13, color: AppColors.brand)),
+                child: Text(
+                  'Tout lire',
+                  style: AppText.ui(size: 13, color: AppColors.brand),
+                ),
               ),
             ),
             Expanded(
@@ -48,25 +50,30 @@ class NotificationsScreen extends ConsumerWidget {
                 },
                 child: notifications.when(
                   loading: () => const Center(
-                      child:
-                          CircularProgressIndicator(color: AppColors.brand)),
-                  error: (_, _) => ListView(children: const [
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child:
-                          ErrorRetry(message: 'Notifications indisponibles.'),
-                    ),
-                  ]),
+                    child: CircularProgressIndicator(color: AppColors.brand),
+                  ),
+                  error: (_, _) => ListView(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: ErrorRetry(
+                          message: 'Notifications indisponibles.',
+                        ),
+                      ),
+                    ],
+                  ),
                   data: (items) {
                     if (items.isEmpty) {
-                      return ListView(children: const [
-                        EmptyState(
-                          icon: Icons.notifications_none_rounded,
-                          title: 'Aucune notification',
-                          message:
-                              'Vos alertes apparaîtront ici dès qu’elles seront disponibles.',
-                        ),
-                      ]);
+                      return ListView(
+                        children: const [
+                          EmptyState(
+                            icon: Icons.notifications_none_rounded,
+                            title: 'Aucune notification',
+                            message:
+                                'Vos alertes apparaîtront ici dès qu’elles seront disponibles.',
+                          ),
+                        ],
+                      );
                     }
                     return ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
@@ -123,21 +130,32 @@ class _NotifRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(notif.title,
+                  Text(
+                    notif.title,
+                    style: AppText.ui(
+                      size: 14,
+                      weight: notif.isUnread
+                          ? FontWeight.w700
+                          : FontWeight.w600,
+                    ),
+                  ),
+                  if (notif.body.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      notif.body,
                       style: AppText.ui(
-                          size: 14,
-                          weight: notif.isUnread
-                              ? FontWeight.w700
-                              : FontWeight.w600)),
-                  const SizedBox(height: 3),
-                  Text(notif.body,
-                      style: AppText.ui(
-                          size: 13, color: AppColors.inkMid, height: 1.45)),
+                        size: 13,
+                        color: AppColors.inkMid,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
                   if (notif.createdAt != null) ...[
                     const SizedBox(height: 6),
-                    Text(fmtRelativeFr(notif.createdAt!),
-                        style:
-                            AppText.ui(size: 11.5, color: AppColors.inkLow)),
+                    Text(
+                      fmtRelativeFr(notif.createdAt!),
+                      style: AppText.ui(size: 11.5, color: AppColors.inkLow),
+                    ),
                   ],
                 ],
               ),

@@ -24,11 +24,15 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
 
     ref.listen(totpControllerProvider, (prev, next) {
       if (next.revoked) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content:
-              Text('TOTP révoqué', style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.nearBlack,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'TOTP révoqué',
+              style: AppText.ui(color: Colors.white),
+            ),
+            backgroundColor: AppColors.nearBlack,
+          ),
+        );
         Navigator.of(context).pop();
       }
     });
@@ -53,14 +57,18 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
                         'Désactiver le TOTP réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.',
                   ),
                   const SizedBox(height: 18),
-                  Text('Saisissez un code TOTP actuel pour confirmer',
-                      style: AppText.ui(size: 13, weight: FontWeight.w600)),
+                  Text(
+                    'Saisissez un code TOTP actuel pour confirmer',
+                    style: AppText.ui(size: 13, weight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 12),
                   CodeField(onChanged: (v) => setState(() => _code = v)),
                   if (state.error != null) ...[
                     const SizedBox(height: 14),
-                    Text(state.error!,
-                        style: AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      state.error!,
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                   const SizedBox(height: 22),
                   LipaButton(
@@ -71,8 +79,8 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
                     loading: state.loading,
                     onPressed: _code.length == 6
                         ? () => ref
-                            .read(totpControllerProvider.notifier)
-                            .revoke(_code)
+                              .read(totpControllerProvider.notifier)
+                              .revoke(_code)
                         : null,
                   ),
                 ],

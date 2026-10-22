@@ -18,8 +18,10 @@ class CardsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final stock = ref.watch(cardStockProvider);
     final profile = ref.watch(profileProvider);
-    final canSell =
-        profile.maybeWhen(data: (p) => p.canSellCards, orElse: () => false);
+    final canSell = profile.maybeWhen(
+      data: (p) => p.canSellCards,
+      orElse: () => false,
+    );
 
     return Column(
       children: [
@@ -27,9 +29,9 @@ class CardsScreen extends ConsumerWidget {
           title: 'Cartes',
           subtitle: 'Stock attribué',
           action: CircleButton(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const CardLookupScreen()),
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const CardLookupScreen())),
             child: const Icon(Icons.search_rounded),
           ),
         ),
@@ -41,13 +43,16 @@ class CardsScreen extends ConsumerWidget {
             },
             child: stock.when(
               loading: () => const Center(
-                  child: CircularProgressIndicator(color: AppColors.brand)),
-              error: (_, _) => ListView(children: const [
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: ErrorRetry(message: 'Stock indisponible.'),
-                ),
-              ]),
+                child: CircularProgressIndicator(color: AppColors.brand),
+              ),
+              error: (_, _) => ListView(
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: ErrorRetry(message: 'Stock indisponible.'),
+                  ),
+                ],
+              ),
               data: (items) => ListView(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                 children: [
@@ -59,7 +64,8 @@ class CardsScreen extends ConsumerWidget {
                       full: true,
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (_) => const CardSaleScreen()),
+                          builder: (_) => const CardSaleScreen(),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 18),
@@ -67,14 +73,18 @@ class CardsScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Cartes disponibles',
-                          style:
-                              AppText.ui(size: 14.5, weight: FontWeight.w700)),
-                      Text('${items.length}',
-                          style: AppText.mono(
-                              size: 14,
-                              weight: FontWeight.w600,
-                              color: AppColors.inkMid)),
+                      Text(
+                        'Cartes disponibles',
+                        style: AppText.ui(size: 14.5, weight: FontWeight.w700),
+                      ),
+                      Text(
+                        '${items.length}',
+                        style: AppText.mono(
+                          size: 14,
+                          weight: FontWeight.w600,
+                          color: AppColors.inkMid,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -123,8 +133,11 @@ class _StockRow extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: const Icon(Icons.credit_card_rounded,
-                      color: AppColors.ink, size: 22),
+                  child: const Icon(
+                    Icons.credit_card_rounded,
+                    color: AppColors.ink,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -156,8 +169,10 @@ class _StockRow extends StatelessWidget {
             ),
             if (item.assignedAt != null) ...[
               const SizedBox(height: 2),
-              Text('Attribuée le ${fmtDateFr(item.assignedAt!)}',
-                  style: AppText.ui(size: 11.5, color: AppColors.inkLow)),
+              Text(
+                'Attribuée le ${fmtDateFr(item.assignedAt!)}',
+                style: AppText.ui(size: 11.5, color: AppColors.inkLow),
+              ),
             ],
           ],
         ),
@@ -188,7 +203,10 @@ class _BatchChip extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: AppText.ui(
-            size: 11, weight: FontWeight.w600, color: AppColors.inkMid),
+          size: 11,
+          weight: FontWeight.w600,
+          color: AppColors.inkMid,
+        ),
       ),
     );
   }

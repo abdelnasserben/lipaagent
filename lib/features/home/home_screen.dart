@@ -50,16 +50,21 @@ class HomeScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Agent Lipa',
-                          style: AppText.ui(size: 13, color: AppColors.inkMid)),
+                      Text(
+                        'Agent Lipa',
+                        style: AppText.ui(size: 13, color: AppColors.inkMid),
+                      ),
                       const SizedBox(height: 2),
                       Text(
                         profile.maybeWhen(
-                            data: (p) => p.fullName, orElse: () => '…'),
+                          data: (p) => p.fullName,
+                          orElse: () => '…',
+                        ),
                         style: AppText.ui(
-                            size: 19,
-                            weight: FontWeight.w700,
-                            letterSpacing: -0.28),
+                          size: 19,
+                          weight: FontWeight.w700,
+                          letterSpacing: -0.28,
+                        ),
                       ),
                     ],
                   ),
@@ -67,7 +72,8 @@ class HomeScreen extends ConsumerWidget {
                 CircleButton(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (_) => const NotificationsScreen()),
+                      builder: (_) => const NotificationsScreen(),
+                    ),
                   ),
                   badge: unread.maybeWhen(
                     data: (n) => n > 0 ? CountBadge(count: n) : null,
@@ -94,8 +100,10 @@ class HomeScreen extends ConsumerWidget {
           // Daily summary.
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 8),
-            child: Text("Aujourd'hui",
-                style: AppText.ui(size: 15, weight: FontWeight.w700)),
+            child: Text(
+              "Aujourd'hui",
+              style: AppText.ui(size: 15, weight: FontWeight.w700),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -105,8 +113,10 @@ class HomeScreen extends ConsumerWidget {
           // Quick operations.
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 10),
-            child: Text('Opérations rapides',
-                style: AppText.ui(size: 15, weight: FontWeight.w700)),
+            child: Text(
+              'Opérations rapides',
+              style: AppText.ui(size: 15, weight: FontWeight.w700),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,21 +129,25 @@ class HomeScreen extends ConsumerWidget {
           // Recent activity.
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 8),
-            child: Text('Activité récente',
-                style: AppText.ui(size: 15, weight: FontWeight.w700)),
+            child: Text(
+              'Activité récente',
+              style: AppText.ui(size: 15, weight: FontWeight.w700),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: activity.when(
               loading: () => const _ActivitySkeleton(),
               error: (e, _) => const ErrorRetry(
-                  message: 'Impossible de charger l’activité.'),
+                message: 'Impossible de charger l’activité.',
+              ),
               data: (txs) => txs.isEmpty
                   ? LipaCard(
                       padding: const EdgeInsets.all(20),
-                      child: Text('Aucune opération pour le moment.',
-                          style:
-                              AppText.ui(size: 13, color: AppColors.inkMid)),
+                      child: Text(
+                        'Aucune opération pour le moment.',
+                        style: AppText.ui(size: 13, color: AppColors.inkMid),
+                      ),
                     )
                   : LipaCard(
                       child: Column(
@@ -142,8 +156,10 @@ class HomeScreen extends ConsumerWidget {
                             TxRow(
                               tx: txs[i],
                               divider: i > 0,
-                              onTap: () => _push(context,
-                                  TransactionDetailScreen(txId: txs[i].id)),
+                              onTap: () => _push(
+                                context,
+                                TransactionDetailScreen(txId: txs[i].id),
+                              ),
                             ),
                         ],
                       ),
@@ -183,10 +199,13 @@ class _FloatCardState extends State<_FloatCard> {
   @override
   Widget build(BuildContext context) {
     final threshold = widget.profile.maybeWhen(
-        data: (p) => p.floatAlertThreshold, orElse: () => 0);
+      data: (p) => p.floatAlertThreshold,
+      orElse: () => 0,
+    );
     final below = widget.balance.maybeWhen(
-        data: (b) => b.availableBalance < threshold && threshold > 0,
-        orElse: () => false);
+      data: (b) => b.availableBalance < threshold && threshold > 0,
+      orElse: () => false,
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppRadius.hero),
@@ -201,30 +220,39 @@ class _FloatCardState extends State<_FloatCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('FLOAT DISPONIBLE',
-                        style: AppText.ui(
-                            size: 12.5,
-                            weight: FontWeight.w600,
-                            color: Colors.white54,
-                            letterSpacing: 1)),
+                    Text(
+                      'FLOAT DISPONIBLE',
+                      style: AppText.ui(
+                        size: 12.5,
+                        weight: FontWeight.w600,
+                        color: Colors.white54,
+                        letterSpacing: 1,
+                      ),
+                    ),
                     InkWell(
                       onTap: () => setState(() => _hidden = !_hidden),
                       child: Icon(
-                          _hidden ? Icons.visibility_off : Icons.visibility,
-                          size: 20,
-                          color: Colors.white60),
+                        _hidden ? Icons.visibility_off : Icons.visibility,
+                        size: 20,
+                        color: Colors.white60,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 widget.balance.when(
-                  loading: () => Text('••• •••',
-                      style: AppText.mono(
-                          size: 38,
-                          weight: FontWeight.w600,
-                          color: Colors.white)),
-                  error: (_, _) => Text('—',
-                      style: AppText.mono(size: 38, color: Colors.white)),
+                  loading: () => Text(
+                    '••• •••',
+                    style: AppText.mono(
+                      size: 38,
+                      weight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  error: (_, _) => Text(
+                    '—',
+                    style: AppText.mono(size: 38, color: Colors.white),
+                  ),
                   data: (b) => Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
@@ -232,14 +260,16 @@ class _FloatCardState extends State<_FloatCard> {
                       Text(
                         _hidden ? '••• •••' : fmtKmfNoUnit(b.availableBalance),
                         style: AppText.mono(
-                            size: 38,
-                            weight: FontWeight.w600,
-                            color: Colors.white),
+                          size: 38,
+                          weight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      Text('KMF',
-                          style:
-                              AppText.mono(size: 14, color: Colors.white54)),
+                      Text(
+                        'KMF',
+                        style: AppText.mono(size: 14, color: Colors.white54),
+                      ),
                     ],
                   ),
                 ),
@@ -250,14 +280,16 @@ class _FloatCardState extends State<_FloatCard> {
                       style: AppText.ui(size: 12.5, color: Colors.white54),
                       children: [
                         TextSpan(
-                            text:
-                                '${fmtKmfNoUnit(b.frozenBalance)} KMF gelés · Portefeuille '),
+                          text:
+                              '${fmtKmfNoUnit(b.heldBalance)} KMF réservés · Compte ',
+                        ),
                         TextSpan(
-                          text: '● ${b.walletStatus.frLabel}',
+                          text: '● ${b.accountStatus.frLabel}',
                           style: TextStyle(
-                              color: b.walletStatus.isActive
-                                  ? const Color(0xFF8FD1A8)
-                                  : const Color(0xFFE0A24A)),
+                            color: b.accountStatus.isActive
+                                ? const Color(0xFF8FD1A8)
+                                : const Color(0xFFE0A24A),
+                          ),
                         ),
                       ],
                     ),
@@ -268,25 +300,30 @@ class _FloatCardState extends State<_FloatCard> {
                   const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 9),
+                      horizontal: 12,
+                      vertical: 9,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF3A2A12),
                       borderRadius: BorderRadius.circular(AppRadius.md),
-                      border:
-                          Border.all(color: const Color(0xFF6B4E1E)),
+                      border: Border.all(color: const Color(0xFF6B4E1E)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning_amber_rounded,
-                            size: 18, color: Color(0xFFE0A24A)),
+                        const Icon(
+                          Icons.warning_amber_rounded,
+                          size: 18,
+                          color: Color(0xFFE0A24A),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'Float sous le seuil d’alerte (${fmtKmf(threshold)}). Pensez à réapprovisionner.',
                             style: AppText.ui(
-                                size: 12,
-                                color: const Color(0xFFE6C998),
-                                height: 1.4),
+                              size: 12,
+                              color: const Color(0xFFE6C998),
+                              height: 1.4,
+                            ),
                           ),
                         ),
                       ],
@@ -299,19 +336,22 @@ class _FloatCardState extends State<_FloatCard> {
                 Row(
                   children: [
                     _HeroAction(
-                        icon: Icons.south_west_rounded,
-                        label: 'Dépôt',
-                        onTap: widget.onCashIn),
+                      icon: Icons.south_west_rounded,
+                      label: 'Dépôt',
+                      onTap: widget.onCashIn,
+                    ),
                     const SizedBox(width: 8),
                     _HeroAction(
-                        icon: Icons.north_east_rounded,
-                        label: 'Retrait',
-                        onTap: widget.onCashOut),
+                      icon: Icons.north_east_rounded,
+                      label: 'Retrait',
+                      onTap: widget.onCashOut,
+                    ),
                     const SizedBox(width: 8),
                     _HeroAction(
-                        icon: Icons.description_outlined,
-                        label: 'Relevé',
-                        onTap: widget.onStatement),
+                      icon: Icons.description_outlined,
+                      label: 'Relevé',
+                      onTap: widget.onStatement,
+                    ),
                   ],
                 ),
               ],
@@ -325,8 +365,11 @@ class _FloatCardState extends State<_FloatCard> {
 }
 
 class _HeroAction extends StatelessWidget {
-  const _HeroAction(
-      {required this.icon, required this.label, required this.onTap});
+  const _HeroAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -348,11 +391,14 @@ class _HeroAction extends StatelessWidget {
             children: [
               Icon(icon, size: 22, color: Colors.white),
               const SizedBox(height: 6),
-              Text(label,
-                  style: AppText.ui(
-                      size: 12,
-                      weight: FontWeight.w600,
-                      color: Colors.white)),
+              Text(
+                label,
+                style: AppText.ui(
+                  size: 12,
+                  weight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
         ),
@@ -369,8 +415,7 @@ class _SummaryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return summary.when(
       loading: () => const _ActivitySkeleton(),
-      error: (_, _) =>
-          const ErrorRetry(message: 'Résumé indisponible.'),
+      error: (_, _) => const ErrorRetry(message: 'Résumé indisponible.'),
       data: (s) => Row(
         children: [
           Expanded(
@@ -426,8 +471,11 @@ class _Stat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon,
-              size: 18, color: accent ? AppColors.brand : AppColors.inkLow),
+          Icon(
+            icon,
+            size: 18,
+            color: accent ? AppColors.brand : AppColors.inkLow,
+          ),
           const SizedBox(height: 10),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -436,16 +484,20 @@ class _Stat extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(value,
-                    style: AppText.mono(
-                        size: 17,
-                        weight: FontWeight.w600,
-                        color: accent ? AppColors.brandDeep : AppColors.inkHi)),
+                Text(
+                  value,
+                  style: AppText.mono(
+                    size: 17,
+                    weight: FontWeight.w600,
+                    color: accent ? AppColors.brandDeep : AppColors.inkHi,
+                  ),
+                ),
                 if (unit != null) ...[
                   const SizedBox(width: 3),
-                  Text(unit!,
-                      style:
-                          AppText.mono(size: 10, color: AppColors.inkLow)),
+                  Text(
+                    unit!,
+                    style: AppText.mono(size: 10, color: AppColors.inkLow),
+                  ),
                 ],
               ],
             ),
@@ -468,21 +520,24 @@ class _QuickOps extends StatelessWidget {
     final tiles = <Widget>[
       if (profile.canDoCashIn)
         _OpTile(
-            icon: Icons.south_west_rounded,
-            label: 'Dépôt client',
-            sub: 'Cash-in',
-            onTap: () => _push(context, const CashInScreen())),
+          icon: Icons.south_west_rounded,
+          label: 'Dépôt client',
+          sub: 'Cash-in',
+          onTap: () => _push(context, const CashInScreen()),
+        ),
       if (profile.canDoCashOut)
         _OpTile(
-            icon: Icons.north_east_rounded,
-            label: 'Retrait marchand',
-            sub: 'Cash-out',
-            onTap: () => _push(context, const CashOutScreen())),
+          icon: Icons.north_east_rounded,
+          label: 'Retrait marchand',
+          sub: 'Cash-out',
+          onTap: () => _push(context, const CashOutScreen()),
+        ),
       _OpTile(
-          icon: Icons.person_add_alt_1_rounded,
-          label: 'Enrôler un client',
-          sub: 'KYC',
-          onTap: () => _push(context, const EnrollScreen())),
+        icon: Icons.person_add_alt_1_rounded,
+        label: 'Enrôler un client',
+        sub: 'KYC',
+        onTap: () => _push(context, const EnrollScreen()),
+      ),
     ];
     return GridView.count(
       crossAxisCount: 2,
@@ -543,14 +598,16 @@ class _OpTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            AppText.ui(size: 13.5, weight: FontWeight.w600)),
-                    Text(sub,
-                        style:
-                            AppText.ui(size: 11.5, color: AppColors.inkLow)),
+                    Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.ui(size: 13.5, weight: FontWeight.w600),
+                    ),
+                    Text(
+                      sub,
+                      style: AppText.ui(size: 11.5, color: AppColors.inkLow),
+                    ),
                   ],
                 ),
               ),
@@ -573,7 +630,9 @@ class _ActivitySkeleton extends StatelessWidget {
           height: 22,
           width: 22,
           child: CircularProgressIndicator(
-              strokeWidth: 2, color: AppColors.brand),
+            strokeWidth: 2,
+            color: AppColors.brand,
+          ),
         ),
       ),
     );

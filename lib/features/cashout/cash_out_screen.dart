@@ -41,8 +41,9 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
 
     if (state.step == CashOutStep.done && state.result != null) {
       return _DoneScreen(
-          result: state.result!,
-          merchantName: state.merchant?.businessName ?? '');
+        result: state.result!,
+        merchantName: state.merchant?.businessName ?? '',
+      );
     }
     if (state.step == CashOutStep.approval && state.result != null) {
       return _ApprovalScreen(result: state.result!);
@@ -61,7 +62,9 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
             Expanded(
               child: state.step == CashOutStep.lookup
                   ? const _LookupStep()
-                  : _AmountStep(onAcknowledge: notifier.acknowledgeConfirmation),
+                  : _AmountStep(
+                      onAcknowledge: notifier.acknowledgeConfirmation,
+                    ),
             ),
           ],
         ),
@@ -79,17 +82,19 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
       enableDrag: false,
       backgroundColor: Colors.transparent,
       builder: (sheetCtx) {
-        return Consumer(builder: (ctx, ref, _) {
-          final s = ref.watch(cashOutControllerProvider);
-          return PinSheet(
-            title: 'PIN du marchand',
-            subtitle:
-                'Demandez au marchand de saisir son PIN pour autoriser le retrait de ${fmtKmf(s.amount)}.',
-            submitting: s.submitting,
-            errorMessage: s.pinError,
-            onSubmit: (pin) => notifier.submitPin(pin),
-          );
-        });
+        return Consumer(
+          builder: (ctx, ref, _) {
+            final s = ref.watch(cashOutControllerProvider);
+            return PinSheet(
+              title: 'PIN du marchand',
+              subtitle:
+                  'Demandez au marchand de saisir son PIN pour autoriser le retrait de ${fmtKmf(s.amount)}.',
+              submitting: s.submitting,
+              errorMessage: s.pinError,
+              onSubmit: (pin) => notifier.submitPin(pin),
+            );
+          },
+        );
       },
     );
     _pinSheetOpen = false;
@@ -136,8 +141,10 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
         PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
         if (state.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(state.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            state.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 18),
         LipaButton(
@@ -147,8 +154,8 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
           loading: state.looking,
           onPressed: _valid
               ? () => ref
-                  .read(cashOutControllerProvider.notifier)
-                  .lookup(_phone.text)
+                    .read(cashOutControllerProvider.notifier)
+                    .lookup(_phone.text)
               : null,
         ),
       ],
@@ -179,8 +186,8 @@ class _AmountStep extends ConsumerWidget {
             statusLabel: merchant.canCashOut
                 ? merchant.status.frLabel
                 : 'Retrait bloqué',
-            statusActive: merchant.canCashOut &&
-                merchant.status == MerchantStatus.active,
+            statusActive:
+                merchant.canCashOut && merchant.status == MerchantStatus.active,
           ),
         if (merchant != null && !merchant.canCashOut) ...[
           const SizedBox(height: 12),
@@ -196,14 +203,18 @@ class _AmountStep extends ConsumerWidget {
           child: TextButton.icon(
             onPressed: submitting ? null : notifier.backToLookup,
             icon: const Icon(Icons.swap_horiz_rounded, size: 16),
-            label: Text('Changer de marchand',
-                style: AppText.ui(size: 13, color: AppColors.inkMid)),
+            label: Text(
+              'Changer de marchand',
+              style: AppText.ui(size: 13, color: AppColors.inkMid),
+            ),
           ),
         ),
         const SizedBox(height: 18),
-        Text('Montant à retirer',
-            textAlign: TextAlign.center,
-            style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+        Text(
+          'Montant à retirer',
+          textAlign: TextAlign.center,
+          style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+        ),
         const SizedBox(height: 18),
         AmountInput(onChanged: notifier.setAmount),
         if (needsConfirm && state.result != null) ...[
@@ -217,17 +228,19 @@ class _AmountStep extends ConsumerWidget {
         ],
         if (state.errorMessage != null) ...[
           const SizedBox(height: 16),
-          Text(state.errorMessage!,
-              textAlign: TextAlign.center,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            state.errorMessage!,
+            textAlign: TextAlign.center,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 28),
         LipaButton(
           label: needsConfirm
               ? 'Confirmer le retrait'
               : (state.amount > 0
-                  ? 'Retirer ${fmtKmf(state.amount)}'
-                  : 'Retirer'),
+                    ? 'Retirer ${fmtKmf(state.amount)}'
+                    : 'Retirer'),
           size: BtnSize.lg,
           full: true,
           loading: submitting,
@@ -265,20 +278,23 @@ class _ApprovalScreen extends ConsumerWidget {
         child: Column(
           children: [
             DetailRow(
-                label: 'Montant',
-                value: fmtKmf(result.requestedAmount ?? 0),
-                mono: true),
+              label: 'Montant',
+              value: fmtKmf(result.requestedAmount ?? 0),
+              mono: true,
+            ),
             if (result.matchedThresholdAmount != null)
               DetailRow(
-                  label: 'Seuil',
-                  value: fmtKmf(result.matchedThresholdAmount!),
-                  mono: true),
+                label: 'Seuil',
+                value: fmtKmf(result.matchedThresholdAmount!),
+                mono: true,
+              ),
             if (result.approvalId != null)
               DetailRow(
-                  label: 'Réf. approbation',
-                  value: shortId(result.approvalId!),
-                  mono: true,
-                  last: true),
+                label: 'Réf. approbation',
+                value: shortId(result.approvalId!),
+                mono: true,
+                last: true,
+              ),
           ],
         ),
       ),
@@ -306,26 +322,30 @@ class _DoneScreen extends ConsumerWidget {
         child: Column(
           children: [
             DetailRow(
-                label: 'Montant',
-                value: fmtKmf(result.requestedAmount ?? 0),
-                mono: true),
+              label: 'Montant',
+              value: fmtKmf(result.requestedAmount ?? 0),
+              mono: true,
+            ),
             if ((result.feeAmount ?? 0) > 0)
               DetailRow(
-                  label: 'Frais',
-                  value: fmtKmf(result.feeAmount!),
-                  mono: true),
+                label: 'Frais',
+                value: fmtKmf(result.feeAmount!),
+                mono: true,
+              ),
             if ((result.commissionAmount ?? 0) > 0)
               DetailRow(
-                  label: 'Commission',
-                  value: fmtKmf(result.commissionAmount!),
-                  mono: true,
-                  valueColor: AppColors.brandDeep),
+                label: 'Commission',
+                value: fmtKmf(result.commissionAmount!),
+                mono: true,
+                valueColor: AppColors.brandDeep,
+              ),
             if (result.transactionId != null)
               DetailRow(
-                  label: 'Réf.',
-                  value: shortId(result.transactionId!),
-                  mono: true,
-                  last: true),
+                label: 'Réf.',
+                value: shortId(result.transactionId!),
+                mono: true,
+                last: true,
+              ),
           ],
         ),
       ),

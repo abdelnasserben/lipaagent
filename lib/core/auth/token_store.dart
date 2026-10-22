@@ -23,22 +23,22 @@ class AuthTokens {
       DateTime.now().isAfter(accessTokenExpiresAt.subtract(lead));
 
   factory AuthTokens.fromJson(Map<String, dynamic> json) => AuthTokens(
-        accessToken: json['accessToken'] as String,
-        accessTokenExpiresAt: DateTime.parse(
-          json['accessTokenExpiresAt'] as String,
-        ),
-        refreshToken: json['refreshToken'] as String,
-        refreshTokenExpiresAt: DateTime.parse(
-          json['refreshTokenExpiresAt'] as String,
-        ),
-      );
+    accessToken: json['accessToken'] as String,
+    accessTokenExpiresAt: DateTime.parse(
+      json['accessTokenExpiresAt'] as String,
+    ),
+    refreshToken: json['refreshToken'] as String,
+    refreshTokenExpiresAt: DateTime.parse(
+      json['refreshTokenExpiresAt'] as String,
+    ),
+  );
 
   Map<String, dynamic> toJson() => {
-        'accessToken': accessToken,
-        'accessTokenExpiresAt': accessTokenExpiresAt.toIso8601String(),
-        'refreshToken': refreshToken,
-        'refreshTokenExpiresAt': refreshTokenExpiresAt.toIso8601String(),
-      };
+    'accessToken': accessToken,
+    'accessTokenExpiresAt': accessTokenExpiresAt.toIso8601String(),
+    'refreshToken': refreshToken,
+    'refreshTokenExpiresAt': refreshTokenExpiresAt.toIso8601String(),
+  };
 }
 
 /// Persists tokens in the platform secure enclave (Keychain / Keystore).

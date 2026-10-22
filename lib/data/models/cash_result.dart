@@ -61,7 +61,8 @@ class AgentCashOutResult {
   final int httpStatus;
   final CashOutOutcome outcome;
   final String? transactionId;
-  final String? status; // TransactionStatus when EXECUTED, ApprovalStatus when PENDING_APPROVAL
+  final String?
+  status; // TransactionStatus when EXECUTED, ApprovalStatus when PENDING_APPROVAL
   final String? approvalId;
   final int? requestedAmount;
   final int? matchedThresholdAmount;
@@ -79,19 +80,18 @@ class AgentCashOutResult {
   factory AgentCashOutResult.fromJson(
     Map<String, dynamic> json, {
     required int httpStatus,
-  }) =>
-      AgentCashOutResult(
-        httpStatus: httpStatus,
-        outcome: CashOutOutcome.parse(json['outcome'] as String?),
-        transactionId: json['transactionId'] as String?,
-        status: json['status'] as String?,
-        approvalId: json['approvalId'] as String?,
-        requestedAmount: _intOrNull(json['requestedAmount']),
-        matchedThresholdAmount: _intOrNull(json['matchedThresholdAmount']),
-        feeAmount: _intOrNull(json['feeAmount']),
-        commissionAmount: _intOrNull(json['commissionAmount']),
-        netAmountToDestination: _intOrNull(json['netAmountToDestination']),
-        completedAt: tryParseInstant(json['completedAt']),
-        replayed: json['replayed'] == true,
-      );
+  }) => AgentCashOutResult(
+    httpStatus: httpStatus,
+    outcome: CashOutOutcome.parse(json['outcome'] as String?),
+    transactionId: json['transactionId'] as String?,
+    status: json['status'] as String?,
+    approvalId: json['approvalId'] as String?,
+    requestedAmount: _intOrNull(json['requestedAmount']),
+    matchedThresholdAmount: _intOrNull(json['matchedThresholdAmount']),
+    feeAmount: _intOrNull(json['feeAmount']),
+    commissionAmount: _intOrNull(json['commissionAmount']),
+    netAmountToDestination: _intOrNull(json['netAmountToDestination']),
+    completedAt: tryParseInstant(json['completedAt']),
+    replayed: json['replayed'] == true,
+  );
 }

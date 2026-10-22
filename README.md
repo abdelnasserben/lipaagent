@@ -3,12 +3,15 @@
 Application Flutter du **portail agent Lipa** : dépôts/retraits d'espèces (cash-in /
 cash-out), enrôlement de clients + KYC, vente et remplacement de cartes NFC,
 commissions et relevés. L'UI reprend le design system du client Lipa (mêmes polices,
-mêmes tokens) et consomme l'API décrite dans `Agent_Frontend_Specification.md` (v2.0),
-qui fait **foi** : on n'appelle et n'affiche rien qui n'y figure pas.
+mêmes tokens) et consomme l'API du backend Lipa (`../../../javaprojects/LipaBackend`).
 
-> « KomoPay » est le nom interne du backend — jamais montré à l'opérateur. Toute la
-> copie visible est en français, sous la marque **Lipa**. La devise est le **KMF**
-> (entier, unité mineure).
+**Le backend fait foi** : le contrat OpenAPI du groupe `agent`
+(`http://localhost:8080/v3/api-docs/agent`) et les guides `docs/api/README.md` et
+`docs/api/agent.md` du backend. L'ancien `Agent_Frontend_Specification.md` (mai 2026)
+est périmé : ne plus s'y référer. Voir aussi `CLAUDE.md`.
+
+> Toute la copie visible est en français, sous la marque **Lipa**. La devise est le
+> **KMF** (entier, unité mineure).
 
 ## Stack
 
@@ -70,7 +73,7 @@ L'environnement est choisi au build via `--dart-define=ENV=...` (défaut : `loca
 
 | ENV     | baseUrl par défaut       | Réseau ? |
 |---------|--------------------------|----------|
-| `local` | `http://10.0.2.2:8080`   | Oui — backend sur la machine de dev (alias émulateur Android pour le loopback hôte) |
+| `local` | `http://localhost:8080`  | Oui — backend sur la machine de dev (téléphone USB : `adb reverse tcp:8080 tcp:8080` ; émulateur sans `adb reverse` : `API_BASE_URL=http://10.0.2.2:8080`) |
 | `prod`  | `https://api.lipa.km`    | Oui — API de production |
 
 On peut surcharger l'URL : `--dart-define=API_BASE_URL=https://...`.
@@ -83,30 +86,32 @@ flutter run --dart-define=ENV=local
 flutter build apk --release --dart-define=ENV=prod
 ```
 
-## Périmètre (conformité à la spec)
+## Périmètre
 
-L'app couvre les **28 endpoints agent + 4 endpoints notifications** de la spec :
+L'app couvre tous les endpoints du groupe `agent` (auth, portail agent, notifications) :
 
 - **Auth agent** : login phone+PIN, MFA TOTP, cycle de vie du PIN
   (configuration via token `PIN_SETUP`, changement, reset self-service gated TOTP) ;
   access token TTL 8h → refresh proactif (~5 min avant expiration).
 - **Profil / solde / plafonds / résumé du jour** — `/limits` en `404` traité comme
   « non configurés » (pas une erreur).
-- **Cash-in** : dépôt sur le portefeuille client (lookup par téléphone).
-- **Cash-out** avec la **boucle de contrôle** (spec §8) : resoumission avec le **même
-  `Idempotency-Key`** plus `merchantPin` / `confirmationAcknowledged` ; branchement sur
-  le statut HTTP, pas sur le corps.
+- **Cash-in** : dépôt sur le compte du client (lookup par téléphone).
+- **Cash-out marchand** avec les seuils de contrôle : resoumission avec le **même
+  `Idempotency-Key`** plus `merchantPin` / `confirmationAcknowledged` ; `PENDING_APPROVAL`
+  = ne pas remettre l'argent, le back-office doit approuver.
 - **Enrôlement client + KYC** : formulaire + upload multipart des pièces (caméra/galerie).
 - **Cartes** : recherche (NFC ou UID manuel), vente, remplacement, signalement
   perte/vol ; suivi du stock de cartes.
 - **Commissions** : liste paginée.
-- **Activité** : transactions paginées + détail, relevé ; direction de transaction
-  dérivée du `walletId` de l'agent.
-- **Notifications** : inbox pull-only partagée, badge `/unread`, marquage lu.
+- **Activité** : transactions paginées + détail, relevé ; sens de la transaction
+  donné par `balanceChange` (négatif = l'argent est sorti du float).
+- **Notifications** : inbox partagée (`code` + `parameters`, le texte est dans l'app),
+  badge `/unread`, marquage lu. Les agents n'en reçoivent pas encore.
 
-Conventions transverses : `Idempotency-Key` (UUID) généré par intention financière et
-conservé pendant la boucle de contrôle ; enveloppes `ApiResponse` / `PagedResponse`
-parsées défensivement.
+Conventions transverses : un `Idempotency-Key` (UUID) par opération, gardé pour chaque
+nouvel essai de la même opération, renouvelé dès que la personne, le montant ou la
+carte change (`OperationKey`) ; un `X-Correlation-Id` par requête ; enveloppes
+`ApiResponse` / `PagedResponse` parsées défensivement.
 
 ## Plateformes
 
@@ -121,5 +126,6 @@ dart run flutter_launcher_icons   # régénère les icônes Android/iOS
 
 ```bash
 flutter analyze
+flutter test
 flutter build apk --debug --dart-define=ENV=local
 ```

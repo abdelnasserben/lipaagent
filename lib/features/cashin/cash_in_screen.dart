@@ -15,7 +15,7 @@ import '../../data/models/enums.dart';
 import 'cash_in_controller.dart';
 
 /// Cash-in (deposit) flow: confirm the customer, then the amount. The agent
-/// wallet is debited; the customer wallet is credited (spec §5.4 / §11.1).
+/// float is debited; the customer account is credited (spec §5.4 / §11.1).
 class CashInScreen extends ConsumerWidget {
   const CashInScreen({super.key});
 
@@ -24,7 +24,10 @@ class CashInScreen extends ConsumerWidget {
     final state = ref.watch(cashInControllerProvider);
 
     if (state.step == CashInStep.done && state.result != null) {
-      return _DoneScreen(result: state.result!, customerName: state.customer?.fullName ?? '');
+      return _DoneScreen(
+        result: state.result!,
+        customerName: state.customer?.fullName ?? '',
+      );
     }
 
     return Scaffold(
@@ -39,9 +42,7 @@ class CashInScreen extends ConsumerWidget {
             ),
             Expanded(
               child: switch (state.step) {
-                CashInStep.lookup ||
-                CashInStep.error =>
-                  const _LookupStep(),
+                CashInStep.lookup || CashInStep.error => const _LookupStep(),
                 _ => const _AmountStep(),
               },
             ),
@@ -86,8 +87,10 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
         PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
         if (state.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(state.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            state.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 18),
         LipaButton(
@@ -97,8 +100,8 @@ class _LookupStepState extends ConsumerState<_LookupStep> {
           loading: state.looking,
           onPressed: _valid
               ? () => ref
-                  .read(cashInControllerProvider.notifier)
-                  .lookup(_phone.text)
+                    .read(cashInControllerProvider.notifier)
+                    .lookup(_phone.text)
               : null,
         ),
       ],
@@ -136,21 +139,27 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
           child: TextButton.icon(
             onPressed: submitting ? null : notifier.backToLookup,
             icon: const Icon(Icons.swap_horiz_rounded, size: 16),
-            label: Text('Changer de client',
-                style: AppText.ui(size: 13, color: AppColors.inkMid)),
+            label: Text(
+              'Changer de client',
+              style: AppText.ui(size: 13, color: AppColors.inkMid),
+            ),
           ),
         ),
         const SizedBox(height: 18),
-        Text('Montant à déposer',
-            textAlign: TextAlign.center,
-            style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+        Text(
+          'Montant à déposer',
+          textAlign: TextAlign.center,
+          style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+        ),
         const SizedBox(height: 18),
         AmountInput(onChanged: notifier.setAmount),
         if (state.errorMessage != null) ...[
           const SizedBox(height: 16),
-          Text(state.errorMessage!,
-              textAlign: TextAlign.center,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            state.errorMessage!,
+            textAlign: TextAlign.center,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 28),
         LipaButton(
@@ -193,27 +202,34 @@ class _DoneScreen extends ConsumerWidget {
         child: Column(
           children: [
             DetailRow(
-                label: 'Montant',
-                value: fmtKmf(result.requestedAmount),
-                mono: true),
+              label: 'Montant',
+              value: fmtKmf(result.requestedAmount),
+              mono: true,
+            ),
             if (result.feeAmount > 0)
               DetailRow(
-                  label: 'Frais', value: fmtKmf(result.feeAmount), mono: true),
+                label: 'Frais',
+                value: fmtKmf(result.feeAmount),
+                mono: true,
+              ),
             if (result.commissionAmount > 0)
               DetailRow(
-                  label: 'Commission',
-                  value: fmtKmf(result.commissionAmount),
-                  mono: true,
-                  valueColor: AppColors.brandDeep),
-            DetailRow(
-                label: 'Crédité au client',
-                value: fmtKmf(result.netAmountToDestination),
-                mono: true),
-            DetailRow(
-                label: 'Réf.',
-                value: shortId(result.transactionId),
+                label: 'Commission',
+                value: fmtKmf(result.commissionAmount),
                 mono: true,
-                last: true),
+                valueColor: AppColors.brandDeep,
+              ),
+            DetailRow(
+              label: 'Crédité au client',
+              value: fmtKmf(result.netAmountToDestination),
+              mono: true,
+            ),
+            DetailRow(
+              label: 'Réf.',
+              value: shortId(result.transactionId),
+              mono: true,
+              last: true,
+            ),
           ],
         ),
       ),

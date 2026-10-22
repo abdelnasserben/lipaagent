@@ -35,7 +35,8 @@ class TransactionDetailScreen extends ConsumerWidget {
             Expanded(
               child: tx.when(
                 loading: () => const Center(
-                    child: CircularProgressIndicator(color: AppColors.brand)),
+                  child: CircularProgressIndicator(color: AppColors.brand),
+                ),
                 error: (_, _) => const Padding(
                   padding: EdgeInsets.all(16),
                   child: ErrorRetry(message: 'Transaction introuvable.'),
@@ -76,13 +77,16 @@ class _Body extends StatelessWidget {
               Text(
                 fmtKmf(tx.signedAmount, signed: incoming),
                 style: AppText.mono(
-                    size: 32,
-                    weight: FontWeight.w600,
-                    color: incoming ? AppColors.brandDeep : AppColors.inkHi),
+                  size: 32,
+                  weight: FontWeight.w600,
+                  color: incoming ? AppColors.brandDeep : AppColors.inkHi,
+                ),
               ),
               const SizedBox(height: 6),
-              Text(tx.type.frLabel,
-                  style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+              Text(
+                tx.type.frLabel,
+                style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+              ),
             ],
           ),
         ),
@@ -94,41 +98,56 @@ class _Body extends StatelessWidget {
               DetailRow(label: 'Type', value: tx.type.frLabel),
               if (tx.completedAt != null)
                 DetailRow(
-                    label: 'Effectué le',
-                    value: fmtDateTimeFr(tx.completedAt!)),
+                  label: 'Effectué le',
+                  value: fmtDateTimeFr(tx.completedAt!),
+                ),
               if (tx.declinedAt != null)
                 DetailRow(
-                    label: 'Refusé le', value: fmtDateTimeFr(tx.declinedAt!)),
+                  label: 'Refusé le',
+                  value: fmtDateTimeFr(tx.declinedAt!),
+                ),
               if (tx.createdAt != null)
                 DetailRow(
-                    label: 'Créé le', value: fmtDateTimeFr(tx.createdAt!)),
+                  label: 'Créé le',
+                  value: fmtDateTimeFr(tx.createdAt!),
+                ),
               DetailRow(
-                  label: 'Montant',
-                  value: fmtKmf(tx.requestedAmount),
-                  mono: true),
+                label: 'Montant',
+                value: fmtKmf(tx.requestedAmount),
+                mono: true,
+              ),
               if (tx.feeAmount > 0)
                 DetailRow(
-                    label: 'Frais', value: fmtKmf(tx.feeAmount), mono: true),
+                  label: 'Frais',
+                  value: fmtKmf(tx.feeAmount),
+                  mono: true,
+                ),
               if (tx.commissionAmount > 0)
                 DetailRow(
-                    label: 'Commission',
-                    value: fmtKmf(tx.commissionAmount),
-                    mono: true,
-                    valueColor: AppColors.brandDeep),
+                  label: 'Commission',
+                  value: fmtKmf(tx.commissionAmount),
+                  mono: true,
+                  valueColor: AppColors.brandDeep,
+                ),
               DetailRow(
-                  label: 'Net destinataire',
-                  value: fmtKmf(tx.netAmountToDestination),
-                  mono: true),
+                label: 'Net destinataire',
+                value: fmtKmf(tx.netAmountToDestination),
+                mono: true,
+              ),
               if (tx.declineReason != null)
                 DetailRow(
-                    label: 'Motif du refus',
-                    value: tx.declineReason!,
-                    valueColor: AppColors.danger),
+                  label: 'Motif du refus',
+                  value: tx.declineReason!,
+                  valueColor: AppColors.danger,
+                ),
               DetailRow(label: 'Initiateur', value: tx.initiatorType),
               _CopyRow(label: 'Réf. transaction', value: tx.id),
               if (tx.correlationId != null)
                 _CopyRow(
-                    label: 'Corrélation', value: tx.correlationId!, last: true),
+                  label: 'Corrélation',
+                  value: tx.correlationId!,
+                  last: true,
+                ),
             ],
           ),
         ),
@@ -180,16 +199,16 @@ class _Body extends StatelessWidget {
     await Share.share(
       receiptShareText(t),
       subject: 'Reçu Lipa',
-      sharePositionOrigin:
-          box != null ? box.localToGlobal(Offset.zero) & box.size : null,
+      sharePositionOrigin: box != null
+          ? box.localToGlobal(Offset.zero) & box.size
+          : null,
     );
   }
 }
 
 /// A DetailRow that copies its value to the clipboard on tap.
 class _CopyRow extends StatelessWidget {
-  const _CopyRow(
-      {required this.label, required this.value, this.last = false});
+  const _CopyRow({required this.label, required this.value, this.last = false});
   final String label;
   final String value;
   final bool last;
@@ -201,14 +220,22 @@ class _CopyRow extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: value));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('$label copié', style: AppText.ui(color: Colors.white)),
+            content: Text(
+              '$label copié',
+              style: AppText.ui(color: Colors.white),
+            ),
             backgroundColor: AppColors.nearBlack,
             duration: const Duration(seconds: 1),
           ),
         );
       },
       child: DetailRow(
-          label: label, value: shortId(value), mono: true, copy: true, last: last),
+        label: label,
+        value: shortId(value),
+        mono: true,
+        copy: true,
+        last: last,
+      ),
     );
   }
 }

@@ -51,17 +51,16 @@ class CashOutState {
     String? pinError,
     bool clearError = false,
     bool clearPinError = false,
-  }) =>
-      CashOutState(
-        step: step ?? this.step,
-        looking: looking ?? this.looking,
-        submitting: submitting ?? this.submitting,
-        merchant: merchant ?? this.merchant,
-        amount: amount ?? this.amount,
-        result: result ?? this.result,
-        errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-        pinError: clearPinError ? null : (pinError ?? this.pinError),
-      );
+  }) => CashOutState(
+    step: step ?? this.step,
+    looking: looking ?? this.looking,
+    submitting: submitting ?? this.submitting,
+    merchant: merchant ?? this.merchant,
+    amount: amount ?? this.amount,
+    result: result ?? this.result,
+    errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+    pinError: clearPinError ? null : (pinError ?? this.pinError),
+  );
 }
 
 /// Drives the cash-out control-tier loop (spec §8). A single intent reuses one
@@ -72,9 +71,21 @@ class CashOutController extends StateNotifier<CashOutState> {
 
   final Ref _ref;
   static const _countryCode = '269';
-  final String _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
+  String? _lastKey;
 
   bool _confirmationAcknowledged = false;
+
+  /// Key of the current cash-out. A changed merchant or amount is a new
+  /// operation: new key, and the confirmation must be given again.
+  String _intentKey(String merchantId) {
+    final key = _operationKey.forIntent('$merchantId|${state.amount}');
+    if (key != _lastKey) {
+      _lastKey = key;
+      _confirmationAcknowledged = false;
+    }
+    return key;
+  }
 
   AgentRepository get _repo => _ref.read(agentRepositoryProvider);
 
@@ -85,14 +96,21 @@ class CashOutController extends StateNotifier<CashOutState> {
         phoneCountryCode: _countryCode,
         phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
       );
-      state =
-          state.copyWith(looking: false, merchant: m, step: CashOutStep.amount);
+      state = state.copyWith(
+        looking: false,
+        merchant: m,
+        step: CashOutStep.amount,
+      );
     } on ApiError catch (e) {
       state = state.copyWith(
-          looking: false, errorMessage: frenchMessageForError(e));
+        looking: false,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          looking: false, errorMessage: 'Une erreur est survenue.');
+        looking: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -104,7 +122,10 @@ class CashOutController extends StateNotifier<CashOutState> {
   /// Return to the amount step (e.g. the merchant-PIN sheet was dismissed
   /// before completion), keeping the resolved merchant and entered amount.
   void backToLookupAmount() => state = state.copyWith(
-      step: CashOutStep.amount, clearError: true, clearPinError: true);
+    step: CashOutStep.amount,
+    clearError: true,
+    clearPinError: true,
+  );
 
   /// First submit (and the resubmit after the confirmation prompt).
   Future<void> submit() => _send();
@@ -122,10 +143,13 @@ class CashOutController extends StateNotifier<CashOutState> {
     final merchant = state.merchant;
     if (merchant == null || state.amount <= 0) return;
     state = state.copyWith(
-        submitting: true, clearError: true, clearPinError: true);
+      submitting: true,
+      clearError: true,
+      clearPinError: true,
+    );
     try {
       final res = await _repo.cashOut(
-        idempotencyKey: _idempotencyKey,
+        idempotencyKey: _intentKey(merchant.merchantId),
         merchantId: merchant.merchantId,
         amount: state.amount,
         merchantPin: pin,
@@ -137,23 +161,34 @@ class CashOutController extends StateNotifier<CashOutState> {
         _ref.invalidate(transactionsProvider);
         _ref.invalidate(statementsProvider);
         state = state.copyWith(
-            submitting: false, step: CashOutStep.done, result: res);
+          submitting: false,
+          step: CashOutStep.done,
+          result: res,
+        );
       } else if (res.needsConfirmation) {
         state = state.copyWith(
-            submitting: false,
-            step: CashOutStep.needsConfirmation,
-            result: res);
+          submitting: false,
+          step: CashOutStep.needsConfirmation,
+          result: res,
+        );
       } else if (res.needsPin) {
         state = state.copyWith(
-            submitting: false, step: CashOutStep.needsPin, result: res);
+          submitting: false,
+          step: CashOutStep.needsPin,
+          result: res,
+        );
       } else if (res.needsApproval) {
         state = state.copyWith(
-            submitting: false, step: CashOutStep.approval, result: res);
+          submitting: false,
+          step: CashOutStep.approval,
+          result: res,
+        );
       } else {
         state = state.copyWith(
-            submitting: false,
-            step: CashOutStep.amount,
-            errorMessage: 'Réponse inattendue du serveur.');
+          submitting: false,
+          step: CashOutStep.amount,
+          errorMessage: 'Réponse inattendue du serveur.',
+        );
       }
     } on ApiError catch (e) {
       // A wrong / locked merchant PIN must surface inside the PIN sheet so the
@@ -161,23 +196,27 @@ class CashOutController extends StateNotifier<CashOutState> {
       if (state.step == CashOutStep.needsPin &&
           (e.code == 'AUTH_PIN_INVALID' || e.code == 'AUTH_PIN_LOCKED')) {
         state = state.copyWith(
-            submitting: false, pinError: frenchMessageForError(e));
+          submitting: false,
+          pinError: frenchMessageForError(e),
+        );
       } else {
         state = state.copyWith(
-            submitting: false,
-            step: CashOutStep.amount,
-            errorMessage: frenchMessageForError(e));
+          submitting: false,
+          step: CashOutStep.amount,
+          errorMessage: frenchMessageForError(e),
+        );
       }
     } catch (_) {
       state = state.copyWith(
-          submitting: false,
-          step: CashOutStep.amount,
-          errorMessage: 'Une erreur est survenue.');
+        submitting: false,
+        step: CashOutStep.amount,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 }
 
 final cashOutControllerProvider =
     StateNotifierProvider.autoDispose<CashOutController, CashOutState>((ref) {
-  return CashOutController(ref);
-});
+      return CashOutController(ref);
+    });

@@ -125,19 +125,23 @@ class _Row extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: AppText.ui(
-                          size: 14.5, weight: FontWeight.w600, color: fg)),
+                  Text(
+                    title,
+                    style: AppText.ui(
+                      size: 14.5,
+                      weight: FontWeight.w600,
+                      color: fg,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: AppText.ui(size: 12.5, color: AppColors.inkMid)),
+                  Text(
+                    subtitle,
+                    style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                  ),
                 ],
               ),
             ),
-            if (trailing != null) ...[
-              const SizedBox(width: 10),
-              trailing!,
-            ],
+            if (trailing != null) ...[const SizedBox(width: 10), trailing!],
             const SizedBox(width: 4),
             const Icon(Icons.chevron_right_rounded, color: AppColors.inkLow),
           ],

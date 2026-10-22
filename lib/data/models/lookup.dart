@@ -23,13 +23,13 @@ class CustomerLookup {
   String get phonePretty => fmtPhone(phoneCountryCode, phoneNumber);
 
   factory CustomerLookup.fromJson(Map<String, dynamic> json) => CustomerLookup(
-        customerId: (json['customerId'] ?? '') as String,
-        fullName: (json['fullName'] ?? '') as String,
-        phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
-        phoneNumber: (json['phoneNumber'] ?? '') as String,
-        status: CustomerStatus.parse(json['status'] as String?),
-        kycLevel: KycLevel.parse(json['kycLevel'] as String?),
-      );
+    customerId: (json['customerId'] ?? '') as String,
+    fullName: (json['fullName'] ?? '') as String,
+    phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
+    phoneNumber: (json['phoneNumber'] ?? '') as String,
+    status: CustomerStatus.parse(json['status'] as String?),
+    kycLevel: KycLevel.parse(json['kycLevel'] as String?),
+  );
 }
 
 /// `MerchantLookupResponse` (spec §7.4) — resolves `merchantId` for cash-out.
@@ -57,15 +57,15 @@ class MerchantLookup {
   String get phonePretty => fmtPhone(phoneCountryCode, phoneNumber);
 
   factory MerchantLookup.fromJson(Map<String, dynamic> json) => MerchantLookup(
-        merchantId: (json['merchantId'] ?? '') as String,
-        externalRef: (json['externalRef'] ?? '') as String,
-        businessName: (json['businessName'] ?? '') as String,
-        phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
-        phoneNumber: (json['phoneNumber'] ?? '') as String,
-        status: MerchantStatus.parse(json['status'] as String?),
-        kycLevel: KycLevel.parse(json['kycLevel'] as String?),
-        canCashOut: json['canCashOut'] == true,
-      );
+    merchantId: (json['merchantId'] ?? '') as String,
+    externalRef: (json['externalRef'] ?? '') as String,
+    businessName: (json['businessName'] ?? '') as String,
+    phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
+    phoneNumber: (json['phoneNumber'] ?? '') as String,
+    status: MerchantStatus.parse(json['status'] as String?),
+    kycLevel: KycLevel.parse(json['kycLevel'] as String?),
+    canCashOut: json['canCashOut'] == true,
+  );
 }
 
 /// `CardLookupResponse` (spec §7.4) — minimal card projection by NFC UID.
@@ -99,15 +99,15 @@ class CardLookup {
   bool get isLinked => customerId != null && customerId!.isNotEmpty;
 
   factory CardLookup.fromJson(Map<String, dynamic> json) => CardLookup(
-        cardId: (json['cardId'] ?? '') as String,
-        nfcUid: (json['nfcUid'] ?? '') as String,
-        cardType: CardType.parse(json['cardType'] as String?),
-        status: CardStatus.parse(json['status'] as String?),
-        internalCardLast4: json['internalCardLast4'] as String?,
-        maskedInternalCardNumber: json['maskedInternalCardNumber'] as String?,
-        customerId: json['customerId'] as String?,
-        customerFullName: json['customerFullName'] as String?,
-        customerPhoneMasked: json['customerPhoneMasked'] as String?,
-        expiresAt: tryParseInstant(json['expiresAt']),
-      );
+    cardId: (json['cardId'] ?? '') as String,
+    nfcUid: (json['nfcUid'] ?? '') as String,
+    cardType: CardType.parse(json['cardType'] as String?),
+    status: CardStatus.parse(json['status'] as String?),
+    internalCardLast4: json['internalCardLast4'] as String?,
+    maskedInternalCardNumber: json['maskedInternalCardNumber'] as String?,
+    customerId: json['customerId'] as String?,
+    customerFullName: json['customerFullName'] as String?,
+    customerPhoneMasked: json['customerPhoneMasked'] as String?,
+    expiresAt: tryParseInstant(json['expiresAt']),
+  );
 }

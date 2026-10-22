@@ -13,13 +13,15 @@ Future<void> main() async {
   // Draw behind the real system bars and color them to match the app, so the
   // device's own status bar blends with our warm background (no faux bar).
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark, // dark icons on light bg
-    statusBarBrightness: Brightness.light, // iOS: light bg → dark icons
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark, // dark icons on light bg
+      statusBarBrightness: Brightness.light, // iOS: light bg → dark icons
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
 
   runApp(const ProviderScope(child: LipaAgentApp()));
 }

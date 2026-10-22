@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 
 import '../auth/token_store.dart';
 import '../config/app_environment.dart';
@@ -19,10 +20,10 @@ class ApiClient {
     required AppConfig config,
     required TokenStore tokenStore,
     Dio? dio,
-  })  : _config = config,
-        // ignore: prefer_initializing_formals
-        _tokenStore = tokenStore,
-        _dio = dio ?? Dio() {
+  }) : _config = config,
+       // ignore: prefer_initializing_formals
+       _tokenStore = tokenStore,
+       _dio = dio ?? Dio() {
     _dio.options
       ..baseUrl = config.baseUrl
       ..connectTimeout = config.connectTimeout
@@ -32,10 +33,7 @@ class ApiClient {
       ..validateStatus = (status) => status != null && status < 500;
 
     _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: _onRequest,
-        onError: _onError,
-      ),
+      InterceptorsWrapper(onRequest: _onRequest, onError: _onError),
     );
   }
 
@@ -53,6 +51,8 @@ class ApiClient {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // One id per request, echoed by the backend in errors and logs (support).
+    options.headers['X-Correlation-Id'] ??= const Uuid().v4();
     final skipAuth = options.extra['skipAuth'] == true;
     if (!skipAuth && options.headers['Authorization'] == null) {
       final token = await _validAccessToken();
@@ -132,9 +132,9 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? query,
     String? bearer,
-  }) =>
-      _send(() =>
-          _dio.get(path, queryParameters: query, options: _opts(bearer)));
+  }) => _send(
+    () => _dio.get(path, queryParameters: query, options: _opts(bearer)),
+  );
 
   Future<Response<dynamic>> post(
     String path, {
@@ -142,26 +142,22 @@ class ApiClient {
     Map<String, String>? headers,
     String? bearer,
     bool skipAuth = false,
-  }) =>
-      _send(() => _dio.post(
-            path,
-            data: body,
-            options: _opts(bearer, headers: headers, skipAuth: skipAuth),
-          ));
+  }) => _send(
+    () => _dio.post(
+      path,
+      data: body,
+      options: _opts(bearer, headers: headers, skipAuth: skipAuth),
+    ),
+  );
 
-  Future<Response<dynamic>> put(
-    String path, {
-    Object? body,
-    String? bearer,
-  }) =>
+  Future<Response<dynamic>> put(String path, {Object? body, String? bearer}) =>
       _send(() => _dio.put(path, data: body, options: _opts(bearer)));
 
   Future<Response<dynamic>> delete(
     String path, {
     Object? body,
     String? bearer,
-  }) =>
-      _send(() => _dio.delete(path, data: body, options: _opts(bearer)));
+  }) => _send(() => _dio.delete(path, data: body, options: _opts(bearer)));
 
   /// Multipart POST for KYC document upload (spec §5.5 / §11.4). Sends exactly
   /// the `documentType` + `file` fields and lets Dio set the multipart
@@ -170,15 +166,16 @@ class ApiClient {
     String path, {
     required FormData formData,
     Map<String, String>? headers,
-  }) =>
-      _send(() => _dio.post(
-            path,
-            data: formData,
-            options: Options(
-              headers: {...?headers},
-              contentType: 'multipart/form-data',
-            ),
-          ));
+  }) => _send(
+    () => _dio.post(
+      path,
+      data: formData,
+      options: Options(
+        headers: {...?headers},
+        contentType: 'multipart/form-data',
+      ),
+    ),
+  );
 
   Options _opts(
     String? bearer, {
@@ -207,8 +204,13 @@ class ApiClient {
     final status = res.statusCode ?? 0;
     if (status >= 200 && status < 300) return res;
 
-    // Reactive refresh-on-401 (once), then bail to re-login.
-    if (status == 401 && !didRetry) {
+    final error = ApiError.fromResponse(status, res.data);
+
+    // Reactive refresh (once) when the session token itself was refused, then
+    // bail to re-login. Other 401s (a wrong PIN: AUTH_PIN_INVALID, wrong login:
+    // INVALID_CREDENTIALS) are answers to the request: resending would count a
+    // second wrong PIN, so they are returned as they are.
+    if (status == 401 && _sessionCodes.contains(error.code) && !didRetry) {
       final tokens = _tokenStore.current ?? await _tokenStore.load();
       if (tokens != null) {
         final refreshed = await _refresh(tokens.refreshToken);
@@ -219,6 +221,15 @@ class ApiClient {
       onSessionExpired?.call();
     }
 
-    throw ApiError.fromResponse(status, res.data);
+    throw error;
   }
+
+  /// 401 codes meaning the access token is missing, expired or revoked.
+  static const _sessionCodes = {
+    'UNAUTHORIZED',
+    'INVALID_TOKEN',
+    'TOKEN_EXPIRED',
+    'TOKEN_REVOKED',
+    'AUTH_INVALID_TOKEN',
+  };
 }

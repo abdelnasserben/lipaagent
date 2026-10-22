@@ -62,11 +62,11 @@ class PagedResponse<T> {
   }
 
   PagedResponse<T> append(PagedResponse<T> next) => PagedResponse(
-        items: [...items, ...next.items],
-        nextCursor: next.nextCursor,
-        hasMore: next.hasMore,
-        limit: next.limit,
-      );
+    items: [...items, ...next.items],
+    nextCursor: next.nextCursor,
+    hasMore: next.hasMore,
+    limit: next.limit,
+  );
 }
 
 /// Parses an `ApiResponse<List<...>>` (the non-paginated list endpoints:

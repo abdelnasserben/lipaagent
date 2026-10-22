@@ -17,10 +17,7 @@ abstract class AuthRepository {
   });
 
   /// Sets the initial PIN using the single-use PIN_SETUP token (spec §3.6).
-  Future<void> setupPin({
-    required String pinSetupToken,
-    required String pin,
-  });
+  Future<void> setupPin({required String pinSetupToken, required String pin});
 
   /// Rotates the PIN for an already-logged-in agent (requires currentPin).
   Future<void> changePin({required String currentPin, required String newPin});
@@ -138,7 +135,9 @@ class ApiAuthRepository implements AuthRepository {
   Future<TotpSetup> startTotpSetup() async {
     final res = await _api.post('$_base/totp-setup');
     return unwrapData(
-        res.data, (d) => TotpSetup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => TotpSetup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override

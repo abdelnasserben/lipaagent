@@ -27,7 +27,10 @@ class ChangePinController extends StateNotifier<ActionResult> {
   ChangePinController(this._ref) : super(ActionResult.idle);
   final Ref _ref;
 
-  Future<void> submit({required String currentPin, required String newPin}) async {
+  Future<void> submit({
+    required String currentPin,
+    required String newPin,
+  }) async {
     state = const ActionResult(loading: true);
     try {
       await _ref
@@ -46,7 +49,8 @@ class ChangePinController extends StateNotifier<ActionResult> {
 
 final changePinControllerProvider =
     StateNotifierProvider.autoDispose<ChangePinController, ActionResult>(
-        (ref) => ChangePinController(ref));
+      (ref) => ChangePinController(ref),
+    );
 
 /// TOTP enrollment flow (spec §3.7).
 class TotpState {
@@ -71,14 +75,13 @@ class TotpState {
     bool clearError = false,
     bool? confirmed,
     bool? revoked,
-  }) =>
-      TotpState(
-        loading: loading ?? this.loading,
-        setup: setup ?? this.setup,
-        error: clearError ? null : (error ?? this.error),
-        confirmed: confirmed ?? this.confirmed,
-        revoked: revoked ?? this.revoked,
-      );
+  }) => TotpState(
+    loading: loading ?? this.loading,
+    setup: setup ?? this.setup,
+    error: clearError ? null : (error ?? this.error),
+    confirmed: confirmed ?? this.confirmed,
+    revoked: revoked ?? this.revoked,
+  );
 }
 
 class TotpController extends StateNotifier<TotpState> {
@@ -120,4 +123,5 @@ class TotpController extends StateNotifier<TotpState> {
 
 final totpControllerProvider =
     StateNotifierProvider.autoDispose<TotpController, TotpState>(
-        (ref) => TotpController(ref));
+      (ref) => TotpController(ref),
+    );

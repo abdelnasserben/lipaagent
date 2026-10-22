@@ -20,7 +20,7 @@ class AgentProfile {
     required this.canDoCashOut,
     required this.floatAlertThreshold,
     this.zone,
-    this.walletId,
+    this.accountId,
     this.limitProfileId,
     this.contractRef,
     this.createdAt,
@@ -38,7 +38,7 @@ class AgentProfile {
   final bool canDoCashOut;
   final int floatAlertThreshold;
   final String? zone;
-  final String? walletId;
+  final String? accountId;
   final String? limitProfileId;
   final String? contractRef;
   final DateTime? createdAt;
@@ -49,48 +49,48 @@ class AgentProfile {
   bool get hasAnyCashOps => canDoCashIn || canDoCashOut;
 
   factory AgentProfile.fromJson(Map<String, dynamic> json) => AgentProfile(
-        id: (json['id'] ?? '') as String,
-        externalRef: (json['externalRef'] ?? '') as String,
-        fullName: (json['fullName'] ?? '') as String,
-        phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
-        phoneNumber: (json['phoneNumber'] ?? '') as String,
-        kycLevel: KycLevel.parse(json['kycLevel'] as String?),
-        status: AgentStatus.parse(json['status'] as String?),
-        canSellCards: json['canSellCards'] == true,
-        canDoCashIn: json['canDoCashIn'] == true,
-        canDoCashOut: json['canDoCashOut'] == true,
-        floatAlertThreshold: _int(json['floatAlertThreshold']),
-        zone: json['zone'] as String?,
-        walletId: json['walletId'] as String?,
-        limitProfileId: json['limitProfileId'] as String?,
-        contractRef: json['contractRef'] as String?,
-        createdAt: tryParseInstant(json['createdAt']),
-      );
+    id: (json['id'] ?? '') as String,
+    externalRef: (json['externalRef'] ?? '') as String,
+    fullName: (json['fullName'] ?? '') as String,
+    phoneCountryCode: (json['phoneCountryCode'] ?? '') as String,
+    phoneNumber: (json['phoneNumber'] ?? '') as String,
+    kycLevel: KycLevel.parse(json['kycLevel'] as String?),
+    status: AgentStatus.parse(json['status'] as String?),
+    canSellCards: json['canSellCards'] == true,
+    canDoCashIn: json['canDoCashIn'] == true,
+    canDoCashOut: json['canDoCashOut'] == true,
+    floatAlertThreshold: _int(json['floatAlertThreshold']),
+    zone: json['zone'] as String?,
+    accountId: json['accountId'] as String?,
+    limitProfileId: json['limitProfileId'] as String?,
+    contractRef: json['contractRef'] as String?,
+    createdAt: tryParseInstant(json['createdAt']),
+  );
 }
 
 /// `AgentBalanceResponse` (spec §7.2).
 class AgentBalance {
   const AgentBalance({
-    required this.walletId,
+    required this.accountId,
     required this.availableBalance,
-    required this.frozenBalance,
-    required this.walletStatus,
+    required this.heldBalance,
+    required this.accountStatus,
     this.updatedAt,
   });
 
-  final String walletId;
+  final String accountId;
   final int availableBalance;
-  final int frozenBalance;
-  final WalletStatus walletStatus;
+  final int heldBalance;
+  final AccountStatus accountStatus;
   final DateTime? updatedAt;
 
   factory AgentBalance.fromJson(Map<String, dynamic> json) => AgentBalance(
-        walletId: (json['walletId'] ?? '') as String,
-        availableBalance: _int(json['availableBalance']),
-        frozenBalance: _int(json['frozenBalance']),
-        walletStatus: WalletStatus.parse(json['walletStatus'] as String?),
-        updatedAt: tryParseInstant(json['updatedAt']),
-      );
+    accountId: (json['accountId'] ?? '') as String,
+    availableBalance: _int(json['availableBalance']),
+    heldBalance: _int(json['heldBalance']),
+    accountStatus: AccountStatus.parse(json['accountStatus'] as String?),
+    updatedAt: tryParseInstant(json['updatedAt']),
+  );
 }
 
 /// `AgentLimitsResponse` (spec §7.2). Null fields mean "not configured".
@@ -120,18 +120,17 @@ class AgentLimits {
   final int? maxMonthlyTransactionCount;
 
   factory AgentLimits.fromJson(Map<String, dynamic> json) => AgentLimits(
-        limitProfileId: (json['limitProfileId'] ?? '') as String,
-        profileName: (json['profileName'] ?? '') as String,
-        requiredKycLevel: KycLevel.parse(json['requiredKycLevel'] as String?),
-        maxTransactionAmount: _intOrNull(json['maxTransactionAmount']),
-        minTransactionAmount: _intOrNull(json['minTransactionAmount']),
-        maxDailyAmount: _intOrNull(json['maxDailyAmount']),
-        maxWeeklyAmount: _intOrNull(json['maxWeeklyAmount']),
-        maxMonthlyAmount: _intOrNull(json['maxMonthlyAmount']),
-        maxDailyTransactionCount: _intOrNull(json['maxDailyTransactionCount']),
-        maxMonthlyTransactionCount:
-            _intOrNull(json['maxMonthlyTransactionCount']),
-      );
+    limitProfileId: (json['limitProfileId'] ?? '') as String,
+    profileName: (json['profileName'] ?? '') as String,
+    requiredKycLevel: KycLevel.parse(json['requiredKycLevel'] as String?),
+    maxTransactionAmount: _intOrNull(json['maxTransactionAmount']),
+    minTransactionAmount: _intOrNull(json['minTransactionAmount']),
+    maxDailyAmount: _intOrNull(json['maxDailyAmount']),
+    maxWeeklyAmount: _intOrNull(json['maxWeeklyAmount']),
+    maxMonthlyAmount: _intOrNull(json['maxMonthlyAmount']),
+    maxDailyTransactionCount: _intOrNull(json['maxDailyTransactionCount']),
+    maxMonthlyTransactionCount: _intOrNull(json['maxMonthlyTransactionCount']),
+  );
 }
 
 /// `AgentDailySummaryResponse` (spec §7.2).

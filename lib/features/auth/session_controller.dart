@@ -24,7 +24,7 @@ class SessionState {
 
 class SessionController extends StateNotifier<SessionState> {
   SessionController(this._ref)
-      : super(const SessionState(status: SessionStatus.unknown)) {
+    : super(const SessionState(status: SessionStatus.unknown)) {
     _bootstrap();
   }
 
@@ -52,7 +52,9 @@ class SessionController extends StateNotifier<SessionState> {
   void _onSessionExpired() {
     if (state.status == SessionStatus.authenticated) {
       state = const SessionState(
-          status: SessionStatus.unauthenticated, expiredNotice: true);
+        status: SessionStatus.unauthenticated,
+        expiredNotice: true,
+      );
       _resetUserScopedState();
     }
   }
@@ -68,9 +70,8 @@ class SessionController extends StateNotifier<SessionState> {
 
   /// Tears down per-user state that would otherwise leak across accounts.
   ///
-  /// [agentRepositoryProvider] is a long-lived singleton that caches the
-  /// signed-in agent's `walletId` (used to derive transaction direction); we
-  /// rebuild it so the next agent starts clean. The `autoDispose` data
+  /// [agentRepositoryProvider] is a long-lived singleton; we rebuild it so the
+  /// next agent starts clean. The `autoDispose` data
   /// providers unmount with the shell at logout and start fresh on re-login.
   /// (Cf. the Lipa customer app's user-scoped state reset.)
   void _resetUserScopedState() {
@@ -88,5 +89,5 @@ class SessionController extends StateNotifier<SessionState> {
 
 final sessionControllerProvider =
     StateNotifierProvider<SessionController, SessionState>((ref) {
-  return SessionController(ref);
-});
+      return SessionController(ref);
+    });

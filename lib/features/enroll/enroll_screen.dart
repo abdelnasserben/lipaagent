@@ -12,7 +12,7 @@ import '../../data/models/enrollment.dart';
 import 'enroll_controller.dart';
 import 'kyc_documents_screen.dart';
 
-/// Customer enrollment (spec §5.5): create the customer + wallet, then offer to
+/// Customer enrollment (spec §5.5): create the customer + account, then offer to
 /// upload KYC documents. National-ID type is a small fixed picker matching the
 /// `KycDocumentType` family the back-office reviews.
 class EnrollScreen extends ConsumerStatefulWidget {
@@ -118,7 +118,10 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
                   const SizedBox(height: 18),
                   const FieldLabel('Numéro de téléphone'),
                   const SizedBox(height: 8),
-                  PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
+                  PhoneInput(
+                    controller: _phone,
+                    onChanged: (_) => setState(() {}),
+                  ),
                   const SizedBox(height: 18),
                   const FieldLabel('Type de pièce'),
                   const SizedBox(height: 8),
@@ -136,11 +139,14 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 22),
-                  Text('Adresse (facultatif)',
-                      style: AppText.ui(
-                          size: 12.5,
-                          weight: FontWeight.w700,
-                          color: AppColors.inkLow)),
+                  Text(
+                    'Adresse (facultatif)',
+                    style: AppText.ui(
+                      size: 12.5,
+                      weight: FontWeight.w700,
+                      color: AppColors.inkLow,
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   const FieldLabel('Île'),
                   const SizedBox(height: 8),
@@ -154,8 +160,10 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
                   BoxedTextField(controller: _district, hintText: 'Quartier'),
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 14),
-                    Text(state.errorMessage!,
-                        style: AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      state.errorMessage!,
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                   const SizedBox(height: 22),
                   LipaButton(
@@ -195,16 +203,20 @@ class _DateField extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.calendar_today_rounded,
-                size: 18, color: AppColors.inkMid),
+            const Icon(
+              Icons.calendar_today_rounded,
+              size: 18,
+              color: AppColors.inkMid,
+            ),
             const SizedBox(width: 12),
             Text(
               value == null
                   ? 'Sélectionner une date'
                   : '${value!.day.toString().padLeft(2, '0')}/${value!.month.toString().padLeft(2, '0')}/${value!.year}',
               style: AppText.ui(
-                  size: 15,
-                  color: value == null ? AppColors.inkFaint : AppColors.inkHi),
+                size: 15,
+                color: value == null ? AppColors.inkFaint : AppColors.inkHi,
+              ),
             ),
           ],
         ),
@@ -235,15 +247,17 @@ class _IdTypePicker extends StatelessWidget {
             selected: value == code,
             onSelected: (_) => onChanged(code),
             labelStyle: AppText.ui(
-                size: 13,
-                weight: FontWeight.w600,
-                color: value == code ? Colors.white : AppColors.inkHi),
+              size: 13,
+              weight: FontWeight.w600,
+              color: value == code ? Colors.white : AppColors.inkHi,
+            ),
             selectedColor: AppColors.brand,
             backgroundColor: AppColors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.pill),
               side: BorderSide(
-                  color: value == code ? AppColors.brand : AppColors.borderHi),
+                color: value == code ? AppColors.brand : AppColors.borderHi,
+              ),
             ),
           ),
       ],
@@ -271,15 +285,17 @@ class _IslandPicker extends StatelessWidget {
             selected: value == island,
             onSelected: (_) => onChanged(value == island ? null : island),
             labelStyle: AppText.ui(
-                size: 13,
-                weight: FontWeight.w600,
-                color: value == island ? Colors.white : AppColors.inkHi),
+              size: 13,
+              weight: FontWeight.w600,
+              color: value == island ? Colors.white : AppColors.inkHi,
+            ),
             selectedColor: AppColors.brand,
             backgroundColor: AppColors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.pill),
               side: BorderSide(
-                  color: value == island ? AppColors.brand : AppColors.borderHi),
+                color: value == island ? AppColors.brand : AppColors.borderHi,
+              ),
             ),
           ),
       ],
@@ -298,13 +314,15 @@ class _DoneScreen extends StatelessWidget {
       title: 'Enrôlement',
       headline: 'Client enrôlé',
       subtitle:
-          '$name a été créé avec un portefeuille actif. Ajoutez ses pièces KYC maintenant.',
+          '$name a été créé avec un compte actif. Ajoutez ses pièces KYC maintenant.',
       onDone: () => Navigator.of(context).pop(),
       secondaryLabel: 'Ajouter des documents KYC',
       onSecondary: () => Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => KycDocumentsScreen(
-              customerId: result.customerId, customerName: name),
+            customerId: result.customerId,
+            customerName: name,
+          ),
         ),
       ),
       detail: LipaCard(
@@ -313,7 +331,7 @@ class _DoneScreen extends StatelessWidget {
           children: [
             _CopyRow(label: 'Référence client', value: result.externalRef),
             _CopyRow(label: 'ID client', value: result.customerId),
-            _CopyRow(label: 'Portefeuille', value: result.walletId, last: true),
+            _CopyRow(label: 'Compte', value: result.accountId, last: true),
           ],
         ),
       ),
@@ -322,8 +340,7 @@ class _DoneScreen extends StatelessWidget {
 }
 
 class _CopyRow extends StatelessWidget {
-  const _CopyRow(
-      {required this.label, required this.value, this.last = false});
+  const _CopyRow({required this.label, required this.value, this.last = false});
   final String label;
   final String value;
   final bool last;
@@ -335,14 +352,22 @@ class _CopyRow extends StatelessWidget {
         Clipboard.setData(ClipboardData(text: value));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text('$label copié', style: AppText.ui(color: Colors.white)),
+            content: Text(
+              '$label copié',
+              style: AppText.ui(color: Colors.white),
+            ),
             backgroundColor: AppColors.nearBlack,
             duration: const Duration(seconds: 1),
           ),
         );
       },
-      child: DetailRow(label: label, value: value, mono: true, copy: true, last: last),
+      child: DetailRow(
+        label: label,
+        value: value,
+        mono: true,
+        copy: true,
+        last: last,
+      ),
     );
   }
 }

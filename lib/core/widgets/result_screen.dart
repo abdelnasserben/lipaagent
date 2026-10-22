@@ -35,12 +35,21 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (icon, color, bg) = switch (kind) {
-      ResultKind.success =>
-        (Icons.check_rounded, AppColors.brandDeep, AppColors.brandSoft),
-      ResultKind.pending =>
-        (Icons.hourglass_top_rounded, AppColors.warn, AppColors.warnSoft),
-      ResultKind.info =>
-        (Icons.info_outline_rounded, AppColors.info, AppColors.infoSoft),
+      ResultKind.success => (
+        Icons.check_rounded,
+        AppColors.brandDeep,
+        AppColors.brandSoft,
+      ),
+      ResultKind.pending => (
+        Icons.hourglass_top_rounded,
+        AppColors.warn,
+        AppColors.warnSoft,
+      ),
+      ResultKind.info => (
+        Icons.info_outline_rounded,
+        AppColors.info,
+        AppColors.infoSoft,
+      ),
     };
 
     return PopScope(
@@ -64,24 +73,34 @@ class ResultScreen extends StatelessWidget {
                         width: 76,
                         height: 76,
                         alignment: Alignment.center,
-                        decoration:
-                            BoxDecoration(color: bg, shape: BoxShape.circle),
+                        decoration: BoxDecoration(
+                          color: bg,
+                          shape: BoxShape.circle,
+                        ),
                         child: Icon(icon, size: 40, color: color),
                       ),
                     ),
                     const SizedBox(height: 18),
-                    Text(headline,
-                        textAlign: TextAlign.center,
-                        style: AppText.ui(
-                            size: 22,
-                            weight: FontWeight.w700,
-                            letterSpacing: -0.4)),
+                    Text(
+                      headline,
+                      textAlign: TextAlign.center,
+                      style: AppText.ui(
+                        size: 22,
+                        weight: FontWeight.w700,
+                        letterSpacing: -0.4,
+                      ),
+                    ),
                     if (subtitle != null) ...[
                       const SizedBox(height: 8),
-                      Text(subtitle!,
-                          textAlign: TextAlign.center,
-                          style: AppText.ui(
-                              size: 14, color: AppColors.inkMid, height: 1.5)),
+                      Text(
+                        subtitle!,
+                        textAlign: TextAlign.center,
+                        style: AppText.ui(
+                          size: 14,
+                          color: AppColors.inkMid,
+                          height: 1.5,
+                        ),
+                      ),
                     ],
                     if (replayed) ...[
                       const SizedBox(height: 14),

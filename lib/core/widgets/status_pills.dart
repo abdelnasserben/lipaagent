@@ -15,7 +15,6 @@ class TxStatusPill extends StatelessWidget {
       TransactionStatus.pending => (PillKind.pending, 'En attente'),
       TransactionStatus.authorized => (PillKind.info, 'Autorisé'),
       TransactionStatus.declined => (PillKind.declined, 'Refusé'),
-      TransactionStatus.expired => (PillKind.pending, 'Expiré'),
       TransactionStatus.reversed => (PillKind.warn, 'Annulé'),
       TransactionStatus.unknown => (PillKind.neutral, '—'),
     };
@@ -81,7 +80,11 @@ class PayoutStatusPill extends StatelessWidget {
 
 /// Generic actor/customer status pill (active/suspended/etc).
 class GenericStatusPill extends StatelessWidget {
-  const GenericStatusPill({super.key, required this.label, required this.active});
+  const GenericStatusPill({
+    super.key,
+    required this.label,
+    required this.active,
+  });
   final String label;
   final bool active;
   @override

@@ -30,7 +30,7 @@ class CardSaleScreen extends ConsumerStatefulWidget {
 
 class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
   final _phone = TextEditingController();
-  final _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
 
   CustomerLookup? _customer;
   String? _nfcUid;
@@ -51,7 +51,9 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
       _error = null;
     });
     try {
-      final c = await ref.read(agentRepositoryProvider).lookupCustomer(
+      final c = await ref
+          .read(agentRepositoryProvider)
+          .lookupCustomer(
             phoneCountryCode: '269',
             phoneNumber: _phone.text.replaceAll(RegExp(r'\D'), ''),
           );
@@ -77,8 +79,12 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
       _error = null;
     });
     try {
-      final res = await ref.read(agentRepositoryProvider).sellCard(
-            idempotencyKey: _idempotencyKey,
+      final res = await ref
+          .read(agentRepositoryProvider)
+          .sellCard(
+            idempotencyKey: _operationKey.forIntent(
+              '${customer.customerId}|$uid|$_price',
+            ),
             customerId: customer.customerId,
             nfcUid: uid,
             cardPrice: _price,
@@ -100,8 +106,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
       return ResultScreen(
         title: 'Vente de carte',
         headline: 'Carte vendue',
-        subtitle:
-            'Carte activée pour ${_customer?.fullName ?? 'le client'}.',
+        subtitle: 'Carte activée pour ${_customer?.fullName ?? 'le client'}.',
         replayed: _result!.replayed,
         onDone: () => Navigator.of(context).pop(),
         detail: LipaCard(
@@ -109,20 +114,23 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
           child: Column(
             children: [
               DetailRow(
-                  label: 'Prix facturé',
-                  value: fmtKmf(_result!.cardPrice),
-                  mono: true,
-                  valueColor: AppColors.brandDeep),
+                label: 'Prix facturé',
+                value: fmtKmf(_result!.cardPrice),
+                mono: true,
+                valueColor: AppColors.brandDeep,
+              ),
               if (_result!.commissionAmount > 0)
                 DetailRow(
-                    label: 'Commission',
-                    value: fmtKmf(_result!.commissionAmount),
-                    mono: true),
-              DetailRow(
-                  label: 'Réf.',
-                  value: shortId(_result!.transactionId),
+                  label: 'Commission',
+                  value: fmtKmf(_result!.commissionAmount),
                   mono: true,
-                  last: true),
+                ),
+              DetailRow(
+                label: 'Réf.',
+                value: shortId(_result!.transactionId),
+                mono: true,
+                last: true,
+              ),
             ],
           ),
         ),
@@ -150,16 +158,18 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   const SizedBox(height: 10),
                   if (_customer == null) ...[
                     PhoneInput(
-                        controller: _phone,
-                        onChanged: (_) => setState(() {})),
+                      controller: _phone,
+                      onChanged: (_) => setState(() {}),
+                    ),
                     const SizedBox(height: 10),
                     LipaButton(
                       label: 'Rechercher le client',
                       variant: BtnVariant.secondary,
                       full: true,
                       loading: _busy && _customer == null,
-                      onPressed:
-                          PhoneValidator.isComplete(_phone.text) ? _lookup : null,
+                      onPressed: PhoneValidator.isComplete(_phone.text)
+                          ? _lookup
+                          : null,
                     ),
                   ] else
                     PartyCard(
@@ -169,8 +179,11 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                       statusActive: _customer!.status == CustomerStatus.active,
                       trailing: IconButton(
                         onPressed: () => setState(() => _customer = null),
-                        icon: const Icon(Icons.edit_outlined,
-                            size: 18, color: AppColors.inkMid),
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: AppColors.inkMid,
+                        ),
                       ),
                     ),
                   const SizedBox(height: 22),
@@ -191,9 +204,11 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   ),
                   if (_error != null) ...[
                     const SizedBox(height: 14),
-                    Text(_error!,
-                        textAlign: TextAlign.center,
-                        style: AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                   const SizedBox(height: 24),
                   LipaButton(
@@ -206,10 +221,11 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                     onPressed: canSell ? _sell : null,
                   ),
                   const SizedBox(height: 8),
-                  Text('Le prix final peut être ajusté par configuration.',
-                      textAlign: TextAlign.center,
-                      style:
-                          AppText.ui(size: 12, color: AppColors.inkLow)),
+                  Text(
+                    'Le prix final peut être ajusté par configuration.',
+                    textAlign: TextAlign.center,
+                    style: AppText.ui(size: 12, color: AppColors.inkLow),
+                  ),
                 ],
               ),
             ),
@@ -233,10 +249,17 @@ class _StepLabel extends StatelessWidget {
           height: 22,
           alignment: Alignment.center,
           decoration: const BoxDecoration(
-              color: AppColors.nearBlack, shape: BoxShape.circle),
-          child: Text('$n',
-              style: AppText.mono(
-                  size: 12, weight: FontWeight.w700, color: Colors.white)),
+            color: AppColors.nearBlack,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            '$n',
+            style: AppText.mono(
+              size: 12,
+              weight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
         ),
         const SizedBox(width: 10),
         Text(text, style: AppText.ui(size: 14.5, weight: FontWeight.w700)),
@@ -272,10 +295,14 @@ class _CardSlot extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Carte sélectionnée',
-                    style: AppText.ui(size: 12.5, color: AppColors.inkMid)),
-                Text(uid!,
-                    style: AppText.mono(size: 14, weight: FontWeight.w600)),
+                Text(
+                  'Carte sélectionnée',
+                  style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                ),
+                Text(
+                  uid!,
+                  style: AppText.mono(size: 14, weight: FontWeight.w600),
+                ),
               ],
             ),
           ),

@@ -67,17 +67,20 @@ class _AmountInputState extends State<AmountInput> {
                   border: InputBorder.none,
                   hintText: '0',
                   hintStyle: AppText.mono(
-                      size: 44,
-                      weight: FontWeight.w600,
-                      color: AppColors.inkFaint),
+                    size: 44,
+                    weight: FontWeight.w600,
+                    color: AppColors.inkFaint,
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Text('KMF',
-                  style: AppText.mono(size: 16, color: AppColors.inkLow)),
+              child: Text(
+                'KMF',
+                style: AppText.mono(size: 16, color: AppColors.inkLow),
+              ),
             ),
           ],
         ),
@@ -88,10 +91,13 @@ class _AmountInputState extends State<AmountInput> {
           alignment: WrapAlignment.center,
           children: [
             for (final a in widget.quickAmounts)
-              _Chip(label: '+${fmtKmfNoUnit(a)}', onTap: () {
-                final current = int.tryParse(_controller.text) ?? 0;
-                _set(current + a);
-              }),
+              _Chip(
+                label: '+${fmtKmfNoUnit(a)}',
+                onTap: () {
+                  final current = int.tryParse(_controller.text) ?? 0;
+                  _set(current + a);
+                },
+              ),
           ],
         ),
       ],
@@ -118,8 +124,10 @@ class _Chip extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.pill),
             border: Border.all(color: AppColors.borderHi),
           ),
-          child: Text(label,
-              style: AppText.mono(size: 13, weight: FontWeight.w600)),
+          child: Text(
+            label,
+            style: AppText.mono(size: 13, weight: FontWeight.w600),
+          ),
         ),
       ),
     );
