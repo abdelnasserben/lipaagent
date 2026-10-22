@@ -51,11 +51,9 @@ class LoginState {
   );
 }
 
-class LoginController extends StateNotifier<LoginState> {
-  LoginController(this._ref, {AuthStep initial = AuthStep.login})
-    : super(LoginState(step: initial));
-
-  final Ref _ref;
+class LoginController extends Notifier<LoginState> {
+  @override
+  LoginState build() => const LoginState();
   static const _countryCode = '269';
 
   void goToStep(AuthStep step) =>
@@ -68,21 +66,22 @@ class LoginController extends StateNotifier<LoginState> {
       phoneNumber: phoneNumber,
     );
     try {
-      final res = await _ref
+      final res = await ref
           .read(authRepositoryProvider)
           .login(
             phoneCountryCode: _countryCode,
             phoneNumber: _digits(phoneNumber),
             pin: pin,
           );
+      if (!ref.mounted) return;
       switch (res.branch) {
         case LoginBranch.session:
-          _ref.read(sessionControllerProvider.notifier).markAuthenticated();
+          ref.read(sessionControllerProvider.notifier).markAuthenticated();
           state = state.copyWith(submitting: false);
         case LoginBranch.mfa:
           // An MFA challenge proves this agent has TOTP enrolled — the
           // authoritative cross-device signal for the Security screen.
-          _ref.read(totpEnrolledProvider.notifier).state = true;
+          ref.read(totpEnrolledProvider.notifier).set(true);
           state = state.copyWith(
             submitting: false,
             step: AuthStep.mfa,
@@ -101,6 +100,7 @@ class LoginController extends StateNotifier<LoginState> {
           );
       }
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       if (e.code == 'AUTH_PIN_LOCKED') {
         state = state.copyWith(submitting: false, step: AuthStep.locked);
       } else {
@@ -110,6 +110,7 @@ class LoginController extends StateNotifier<LoginState> {
         );
       }
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: 'Une erreur est survenue.',
@@ -122,17 +123,20 @@ class LoginController extends StateNotifier<LoginState> {
     if (challengeId == null) return;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await _ref
+      await ref
           .read(authRepositoryProvider)
           .verifyMfa(challengeId: challengeId, code: code);
-      _ref.read(sessionControllerProvider.notifier).markAuthenticated();
+      if (!ref.mounted) return;
+      ref.read(sessionControllerProvider.notifier).markAuthenticated();
       state = state.copyWith(submitting: false);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: 'Une erreur est survenue.',
@@ -147,16 +151,19 @@ class LoginController extends StateNotifier<LoginState> {
     if (token == null) return;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await _ref
+      await ref
           .read(authRepositoryProvider)
           .setupPin(pinSetupToken: token, pin: pin);
+      if (!ref.mounted) return;
       state = state.copyWith(submitting: false, step: AuthStep.login);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: 'Une erreur est survenue.',
@@ -178,7 +185,7 @@ class LoginController extends StateNotifier<LoginState> {
       phoneNumber: phoneNumber,
     );
     try {
-      await _ref
+      await ref
           .read(authRepositoryProvider)
           .resetPinViaTotp(
             phoneCountryCode: _countryCode,
@@ -186,17 +193,20 @@ class LoginController extends StateNotifier<LoginState> {
             totpCode: totpCode,
             newPin: newPin,
           );
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         step: AuthStep.login,
         pinResetDone: true,
       );
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
         errorMessage: 'Une erreur est survenue.',
@@ -208,6 +218,6 @@ class LoginController extends StateNotifier<LoginState> {
 }
 
 final loginControllerProvider =
-    StateNotifierProvider.autoDispose<LoginController, LoginState>((ref) {
-      return LoginController(ref);
-    });
+    NotifierProvider.autoDispose<LoginController, LoginState>(
+      LoginController.new,
+    );

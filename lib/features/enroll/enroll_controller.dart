@@ -32,23 +32,25 @@ class EnrollState {
 
 /// Drives customer enrollment (spec §5.5). On success it exposes the new
 /// customer id so the agent can immediately upload KYC documents.
-class EnrollController extends StateNotifier<EnrollState> {
-  EnrollController(this._ref) : super(const EnrollState());
-
-  final Ref _ref;
-  AgentRepository get _repo => _ref.read(agentRepositoryProvider);
+class EnrollController extends Notifier<EnrollState> {
+  @override
+  EnrollState build() => const EnrollState();
+  AgentRepository get _repo => ref.read(agentRepositoryProvider);
 
   Future<void> submit(EnrollCustomerForm form) async {
     state = state.copyWith(step: EnrollStep.submitting, clearError: true);
     try {
       final res = await _repo.enrollCustomer(form);
+      if (!ref.mounted) return;
       state = state.copyWith(step: EnrollStep.done, result: res);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         step: EnrollStep.form,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         step: EnrollStep.form,
         errorMessage: 'Une erreur est survenue.',
@@ -58,6 +60,6 @@ class EnrollController extends StateNotifier<EnrollState> {
 }
 
 final enrollControllerProvider =
-    StateNotifierProvider.autoDispose<EnrollController, EnrollState>((ref) {
-      return EnrollController(ref);
-    });
+    NotifierProvider.autoDispose<EnrollController, EnrollState>(
+      EnrollController.new,
+    );

@@ -9,16 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+  cupertino_icons: ^2.0.0
 
   # State management & DI
-  flutter_riverpod: ^2.6.1
+  flutter_riverpod: ^3.4.3
 
   # Networking
   dio: ^5.7.0
 
   # Secure token storage
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^11.2.0
 
   # Utilities
   uuid: ^4.5.1
@@ -28,7 +28,7 @@ dependencies:
   # print/preview sheet (save/share), plus a native share sheet for text.
   pdf: ^3.11.1
   printing: ^5.13.3
-  share_plus: ^10.1.2
+  share_plus: ^13.3.1
 
   # KYC document capture / pick (camera + gallery).
   image_picker: ^1.1.2

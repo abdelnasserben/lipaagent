@@ -10,7 +10,16 @@ import '../../data/models/login_response.dart';
 /// login controller), and confirm/revoke keep the Security screen in sync
 /// within the session. Drives whether Security offers "configurer" vs
 /// "révoquer".
-final totpEnrolledProvider = StateProvider<bool>((ref) => false);
+class TotpEnrolled extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool enrolled) => state = enrolled;
+}
+
+final totpEnrolledProvider = NotifierProvider<TotpEnrolled, bool>(
+  TotpEnrolled.new,
+);
 
 /// Async action result for the security sub-flows (change PIN, TOTP).
 class ActionResult {
@@ -23,9 +32,9 @@ class ActionResult {
 }
 
 /// Change-PIN flow (spec §3.6 — PUT /auth-pin, requires currentPin).
-class ChangePinController extends StateNotifier<ActionResult> {
-  ChangePinController(this._ref) : super(ActionResult.idle);
-  final Ref _ref;
+class ChangePinController extends Notifier<ActionResult> {
+  @override
+  ActionResult build() => ActionResult.idle;
 
   Future<void> submit({
     required String currentPin,
@@ -33,13 +42,16 @@ class ChangePinController extends StateNotifier<ActionResult> {
   }) async {
     state = const ActionResult(loading: true);
     try {
-      await _ref
+      await ref
           .read(authRepositoryProvider)
           .changePin(currentPin: currentPin, newPin: newPin);
+      if (!ref.mounted) return;
       state = const ActionResult(done: true);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = ActionResult(error: frenchMessageForError(e));
     } catch (_) {
+      if (!ref.mounted) return;
       state = const ActionResult(error: 'Une erreur est survenue.');
     }
   }
@@ -48,8 +60,8 @@ class ChangePinController extends StateNotifier<ActionResult> {
 }
 
 final changePinControllerProvider =
-    StateNotifierProvider.autoDispose<ChangePinController, ActionResult>(
-      (ref) => ChangePinController(ref),
+    NotifierProvider.autoDispose<ChangePinController, ActionResult>(
+      ChangePinController.new,
     );
 
 /// TOTP enrollment flow (spec §3.7).
@@ -84,16 +96,18 @@ class TotpState {
   );
 }
 
-class TotpController extends StateNotifier<TotpState> {
-  TotpController(this._ref) : super(const TotpState());
-  final Ref _ref;
+class TotpController extends Notifier<TotpState> {
+  @override
+  TotpState build() => const TotpState();
 
   Future<void> start() async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      final setup = await _ref.read(authRepositoryProvider).startTotpSetup();
+      final setup = await ref.read(authRepositoryProvider).startTotpSetup();
+      if (!ref.mounted) return;
       state = state.copyWith(loading: false, setup: setup);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(loading: false, error: frenchMessageForError(e));
     }
   }
@@ -101,10 +115,12 @@ class TotpController extends StateNotifier<TotpState> {
   Future<void> confirm(String code) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      await _ref.read(authRepositoryProvider).confirmTotp(code);
-      _ref.read(totpEnrolledProvider.notifier).state = true;
+      await ref.read(authRepositoryProvider).confirmTotp(code);
+      if (!ref.mounted) return;
+      ref.read(totpEnrolledProvider.notifier).set(true);
       state = state.copyWith(loading: false, confirmed: true);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(loading: false, error: frenchMessageForError(e));
     }
   }
@@ -112,16 +128,16 @@ class TotpController extends StateNotifier<TotpState> {
   Future<void> revoke(String code) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      await _ref.read(authRepositoryProvider).revokeTotp(code);
-      _ref.read(totpEnrolledProvider.notifier).state = false;
+      await ref.read(authRepositoryProvider).revokeTotp(code);
+      if (!ref.mounted) return;
+      ref.read(totpEnrolledProvider.notifier).set(false);
       state = state.copyWith(loading: false, revoked: true);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(loading: false, error: frenchMessageForError(e));
     }
   }
 }
 
 final totpControllerProvider =
-    StateNotifierProvider.autoDispose<TotpController, TotpState>(
-      (ref) => TotpController(ref),
-    );
+    NotifierProvider.autoDispose<TotpController, TotpState>(TotpController.new);

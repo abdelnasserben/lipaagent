@@ -46,14 +46,13 @@ class CashInState {
 
 /// Drives the cash-in flow: customer lookup → amount → submit. One controller
 /// instance owns a single idempotency key for the financial submit (spec §11.2).
-class CashInController extends StateNotifier<CashInState> {
-  CashInController(this._ref) : super(const CashInState());
-
-  final Ref _ref;
+class CashInController extends Notifier<CashInState> {
+  @override
+  CashInState build() => const CashInState();
   static const _countryCode = '269';
   final _operationKey = OperationKey();
 
-  AgentRepository get _repo => _ref.read(agentRepositoryProvider);
+  AgentRepository get _repo => ref.read(agentRepositoryProvider);
 
   Future<void> lookup(String phoneNumber) async {
     state = state.copyWith(looking: true, clearError: true);
@@ -62,17 +61,20 @@ class CashInController extends StateNotifier<CashInState> {
         phoneCountryCode: _countryCode,
         phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
       );
+      if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
         customer: c,
         step: CashInStep.amount,
       );
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
         errorMessage: 'Une erreur est survenue.',
@@ -97,18 +99,21 @@ class CashInController extends StateNotifier<CashInState> {
         customerId: customer.customerId,
         amount: state.amount,
       );
+      if (!ref.mounted) return;
       // The float moved — refresh balance / dashboard.
-      _ref.invalidate(balanceProvider);
-      _ref.invalidate(dailySummaryProvider);
-      _ref.invalidate(transactionsProvider);
-      _ref.invalidate(statementsProvider);
+      ref.invalidate(balanceProvider);
+      ref.invalidate(dailySummaryProvider);
+      ref.invalidate(transactionsProvider);
+      ref.invalidate(statementsProvider);
       state = state.copyWith(step: CashInStep.done, result: res);
     } on ApiError catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         step: CashInStep.amount,
         errorMessage: frenchMessageForError(e),
       );
     } catch (_) {
+      if (!ref.mounted) return;
       state = state.copyWith(
         step: CashInStep.amount,
         errorMessage: 'Une erreur est survenue.',
@@ -118,6 +123,6 @@ class CashInController extends StateNotifier<CashInState> {
 }
 
 final cashInControllerProvider =
-    StateNotifierProvider.autoDispose<CashInController, CashInState>((ref) {
-      return CashInController(ref);
-    });
+    NotifierProvider.autoDispose<CashInController, CashInState>(
+      CashInController.new,
+    );

@@ -196,12 +196,14 @@ class _Body extends StatelessWidget {
   /// Opens the native share sheet with a plain-text recap of the transaction.
   Future<void> _shareReceipt(BuildContext context, AgentTransaction t) async {
     final box = context.findRenderObject() as RenderBox?;
-    await Share.share(
-      receiptShareText(t),
-      subject: 'Reçu Lipa',
-      sharePositionOrigin: box != null
-          ? box.localToGlobal(Offset.zero) & box.size
-          : null,
+    await SharePlus.instance.share(
+      ShareParams(
+        text: receiptShareText(t),
+        subject: 'Reçu Lipa',
+        sharePositionOrigin: box != null
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null,
+      ),
     );
   }
 }

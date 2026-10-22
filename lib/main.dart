@@ -23,5 +23,12 @@ Future<void> main() async {
     ),
   );
 
-  runApp(const ProviderScope(child: LipaAgentApp()));
+  runApp(
+    ProviderScope(
+      // No automatic retry of failed requests: the agent decides (boring and
+      // predictable; a retried call could surprise them).
+      retry: (retryCount, error) => null,
+      child: const LipaAgentApp(),
+    ),
+  );
 }

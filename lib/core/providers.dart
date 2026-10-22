@@ -15,9 +15,8 @@ final appConfigProvider = Provider<AppConfig>((ref) {
 });
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
-  return const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  // Android: encrypted with a key held by the Android Keystore (default).
+  return const FlutterSecureStorage();
 });
 
 final tokenStoreProvider = Provider<TokenStore>((ref) {
