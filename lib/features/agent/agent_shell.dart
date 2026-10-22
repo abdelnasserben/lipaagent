@@ -160,11 +160,14 @@ class _TabItem extends StatelessWidget {
         children: [
           Icon(icon, size: 22, color: color),
           const SizedBox(height: 3),
-          Text(label,
-              style: AppText.ui(
-                  size: 11,
-                  weight: active ? FontWeight.w700 : FontWeight.w500,
-                  color: color)),
+          Text(
+            label,
+            style: AppText.ui(
+              size: 11,
+              weight: active ? FontWeight.w700 : FontWeight.w500,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
@@ -172,11 +175,12 @@ class _TabItem extends StatelessWidget {
 }
 
 class _Fab extends StatelessWidget {
-  const _Fab(
-      {required this.icon,
-      required this.label,
-      required this.onTap,
-      required this.active});
+  const _Fab({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    required this.active,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -199,9 +203,10 @@ class _Fab extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                      color: AppColors.fabGlow,
-                      blurRadius: 18,
-                      offset: Offset(0, 8)),
+                    color: AppColors.fabGlow,
+                    blurRadius: 18,
+                    offset: Offset(0, 8),
+                  ),
                 ],
               ),
               child: Icon(icon, color: Colors.white, size: 24),
@@ -209,11 +214,14 @@ class _Fab extends StatelessWidget {
           ),
           Transform.translate(
             offset: const Offset(0, -14),
-            child: Text(label,
-                style: AppText.ui(
-                    size: 11,
-                    weight: FontWeight.w700,
-                    color: active ? AppColors.inkHi : AppColors.inkMid)),
+            child: Text(
+              label,
+              style: AppText.ui(
+                size: 11,
+                weight: FontWeight.w700,
+                color: active ? AppColors.inkHi : AppColors.inkMid,
+              ),
+            ),
           ),
         ],
       ),

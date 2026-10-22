@@ -49,8 +49,10 @@ class AppConfig {
   /// Suggested cadence for polling the notifications unread badge (spec §11.1).
   final Duration unreadPollInterval;
 
-  static const String _envName =
-      String.fromEnvironment('ENV', defaultValue: 'local');
+  static const String _envName = String.fromEnvironment(
+    'ENV',
+    defaultValue: 'local',
+  );
 
   // Per-environment API hosts. `--dart-define=API_BASE_URL=...` overrides.
   // `localhost` works on a real device tethered over USB with
@@ -59,8 +61,10 @@ class AppConfig {
   //   with `--dart-define=API_BASE_URL=http://10.0.2.2:8080`.
   static const String _localDefault = 'http://localhost:8080';
   static const String _prodDefault = 'https://api.lipa.km';
-  static const String _baseUrlOverride =
-      String.fromEnvironment('API_BASE_URL', defaultValue: '');
+  static const String _baseUrlOverride = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: '',
+  );
 
   factory AppConfig.fromEnvironment() {
     final env = AppEnvironment.fromName(_envName);

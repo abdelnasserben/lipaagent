@@ -196,13 +196,13 @@ class _FakeQrPainter extends CustomPainter {
     final white = Paint()..color = Colors.white;
     for (var y = 0; y < _n; y++) {
       for (var x = 0; x < _n; x++) {
-        final corner = (x < 7 && y < 7) ||
+        final corner =
+            (x < 7 && y < 7) ||
             (x >= _n - 7 && y < 7) ||
             (x < 7 && y >= _n - 7);
         final s = (x * 31 + y * 17 + x * y * 3 + seed) % 7;
         if (corner || s < 3) {
-          canvas.drawRect(
-              Rect.fromLTWH(x * cell, y * cell, cell, cell), dark);
+          canvas.drawRect(Rect.fromLTWH(x * cell, y * cell, cell, cell), dark);
         }
       }
     }
@@ -210,7 +210,7 @@ class _FakeQrPainter extends CustomPainter {
     for (final c in const [
       [0, 0],
       [_n - 7, 0],
-      [0, _n - 7]
+      [0, _n - 7],
     ]) {
       final ox = c[0] * cell, oy = c[1] * cell, w = 7 * cell;
       canvas.drawRect(Rect.fromLTWH(ox, oy, w, w), white);
@@ -222,8 +222,9 @@ class _FakeQrPainter extends CustomPainter {
           ..strokeWidth = cell,
       );
       canvas.drawRect(
-          Rect.fromLTWH(ox + 2 * cell, oy + 2 * cell, 3 * cell, 3 * cell),
-          dark);
+        Rect.fromLTWH(ox + 2 * cell, oy + 2 * cell, 3 * cell, 3 * cell),
+        dark,
+      );
     }
   }
 

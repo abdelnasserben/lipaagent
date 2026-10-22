@@ -33,8 +33,7 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
   /// and the backend would reject (or no-op) it. Show the hint only once the
   /// agent has fully typed both, to avoid nagging mid-entry.
   bool get _sameAsCurrent =>
-      PinValidator.isValid(_current.text) &&
-      _current.text == _newPin.text;
+      PinValidator.isValid(_current.text) && _current.text == _newPin.text;
 
   /// The new PIN and its confirmation must match (mirrors the setup flow).
   bool get _confirmMismatch =>
@@ -52,11 +51,15 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
 
     ref.listen(changePinControllerProvider, (prev, next) {
       if (next.done) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('PIN mis à jour',
-              style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.brandDeep,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'PIN mis à jour',
+              style: AppText.ui(color: Colors.white),
+            ),
+            backgroundColor: AppColors.brandDeep,
+          ),
+        );
         Navigator.of(context).pop();
       }
     });
@@ -77,33 +80,42 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
                   const FieldLabel('PIN actuel'),
                   const SizedBox(height: 8),
                   PinDigitsInput(
-                      controller: _current, onChanged: (_) => setState(() {})),
+                    controller: _current,
+                    onChanged: (_) => setState(() {}),
+                  ),
                   const SizedBox(height: 18),
                   const FieldLabel('Nouveau PIN'),
                   const SizedBox(height: 8),
                   PinDigitsInput(
-                      controller: _newPin, onChanged: (_) => setState(() {})),
+                    controller: _newPin,
+                    onChanged: (_) => setState(() {}),
+                  ),
                   const SizedBox(height: 18),
                   const FieldLabel('Confirmer le nouveau PIN'),
                   const SizedBox(height: 8),
                   PinDigitsInput(
-                      controller: _confirm, onChanged: (_) => setState(() {})),
+                    controller: _confirm,
+                    onChanged: (_) => setState(() {}),
+                  ),
                   if (_sameAsCurrent) ...[
                     const SizedBox(height: 10),
                     Text(
-                        'Le nouveau PIN doit être différent de l’actuel.',
-                        style:
-                            AppText.ui(size: 13, color: AppColors.danger)),
+                      'Le nouveau PIN doit être différent de l’actuel.',
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ] else if (_confirmMismatch) ...[
                     const SizedBox(height: 10),
-                    Text('Les deux PIN ne correspondent pas.',
-                        style:
-                            AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      'Les deux PIN ne correspondent pas.',
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                   if (state.error != null) ...[
                     const SizedBox(height: 14),
-                    Text(state.error!,
-                        style: AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      state.error!,
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                   const SizedBox(height: 24),
                   LipaButton(
@@ -113,10 +125,11 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
                     loading: state.loading,
                     onPressed: _valid
                         ? () => ref
-                            .read(changePinControllerProvider.notifier)
-                            .submit(
+                              .read(changePinControllerProvider.notifier)
+                              .submit(
                                 currentPin: _current.text,
-                                newPin: _newPin.text)
+                                newPin: _newPin.text,
+                              )
                         : null,
                   ),
                 ],

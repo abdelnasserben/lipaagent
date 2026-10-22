@@ -9,12 +9,7 @@ import '../../data/models/transaction.dart';
 /// A single transaction row (icon, type+time, signed amount + status dot).
 /// Direction is derived from the agent wallet (incoming = credited).
 class TxRow extends StatelessWidget {
-  const TxRow({
-    super.key,
-    required this.tx,
-    this.divider = false,
-    this.onTap,
-  });
+  const TxRow({super.key, required this.tx, this.divider = false, this.onTap});
 
   final AgentTransaction tx;
   final bool divider;
@@ -56,10 +51,12 @@ class TxRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppText.ui(size: 14, weight: FontWeight.w600)),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.ui(size: 14, weight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     at != null ? fmtRelativeFr(at) : '—',
@@ -75,7 +72,10 @@ class TxRow extends StatelessWidget {
                 Text(
                   fmtKmf(tx.signedAmount, signed: incoming),
                   style: AppText.mono(
-                      size: 14, weight: FontWeight.w600, color: amountColor),
+                    size: 14,
+                    weight: FontWeight.w600,
+                    color: amountColor,
+                  ),
                 ),
                 const SizedBox(height: 3),
                 _StatusDot(status: tx.status),
@@ -92,12 +92,18 @@ class TxRow extends StatelessWidget {
       TransactionType.cashIn => (Icons.south_west_rounded, 'Dépôt client'),
       TransactionType.cashOut => (Icons.north_east_rounded, 'Retrait marchand'),
       TransactionType.cardSale => (Icons.credit_card_rounded, 'Vente de carte'),
-      TransactionType.cardReplacement =>
-        (Icons.sync_rounded, 'Remplacement de carte'),
-      TransactionType.commissionPayout =>
-        (Icons.savings_outlined, 'Commission'),
-      TransactionType.agentFundIn =>
-        (Icons.account_balance_wallet_outlined, 'Approvisionnement'),
+      TransactionType.cardReplacement => (
+        Icons.sync_rounded,
+        'Remplacement de carte',
+      ),
+      TransactionType.commissionPayout => (
+        Icons.savings_outlined,
+        'Commission',
+      ),
+      TransactionType.agentFundIn => (
+        Icons.account_balance_wallet_outlined,
+        'Approvisionnement',
+      ),
       _ => (Icons.swap_horiz_rounded, type.frLabel),
     };
   }

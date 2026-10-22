@@ -29,7 +29,8 @@ class LimitsScreen extends ConsumerWidget {
             Expanded(
               child: limits.when(
                 loading: () => const Center(
-                    child: CircularProgressIndicator(color: AppColors.brand)),
+                  child: CircularProgressIndicator(color: AppColors.brand),
+                ),
                 error: (_, _) => const Padding(
                   padding: EdgeInsets.all(16),
                   child: ErrorRetry(message: 'Plafonds indisponibles.'),
@@ -64,19 +65,24 @@ class _Body extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              const Icon(Icons.verified_outlined,
-                  color: AppColors.brandDeep, size: 22),
+              const Icon(
+                Icons.verified_outlined,
+                color: AppColors.brandDeep,
+                size: 22,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(limits.profileName,
-                        style:
-                            AppText.ui(size: 15, weight: FontWeight.w700)),
-                    Text('KYC requis : ${limits.requiredKycLevel.frLabel}',
-                        style:
-                            AppText.ui(size: 12.5, color: AppColors.inkMid)),
+                    Text(
+                      limits.profileName,
+                      style: AppText.ui(size: 15, weight: FontWeight.w700),
+                    ),
+                    Text(
+                      'KYC requis : ${limits.requiredKycLevel.frLabel}',
+                      style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                    ),
                   ],
                 ),
               ),
@@ -84,8 +90,10 @@ class _Body extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Text('Par transaction',
-            style: AppText.ui(size: 13, weight: FontWeight.w700)),
+        Text(
+          'Par transaction',
+          style: AppText.ui(size: 13, weight: FontWeight.w700),
+        ),
         const SizedBox(height: 10),
         LipaCard(
           padding: EdgeInsets.zero,
@@ -97,8 +105,7 @@ class _Body extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Text('Cumuls',
-            style: AppText.ui(size: 13, weight: FontWeight.w700)),
+        Text('Cumuls', style: AppText.ui(size: 13, weight: FontWeight.w700)),
         const SizedBox(height: 10),
         LipaCard(
           padding: EdgeInsets.zero,
@@ -108,8 +115,11 @@ class _Body extends StatelessWidget {
               _row('Plafond hebdomadaire', limits.maxWeeklyAmount),
               _row('Plafond mensuel', limits.maxMonthlyAmount),
               _countRow('Transactions / jour', limits.maxDailyTransactionCount),
-              _countRow('Transactions / mois', limits.maxMonthlyTransactionCount,
-                  last: true),
+              _countRow(
+                'Transactions / mois',
+                limits.maxMonthlyTransactionCount,
+                last: true,
+              ),
             ],
           ),
         ),
@@ -118,16 +128,16 @@ class _Body extends StatelessWidget {
   }
 
   Widget _row(String label, int? value, {bool last = false}) => DetailRow(
-        label: label,
-        value: value == null ? 'Non défini' : fmtKmf(value),
-        mono: value != null,
-        last: last,
-      );
+    label: label,
+    value: value == null ? 'Non défini' : fmtKmf(value),
+    mono: value != null,
+    last: last,
+  );
 
   Widget _countRow(String label, int? value, {bool last = false}) => DetailRow(
-        label: label,
-        value: value == null ? 'Non défini' : '$value',
-        mono: value != null,
-        last: last,
-      );
+    label: label,
+    value: value == null ? 'Non défini' : '$value',
+    mono: value != null,
+    last: last,
+  );
 }

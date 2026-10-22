@@ -44,29 +44,29 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     final (heroTitle, heroSubtitle) = switch (step) {
       AuthStep.login => (
-          'Espace agent',
-          'Connectez-vous pour gérer vos opérations cash et l’enrôlement client.'
-        ),
+        'Espace agent',
+        'Connectez-vous pour gérer vos opérations cash et l’enrôlement client.',
+      ),
       AuthStep.mfa => (
-          'Vérifiez votre identité',
-          'Saisissez le code à 6 chiffres de votre application d’authentification.'
-        ),
+        'Vérifiez votre identité',
+        'Saisissez le code à 6 chiffres de votre application d’authentification.',
+      ),
       AuthStep.pinSetup => (
-          'Définir votre PIN',
-          'Choisissez le PIN qui protégera votre compte agent et vos opérations.'
-        ),
+        'Définir votre PIN',
+        'Choisissez le PIN qui protégera votre compte agent et vos opérations.',
+      ),
       AuthStep.forgotPin => (
-          'PIN oublié',
-          'Réinitialisez votre PIN avec le code de votre application d’authentification.'
-        ),
+        'PIN oublié',
+        'Réinitialisez votre PIN avec le code de votre application d’authentification.',
+      ),
       AuthStep.sessionExpired => (
-          'Session expirée',
-          'Vous avez été déconnecté afin de protéger votre compte agent.'
-        ),
+        'Session expirée',
+        'Vous avez été déconnecté afin de protéger votre compte agent.',
+      ),
       AuthStep.locked => (
-          'PIN bloqué',
-          'Trop de tentatives incorrectes. Réessayez dans 15 minutes.'
-        ),
+        'PIN bloqué',
+        'Trop de tentatives incorrectes. Réessayez dans 15 minutes.',
+      ),
     };
 
     final topInset = MediaQuery.of(context).padding.top;
@@ -93,21 +93,27 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       const SizedBox(height: 24),
                       const LipaWordmark(dark: true, size: 44),
                       const SizedBox(height: 36),
-                      Text(heroTitle,
-                          style: AppText.ui(
-                              size: 32,
-                              weight: FontWeight.w700,
-                              color: Colors.white,
-                              letterSpacing: -0.8,
-                              height: 1.05)),
+                      Text(
+                        heroTitle,
+                        style: AppText.ui(
+                          size: 32,
+                          weight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.8,
+                          height: 1.05,
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 300),
-                        child: Text(heroSubtitle,
-                            style: AppText.ui(
-                                size: 14.5,
-                                color: Colors.white.withValues(alpha: 0.62),
-                                height: 1.5)),
+                        child: Text(
+                          heroSubtitle,
+                          style: AppText.ui(
+                            size: 14.5,
+                            color: Colors.white.withValues(alpha: 0.62),
+                            height: 1.5,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -121,8 +127,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   height: 24,
                   decoration: const BoxDecoration(
                     color: AppColors.bg,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(24)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
                   ),
                 ),
               ),
@@ -190,8 +197,10 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
         const SizedBox(height: 18),
         FieldLabel(
           'PIN',
-          trailing: Text('4 à 8 chiffres',
-              style: AppText.ui(size: 12, color: AppColors.inkLow)),
+          trailing: Text(
+            '4 à 8 chiffres',
+            style: AppText.ui(size: 12, color: AppColors.inkLow),
+          ),
         ),
         const SizedBox(height: 8),
         _BoxedInput(
@@ -216,16 +225,21 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
               ),
               IconButton(
                 onPressed: () => setState(() => _reveal = !_reveal),
-                icon: Icon(_reveal ? Icons.visibility_off : Icons.visibility,
-                    size: 20, color: AppColors.inkMid),
+                icon: Icon(
+                  _reveal ? Icons.visibility_off : Icons.visibility,
+                  size: 20,
+                  color: AppColors.inkMid,
+                ),
               ),
             ],
           ),
         ),
         if (s.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(s.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            s.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 18),
         LipaButton(
@@ -235,8 +249,8 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
           loading: s.submitting,
           onPressed: _valid
               ? () => ref
-                  .read(loginControllerProvider.notifier)
-                  .login(phoneNumber: _phone.text, pin: _pin.text)
+                    .read(loginControllerProvider.notifier)
+                    .login(phoneNumber: _phone.text, pin: _pin.text)
               : null,
         ),
         const SizedBox(height: 12),
@@ -246,11 +260,14 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
             onTap: () => ref
                 .read(loginControllerProvider.notifier)
                 .goToStep(AuthStep.forgotPin),
-            child: Text('PIN oublié ?',
-                style: AppText.ui(
-                    size: 13.5,
-                    weight: FontWeight.w600,
-                    color: AppColors.brand)),
+            child: Text(
+              'PIN oublié ?',
+              style: AppText.ui(
+                size: 13.5,
+                weight: FontWeight.w600,
+                color: AppColors.brand,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -259,23 +276,32 @@ class _LoginFormState extends ConsumerState<_LoginForm> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.shield_outlined,
-                  size: 20, color: AppColors.brand),
+              const Icon(
+                Icons.shield_outlined,
+                size: 20,
+                color: AppColors.brand,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: RichText(
                   text: TextSpan(
                     style: AppText.ui(
-                        size: 12.5, color: AppColors.inkMid, height: 1.55),
+                      size: 12.5,
+                      color: AppColors.inkMid,
+                      height: 1.55,
+                    ),
                     children: [
                       TextSpan(
-                          text: 'Sécurité renforcée par Lipa. ',
-                          style: AppText.ui(
-                              size: 12.5,
-                              weight: FontWeight.w600,
-                              color: AppColors.inkHi)),
+                        text: 'Sécurité renforcée par Lipa. ',
+                        style: AppText.ui(
+                          size: 12.5,
+                          weight: FontWeight.w600,
+                          color: AppColors.inkHi,
+                        ),
+                      ),
                       const TextSpan(
-                          text: 'Votre PIN reste confidentiel et protégé.'),
+                        text: 'Votre PIN reste confidentiel et protégé.',
+                      ),
                     ],
                   ),
                 ),
@@ -308,8 +334,10 @@ class _MfaFormState extends ConsumerState<_MfaForm> {
         CodeField(onChanged: (v) => setState(() => _code = v)),
         if (s.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(s.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            s.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 18),
         LipaButton(
@@ -319,7 +347,7 @@ class _MfaFormState extends ConsumerState<_MfaForm> {
           loading: s.submitting,
           onPressed: _code.length == 6
               ? () =>
-                  ref.read(loginControllerProvider.notifier).verifyMfa(_code)
+                    ref.read(loginControllerProvider.notifier).verifyMfa(_code)
               : null,
         ),
         const SizedBox(height: 4),
@@ -327,8 +355,10 @@ class _MfaFormState extends ConsumerState<_MfaForm> {
           onPressed: () => ref
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
-          child: Text('← Retour à la connexion',
-              style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+          child: Text(
+            '← Retour à la connexion',
+            style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+          ),
         ),
       ],
     );
@@ -376,8 +406,10 @@ class _PinSetupFormState extends ConsumerState<_PinSetupForm> {
         PinDigitsInput(controller: _confirm, onChanged: (_) => setState(() {})),
         if (s.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(s.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            s.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 22),
         LipaButton(
@@ -386,8 +418,9 @@ class _PinSetupFormState extends ConsumerState<_PinSetupForm> {
           full: true,
           loading: s.submitting,
           onPressed: _valid
-              ? () =>
-                  ref.read(loginControllerProvider.notifier).setupPin(_pin.text)
+              ? () => ref
+                    .read(loginControllerProvider.notifier)
+                    .setupPin(_pin.text)
               : null,
         ),
         const SizedBox(height: 4),
@@ -395,8 +428,10 @@ class _PinSetupFormState extends ConsumerState<_PinSetupForm> {
           onPressed: () => ref
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
-          child: Text('← Retour à la connexion',
-              style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+          child: Text(
+            '← Retour à la connexion',
+            style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+          ),
         ),
       ],
     );
@@ -412,8 +447,9 @@ class _ForgotPinForm extends ConsumerStatefulWidget {
 }
 
 class _ForgotPinFormState extends ConsumerState<_ForgotPinForm> {
-  late final TextEditingController _phone =
-      TextEditingController(text: widget.state.phoneNumber);
+  late final TextEditingController _phone = TextEditingController(
+    text: widget.state.phoneNumber,
+  );
   final _newPin = TextEditingController();
   final _confirm = TextEditingController();
   String _code = '';
@@ -461,8 +497,10 @@ class _ForgotPinFormState extends ConsumerState<_ForgotPinForm> {
         CodeField(onChanged: (v) => setState(() => _code = v)),
         if (s.errorMessage != null) ...[
           const SizedBox(height: 12),
-          Text(s.errorMessage!,
-              style: AppText.ui(size: 13, color: AppColors.danger)),
+          Text(
+            s.errorMessage!,
+            style: AppText.ui(size: 13, color: AppColors.danger),
+          ),
         ],
         const SizedBox(height: 22),
         LipaButton(
@@ -471,11 +509,13 @@ class _ForgotPinFormState extends ConsumerState<_ForgotPinForm> {
           full: true,
           loading: s.submitting,
           onPressed: _valid
-              ? () => ref.read(loginControllerProvider.notifier).resetPin(
-                    phoneNumber: _phone.text,
-                    totpCode: _code,
-                    newPin: _newPin.text,
-                  )
+              ? () => ref
+                    .read(loginControllerProvider.notifier)
+                    .resetPin(
+                      phoneNumber: _phone.text,
+                      totpCode: _code,
+                      newPin: _newPin.text,
+                    )
               : null,
         ),
         const SizedBox(height: 4),
@@ -483,8 +523,10 @@ class _ForgotPinFormState extends ConsumerState<_ForgotPinForm> {
           onPressed: () => ref
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
-          child: Text('← Retour à la connexion',
-              style: AppText.ui(size: 13.5, color: AppColors.inkMid)),
+          child: Text(
+            '← Retour à la connexion',
+            style: AppText.ui(size: 13.5, color: AppColors.inkMid),
+          ),
         ),
       ],
     );
@@ -511,22 +553,30 @@ class _SessionExpired extends ConsumerWidget {
                   color: AppColors.warnSoft,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
-                child: const Icon(Icons.warning_amber_rounded,
-                    size: 20, color: AppColors.warn),
+                child: const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 20,
+                  color: AppColors.warn,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Vous avez été déconnecté',
-                        style:
-                            AppText.ui(size: 14.5, weight: FontWeight.w600)),
+                    Text(
+                      'Vous avez été déconnecté',
+                      style: AppText.ui(size: 14.5, weight: FontWeight.w600),
+                    ),
                     const SizedBox(height: 4),
                     Text(
-                        'Reconnectez-vous pour continuer vos opérations agent Lipa.',
-                        style: AppText.ui(
-                            size: 13, color: AppColors.inkMid, height: 1.5)),
+                      'Reconnectez-vous pour continuer vos opérations agent Lipa.',
+                      style: AppText.ui(
+                        size: 13,
+                        color: AppColors.inkMid,
+                        height: 1.5,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -570,22 +620,30 @@ class _PinLocked extends ConsumerWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
-                child: const Icon(Icons.lock_outline,
-                    size: 20, color: AppColors.danger),
+                child: const Icon(
+                  Icons.lock_outline,
+                  size: 20,
+                  color: AppColors.danger,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Saisie du PIN bloquée',
-                        style:
-                            AppText.ui(size: 14.5, weight: FontWeight.w600)),
+                    Text(
+                      'Saisie du PIN bloquée',
+                      style: AppText.ui(size: 14.5, weight: FontWeight.w600),
+                    ),
                     const SizedBox(height: 4),
                     Text(
-                        'PIN incorrect saisi 3 fois. Réessayez dans 15 minutes.',
-                        style: AppText.ui(
-                            size: 13, color: AppColors.inkMid, height: 1.5)),
+                      'PIN incorrect saisi 3 fois. Réessayez dans 15 minutes.',
+                      style: AppText.ui(
+                        size: 13,
+                        color: AppColors.inkMid,
+                        height: 1.5,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -612,13 +670,13 @@ class _BoxedInput extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.borderHi),
-        ),
-        child: child,
-      );
+    height: 52,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: BoxDecoration(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      border: Border.all(color: AppColors.borderHi),
+    ),
+    child: child,
+  );
 }

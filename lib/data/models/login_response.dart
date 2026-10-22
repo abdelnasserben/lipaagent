@@ -43,8 +43,9 @@ class LoginResponse {
           ? AuthTokens.fromJson(rawTokens)
           : null,
       pinSetupToken: json['pinSetupToken'] as String?,
-      pinSetupTokenExpiresAt:
-          rawPinExpiry is String ? DateTime.tryParse(rawPinExpiry) : null,
+      pinSetupTokenExpiresAt: rawPinExpiry is String
+          ? DateTime.tryParse(rawPinExpiry)
+          : null,
     );
   }
 }
@@ -56,7 +57,7 @@ class TotpSetup {
   final String qrUri;
 
   factory TotpSetup.fromJson(Map<String, dynamic> json) => TotpSetup(
-        secret: (json['secret'] ?? '') as String,
-        qrUri: (json['qrUri'] ?? '') as String,
-      );
+    secret: (json['secret'] ?? '') as String,
+    qrUri: (json['qrUri'] ?? '') as String,
+  );
 }

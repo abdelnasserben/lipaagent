@@ -24,7 +24,7 @@ class SessionState {
 
 class SessionController extends StateNotifier<SessionState> {
   SessionController(this._ref)
-      : super(const SessionState(status: SessionStatus.unknown)) {
+    : super(const SessionState(status: SessionStatus.unknown)) {
     _bootstrap();
   }
 
@@ -52,7 +52,9 @@ class SessionController extends StateNotifier<SessionState> {
   void _onSessionExpired() {
     if (state.status == SessionStatus.authenticated) {
       state = const SessionState(
-          status: SessionStatus.unauthenticated, expiredNotice: true);
+        status: SessionStatus.unauthenticated,
+        expiredNotice: true,
+      );
       _resetUserScopedState();
     }
   }
@@ -88,5 +90,5 @@ class SessionController extends StateNotifier<SessionState> {
 
 final sessionControllerProvider =
     StateNotifierProvider<SessionController, SessionState>((ref) {
-  return SessionController(ref);
-});
+      return SessionController(ref);
+    });

@@ -28,8 +28,7 @@ class KycDocumentsScreen extends ConsumerStatefulWidget {
   final String customerName;
 
   @override
-  ConsumerState<KycDocumentsScreen> createState() =>
-      _KycDocumentsScreenState();
+  ConsumerState<KycDocumentsScreen> createState() => _KycDocumentsScreenState();
 }
 
 /// Largest dimension we capture/keep for a KYC photo. An ID document stays
@@ -62,8 +61,9 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
 
   void _reload() {
     setState(() {
-      _future =
-          ref.read(agentRepositoryProvider).getKycDocuments(widget.customerId);
+      _future = ref
+          .read(agentRepositoryProvider)
+          .getKycDocuments(widget.customerId);
     });
   }
 
@@ -104,7 +104,9 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
     if (bytes == null) return;
     setState(() => _uploading = true);
     try {
-      await ref.read(agentRepositoryProvider).uploadKycDocument(
+      await ref
+          .read(agentRepositoryProvider)
+          .uploadKycDocument(
             customerId: widget.customerId,
             documentType: _selectedType,
             file: KycUploadFile(
@@ -116,8 +118,10 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Document envoyé',
-              style: AppText.ui(color: Colors.white)),
+          content: Text(
+            'Document envoyé',
+            style: AppText.ui(color: Colors.white),
+          ),
           backgroundColor: AppColors.brandDeep,
           duration: const Duration(seconds: 1),
         ),
@@ -134,10 +138,12 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
   }
 
   void _snack(String msg, {bool error = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg, style: AppText.ui(color: Colors.white)),
-      backgroundColor: error ? AppColors.danger : AppColors.nearBlack,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, style: AppText.ui(color: Colors.white)),
+        backgroundColor: error ? AppColors.danger : AppColors.nearBlack,
+      ),
+    );
   }
 
   void _pickSource() {
@@ -153,8 +159,10 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined,
-                  color: AppColors.inkHi),
+              leading: const Icon(
+                Icons.photo_camera_outlined,
+                color: AppColors.inkHi,
+              ),
               title: Text('Prendre une photo', style: AppText.ui(size: 15)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -162,10 +170,14 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined,
-                  color: AppColors.inkHi),
-              title: Text('Choisir dans la galerie',
-                  style: AppText.ui(size: 15)),
+              leading: const Icon(
+                Icons.photo_library_outlined,
+                color: AppColors.inkHi,
+              ),
+              title: Text(
+                'Choisir dans la galerie',
+                style: AppText.ui(size: 15),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _pick(ImageSource.gallery);
@@ -210,9 +222,11 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                       onPressed: _pickSource,
                     ),
                     const SizedBox(height: 8),
-                    Text('Image, 10 Mo maximum.',
-                        textAlign: TextAlign.center,
-                        style: AppText.ui(size: 12, color: AppColors.inkLow)),
+                    Text(
+                      'Image, 10 Mo maximum.',
+                      textAlign: TextAlign.center,
+                      style: AppText.ui(size: 12, color: AppColors.inkLow),
+                    ),
                   ] else
                     _PendingPreview(
                       bytes: _pendingBytes!,
@@ -222,8 +236,10 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                       onDiscard: _uploading ? null : _discardPending,
                     ),
                   const SizedBox(height: 24),
-                  Text('Documents déjà envoyés',
-                      style: AppText.ui(size: 15, weight: FontWeight.w700)),
+                  Text(
+                    'Documents déjà envoyés',
+                    style: AppText.ui(size: 15, weight: FontWeight.w700),
+                  ),
                   const SizedBox(height: 12),
                   FutureBuilder<List<KycDocument>>(
                     future: _future,
@@ -233,7 +249,8 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                           padding: EdgeInsets.all(24),
                           child: Center(
                             child: CircularProgressIndicator(
-                                color: AppColors.brand),
+                              color: AppColors.brand,
+                            ),
                           ),
                         );
                       }
@@ -247,9 +264,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                         );
                       }
                       return Column(
-                        children: [
-                          for (final d in docs) _DocRow(doc: d),
-                        ],
+                        children: [for (final d in docs) _DocRow(doc: d)],
                       );
                     },
                   ),
@@ -295,8 +310,10 @@ class _PendingPreview extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Vérifiez le document — $typeLabel',
-              style: AppText.ui(size: 13, weight: FontWeight.w600)),
+          Text(
+            'Vérifiez le document — $typeLabel',
+            style: AppText.ui(size: 13, weight: FontWeight.w600),
+          ),
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -355,15 +372,17 @@ class _TypePicker extends StatelessWidget {
             selected: value == t,
             onSelected: (_) => onChanged(t),
             labelStyle: AppText.ui(
-                size: 12.5,
-                weight: FontWeight.w600,
-                color: value == t ? Colors.white : AppColors.inkHi),
+              size: 12.5,
+              weight: FontWeight.w600,
+              color: value == t ? Colors.white : AppColors.inkHi,
+            ),
             selectedColor: AppColors.brand,
             backgroundColor: AppColors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.pill),
               side: BorderSide(
-                  color: value == t ? AppColors.brand : AppColors.borderHi),
+                color: value == t ? AppColors.brand : AppColors.borderHi,
+              ),
             ),
           ),
       ],
@@ -397,18 +416,23 @@ class _DocRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: AppColors.border),
               ),
-              child: const Icon(Icons.description_outlined,
-                  size: 20, color: AppColors.ink),
+              child: const Icon(
+                Icons.description_outlined,
+                size: 20,
+                color: AppColors.ink,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(doc.documentType.frLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppText.ui(size: 14, weight: FontWeight.w600)),
+                  Text(
+                    doc.documentType.frLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.ui(size: 14, weight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 2),
                   Text(
                     doc.uploadedAt != null

@@ -42,13 +42,13 @@ class AppNotification {
       );
 
   AppNotification asRead() => AppNotification(
-        id: id,
-        category: category,
-        title: title,
-        body: body,
-        status: NotificationStatus.read,
-        data: data,
-        createdAt: createdAt,
-        readAt: readAt ?? DateTime.now(),
-      );
+    id: id,
+    category: category,
+    title: title,
+    body: body,
+    status: NotificationStatus.read,
+    data: data,
+    createdAt: createdAt,
+    readAt: readAt ?? DateTime.now(),
+  );
 }

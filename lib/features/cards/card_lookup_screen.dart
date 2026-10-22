@@ -51,8 +51,10 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text(stolen ? 'Déclarer volée' : 'Déclarer perdue',
-            style: AppText.ui(size: 17, weight: FontWeight.w700)),
+        title: Text(
+          stolen ? 'Déclarer volée' : 'Déclarer perdue',
+          style: AppText.ui(size: 17, weight: FontWeight.w700),
+        ),
         content: Text(
           stolen
               ? 'Confirmer que cette carte est volée ? Elle sera bloquée immédiatement.'
@@ -62,16 +64,21 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Annuler',
-                style: AppText.ui(size: 14, color: AppColors.inkMid)),
+            child: Text(
+              'Annuler',
+              style: AppText.ui(size: 14, color: AppColors.inkMid),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Confirmer',
-                style: AppText.ui(
-                    size: 14,
-                    weight: FontWeight.w700,
-                    color: AppColors.danger)),
+            child: Text(
+              'Confirmer',
+              style: AppText.ui(
+                size: 14,
+                weight: FontWeight.w700,
+                color: AppColors.danger,
+              ),
+            ),
           ),
         ],
       ),
@@ -83,24 +90,36 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
       final repo = ref.read(agentRepositoryProvider);
       final updated = stolen
           ? await repo.reportCardStolen(
-              customerId: card.customerId!, cardId: card.cardId)
+              customerId: card.customerId!,
+              cardId: card.cardId,
+            )
           : await repo.reportCardLost(
-              customerId: card.customerId!, cardId: card.cardId);
+              customerId: card.customerId!,
+              cardId: card.cardId,
+            );
       setState(() => _card = updated);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(stolen ? 'Carte déclarée volée' : 'Carte déclarée perdue',
-              style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.nearBlack,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              stolen ? 'Carte déclarée volée' : 'Carte déclarée perdue',
+              style: AppText.ui(color: Colors.white),
+            ),
+            backgroundColor: AppColors.nearBlack,
+          ),
+        );
       }
     } on ApiError catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(frenchMessageForError(e),
-              style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.danger,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              frenchMessageForError(e),
+              style: AppText.ui(color: Colors.white),
+            ),
+            backgroundColor: AppColors.danger,
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -131,7 +150,9 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                   ),
                   const SizedBox(height: 16),
                   LipaButton(
-                    label: card == null ? 'Scanner la carte' : 'Scanner une autre carte',
+                    label: card == null
+                        ? 'Scanner la carte'
+                        : 'Scanner une autre carte',
                     icon: const Icon(Icons.nfc_rounded),
                     size: BtnSize.lg,
                     full: true,
@@ -141,9 +162,10 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                   if (_error != null) ...[
                     const SizedBox(height: 14),
                     InfoBanner(
-                        kind: PillKind.declined,
-                        icon: Icons.error_outline,
-                        text: _error!),
+                      kind: PillKind.declined,
+                      icon: Icons.error_outline,
+                      text: _error!,
+                    ),
                   ],
                   if (card != null) ...[
                     const SizedBox(height: 20),
@@ -168,7 +190,9 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                           Expanded(
                             child: LipaButton(
                               label: 'Volée',
-                              icon: const Icon(Icons.report_gmailerrorred_rounded),
+                              icon: const Icon(
+                                Icons.report_gmailerrorred_rounded,
+                              ),
                               variant: BtnVariant.danger,
                               size: BtnSize.lg,
                               loading: _busy,
@@ -233,21 +257,25 @@ class _CardCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: const Icon(Icons.credit_card_rounded,
-                      color: AppColors.ink),
+                  child: const Icon(
+                    Icons.credit_card_rounded,
+                    color: AppColors.ink,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(card.maskedInternalCardNumber ?? 'Carte',
-                          style:
-                              AppText.mono(size: 16, weight: FontWeight.w600)),
+                      Text(
+                        card.maskedInternalCardNumber ?? 'Carte',
+                        style: AppText.mono(size: 16, weight: FontWeight.w600),
+                      ),
                       const SizedBox(height: 3),
-                      Text(card.cardType.frLabel,
-                          style:
-                              AppText.ui(size: 12.5, color: AppColors.inkMid)),
+                      Text(
+                        card.cardType.frLabel,
+                        style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                      ),
                     ],
                   ),
                 ),
@@ -261,13 +289,11 @@ class _CardCard extends StatelessWidget {
             DetailRow(label: 'Titulaire', value: card.customerFullName!),
           if (card.customerPhoneMasked != null)
             DetailRow(
-                label: 'Téléphone',
-                value: card.customerPhoneMasked!,
-                mono: true),
-          DetailRow(
-              label: 'Statut',
-              value: card.status.frLabel,
-              last: true),
+              label: 'Téléphone',
+              value: card.customerPhoneMasked!,
+              mono: true,
+            ),
+          DetailRow(label: 'Statut', value: card.status.frLabel, last: true),
         ],
       ),
     );

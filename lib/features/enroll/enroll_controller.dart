@@ -23,12 +23,11 @@ class EnrollState {
     EnrollCustomerResult? result,
     String? errorMessage,
     bool clearError = false,
-  }) =>
-      EnrollState(
-        step: step ?? this.step,
-        result: result ?? this.result,
-        errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      );
+  }) => EnrollState(
+    step: step ?? this.step,
+    result: result ?? this.result,
+    errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+  );
 }
 
 /// Drives customer enrollment (spec §5.5). On success it exposes the new
@@ -46,15 +45,19 @@ class EnrollController extends StateNotifier<EnrollState> {
       state = state.copyWith(step: EnrollStep.done, result: res);
     } on ApiError catch (e) {
       state = state.copyWith(
-          step: EnrollStep.form, errorMessage: frenchMessageForError(e));
+        step: EnrollStep.form,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          step: EnrollStep.form, errorMessage: 'Une erreur est survenue.');
+        step: EnrollStep.form,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 }
 
 final enrollControllerProvider =
     StateNotifierProvider.autoDispose<EnrollController, EnrollState>((ref) {
-  return EnrollController(ref);
-});
+      return EnrollController(ref);
+    });

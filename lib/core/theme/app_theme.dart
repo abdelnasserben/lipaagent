@@ -57,10 +57,9 @@ ThemeData buildAppTheme() {
   );
 
   return base.copyWith(
-    textTheme: GoogleFonts.bricolageGrotesqueTextTheme(base.textTheme).apply(
-      bodyColor: AppColors.inkHi,
-      displayColor: AppColors.inkHi,
-    ),
+    textTheme: GoogleFonts.bricolageGrotesqueTextTheme(
+      base.textTheme,
+    ).apply(bodyColor: AppColors.inkHi, displayColor: AppColors.inkHi),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.bg,
       surfaceTintColor: Colors.transparent,

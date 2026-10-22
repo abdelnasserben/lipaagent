@@ -45,7 +45,9 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
       _error = null;
     });
     try {
-      final c = await ref.read(agentRepositoryProvider).lookupCustomer(
+      final c = await ref
+          .read(agentRepositoryProvider)
+          .lookupCustomer(
             phoneCountryCode: '269',
             phoneNumber: PhoneValidator.digitsOf(_phone.text),
           );
@@ -117,8 +119,11 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                           _customer = null;
                           _error = null;
                         }),
-                        icon: const Icon(Icons.edit_outlined,
-                            size: 18, color: AppColors.inkMid),
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: AppColors.inkMid,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -141,9 +146,11 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                   ],
                   if (_error != null) ...[
                     const SizedBox(height: 14),
-                    Text(_error!,
-                        textAlign: TextAlign.center,
-                        style: AppText.ui(size: 13, color: AppColors.danger)),
+                    Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: AppText.ui(size: 13, color: AppColors.danger),
+                    ),
                   ],
                 ],
               ),
@@ -163,15 +170,15 @@ class _KycLevelCard extends StatelessWidget {
 
   /// Plain-language hint about the documents the next tier usually needs.
   String? get _nextStepHint => switch (level) {
-        KycLevel.none || KycLevel.basic =>
-          'Pour le niveau Vérifié : pièce d’identité (CNI ou passeport) '
-              'et justificatif de domicile.',
-        KycLevel.verified =>
-          'Pour le niveau Renforcé : justificatifs complémentaires '
-              'demandés par le back-office.',
-        KycLevel.enhanced => null, // already at the top tier
-        KycLevel.unknown => null,
-      };
+    KycLevel.none || KycLevel.basic =>
+      'Pour le niveau Vérifié : pièce d’identité (CNI ou passeport) '
+          'et justificatif de domicile.',
+    KycLevel.verified =>
+      'Pour le niveau Renforcé : justificatifs complémentaires '
+          'demandés par le back-office.',
+    KycLevel.enhanced => null, // already at the top tier
+    KycLevel.unknown => null,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -189,20 +196,26 @@ class _KycLevelCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('Niveau KYC actuel',
-                  style: AppText.ui(size: 13, color: AppColors.inkMid)),
+              Text(
+                'Niveau KYC actuel',
+                style: AppText.ui(size: 13, color: AppColors.inkMid),
+              ),
               const Spacer(),
               StatusPill(label: level.frLabel, kind: pillKind),
             ],
           ),
           if (hint != null) ...[
             const SizedBox(height: 12),
-            Text(hint,
-                style: AppText.ui(size: 13, color: AppColors.inkHi, height: 1.4)),
+            Text(
+              hint,
+              style: AppText.ui(size: 13, color: AppColors.inkHi, height: 1.4),
+            ),
           ] else if (level == KycLevel.enhanced) ...[
             const SizedBox(height: 12),
-            Text('Niveau maximal atteint.',
-                style: AppText.ui(size: 13, color: AppColors.inkHi)),
+            Text(
+              'Niveau maximal atteint.',
+              style: AppText.ui(size: 13, color: AppColors.inkHi),
+            ),
           ],
         ],
       ),

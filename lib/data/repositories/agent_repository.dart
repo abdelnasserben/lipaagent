@@ -143,7 +143,9 @@ class ApiAgentRepository implements AgentRepository {
   Future<AgentProfile> getProfile() async {
     final res = await _api.get('$_base/me');
     final profile = unwrapData(
-        res.data, (d) => AgentProfile.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => AgentProfile.fromJson(d as Map<String, dynamic>),
+    );
     _walletId = profile.walletId;
     return profile;
   }
@@ -152,7 +154,9 @@ class ApiAgentRepository implements AgentRepository {
   Future<AgentBalance> getBalance() async {
     final res = await _api.get('$_base/balance');
     final b = unwrapData(
-        res.data, (d) => AgentBalance.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => AgentBalance.fromJson(d as Map<String, dynamic>),
+    );
     _walletId ??= b.walletId;
     return b;
   }
@@ -162,7 +166,9 @@ class ApiAgentRepository implements AgentRepository {
     try {
       final res = await _api.get('$_base/limits');
       return unwrapData(
-          res.data, (d) => AgentLimits.fromJson(d as Map<String, dynamic>));
+        res.data,
+        (d) => AgentLimits.fromJson(d as Map<String, dynamic>),
+      );
     } catch (_) {
       // 404 → no profile assigned (spec §5.2): treat as "not configured".
       return null;
@@ -173,7 +179,9 @@ class ApiAgentRepository implements AgentRepository {
   Future<AgentDailySummary> getDailySummary() async {
     final res = await _api.get('$_base/summary/daily');
     return unwrapData(
-        res.data, (d) => AgentDailySummary.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => AgentDailySummary.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -184,24 +192,32 @@ class ApiAgentRepository implements AgentRepository {
     String? from,
     String? to,
   }) async {
-    final res = await _api.get('$_base/transactions', query: {
-      if (cursor != null) 'cursor': cursor,
-      if (status != null) 'status': status,
-      if (type != null) 'type': type,
-      if (from != null) 'from': from,
-      if (to != null) 'to': to,
-    });
+    final res = await _api.get(
+      '$_base/transactions',
+      query: {
+        if (cursor != null) 'cursor': cursor,
+        if (status != null) 'status': status,
+        if (type != null) 'type': type,
+        if (from != null) 'from': from,
+        if (to != null) 'to': to,
+      },
+    );
     return PagedResponse.fromBody(
-        res.data, (m) => AgentTransaction.fromJson(m, walletId: _walletId));
+      res.data,
+      (m) => AgentTransaction.fromJson(m, walletId: _walletId),
+    );
   }
 
   @override
   Future<AgentTransaction> getTransaction(String id) async {
     final res = await _api.get('$_base/transactions/$id');
     return unwrapData(
-        res.data,
-        (d) => AgentTransaction.fromJson(d as Map<String, dynamic>,
-            walletId: _walletId));
+      res.data,
+      (d) => AgentTransaction.fromJson(
+        d as Map<String, dynamic>,
+        walletId: _walletId,
+      ),
+    );
   }
 
   @override
@@ -210,11 +226,14 @@ class ApiAgentRepository implements AgentRepository {
     String? from,
     String? to,
   }) async {
-    final res = await _api.get('$_base/statements', query: {
-      if (cursor != null) 'cursor': cursor,
-      if (from != null) 'from': from,
-      if (to != null) 'to': to,
-    });
+    final res = await _api.get(
+      '$_base/statements',
+      query: {
+        if (cursor != null) 'cursor': cursor,
+        if (from != null) 'from': from,
+        if (to != null) 'to': to,
+      },
+    );
     return PagedResponse.fromBody(res.data, StatementEntry.fromJson);
   }
 
@@ -223,12 +242,14 @@ class ApiAgentRepository implements AgentRepository {
     required String phoneCountryCode,
     required String phoneNumber,
   }) async {
-    final res = await _api.get('$_base/lookup', query: {
-      'phoneCountryCode': phoneCountryCode,
-      'phoneNumber': phoneNumber,
-    });
+    final res = await _api.get(
+      '$_base/lookup',
+      query: {'phoneCountryCode': phoneCountryCode, 'phoneNumber': phoneNumber},
+    );
     return unwrapData(
-        res.data, (d) => CustomerLookup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => CustomerLookup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -236,19 +257,26 @@ class ApiAgentRepository implements AgentRepository {
     required String phoneCountryCode,
     required String phoneNumber,
   }) async {
-    final res = await _api.get('$_base/merchants/lookup', query: {
-      'phoneCountryCode': phoneCountryCode,
-      'phoneNumber': phoneNumber,
-    });
+    final res = await _api.get(
+      '$_base/merchants/lookup',
+      query: {'phoneCountryCode': phoneCountryCode, 'phoneNumber': phoneNumber},
+    );
     return unwrapData(
-        res.data, (d) => MerchantLookup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => MerchantLookup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
   Future<CardLookup> lookupCard(String nfcUid) async {
-    final res = await _api.get('$_base/cards/lookup', query: {'nfcUid': nfcUid});
+    final res = await _api.get(
+      '$_base/cards/lookup',
+      query: {'nfcUid': nfcUid},
+    );
     return unwrapData(
-        res.data, (d) => CardLookup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => CardLookup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -263,7 +291,9 @@ class ApiAgentRepository implements AgentRepository {
       body: {'customerId': customerId, 'amount': amount},
     );
     return unwrapData(
-        res.data, (d) => AgentCashInResult.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => AgentCashInResult.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -296,8 +326,10 @@ class ApiAgentRepository implements AgentRepository {
   @override
   Future<EnrollCustomerResult> enrollCustomer(EnrollCustomerForm form) async {
     final res = await _api.post('$_base/customers/enroll', body: form.toJson());
-    return unwrapData(res.data,
-        (d) => EnrollCustomerResult.fromJson(d as Map<String, dynamic>));
+    return unwrapData(
+      res.data,
+      (d) => EnrollCustomerResult.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -308,17 +340,16 @@ class ApiAgentRepository implements AgentRepository {
   }) async {
     final formData = FormData.fromMap({
       'documentType': documentType.wire,
-      'file': MultipartFile.fromBytes(
-        file.bytes,
-        filename: file.filename,
-      ),
+      'file': MultipartFile.fromBytes(file.bytes, filename: file.filename),
     });
     final res = await _api.postMultipart(
       '$_base/customers/$customerId/kyc-documents',
       formData: formData,
     );
     return unwrapData(
-        res.data, (d) => KycDocument.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => KycDocument.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -329,9 +360,10 @@ class ApiAgentRepository implements AgentRepository {
 
   @override
   Future<List<CardStockItem>> getCardStock({CardStockStatus? status}) async {
-    final res = await _api.get('$_base/card-stock', query: {
-      if (status != null) 'status': status.wire,
-    });
+    final res = await _api.get(
+      '$_base/card-stock',
+      query: {if (status != null) 'status': status.wire},
+    );
     return PagedResponse.fromBody(res.data, CardStockItem.fromJson).items;
   }
 
@@ -352,7 +384,9 @@ class ApiAgentRepository implements AgentRepository {
       },
     );
     return unwrapData(
-        res.data, (d) => CardSaleResult.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => CardSaleResult.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -360,10 +394,13 @@ class ApiAgentRepository implements AgentRepository {
     required String customerId,
     required String cardId,
   }) async {
-    final res = await _api
-        .post('$_base/customers/$customerId/cards/$cardId/report-lost');
+    final res = await _api.post(
+      '$_base/customers/$customerId/cards/$cardId/report-lost',
+    );
     return unwrapData(
-        res.data, (d) => CardLookup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => CardLookup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -371,10 +408,13 @@ class ApiAgentRepository implements AgentRepository {
     required String customerId,
     required String cardId,
   }) async {
-    final res = await _api
-        .post('$_base/customers/$customerId/cards/$cardId/report-stolen');
+    final res = await _api.post(
+      '$_base/customers/$customerId/cards/$cardId/report-stolen',
+    );
     return unwrapData(
-        res.data, (d) => CardLookup.fromJson(d as Map<String, dynamic>));
+      res.data,
+      (d) => CardLookup.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -390,8 +430,10 @@ class ApiAgentRepository implements AgentRepository {
       headers: {'Idempotency-Key': idempotencyKey},
       body: {'stockId': stockId, 'replacementFee': replacementFee},
     );
-    return unwrapData(res.data,
-        (d) => CardReplacementResult.fromJson(d as Map<String, dynamic>));
+    return unwrapData(
+      res.data,
+      (d) => CardReplacementResult.fromJson(d as Map<String, dynamic>),
+    );
   }
 
   @override
@@ -399,10 +441,13 @@ class ApiAgentRepository implements AgentRepository {
     String? cursor,
     String? status,
   }) async {
-    final res = await _api.get('$_base/commissions', query: {
-      if (cursor != null) 'cursor': cursor,
-      if (status != null) 'status': status,
-    });
+    final res = await _api.get(
+      '$_base/commissions',
+      query: {
+        if (cursor != null) 'cursor': cursor,
+        if (status != null) 'status': status,
+      },
+    );
     return PagedResponse.fromBody(res.data, Commission.fromJson);
   }
 

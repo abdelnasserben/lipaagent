@@ -98,8 +98,7 @@ class _PhoneInputState extends State<PhoneInput> {
   @override
   Widget build(BuildContext context) {
     final error = PhoneValidator.errorText(widget.controller.text);
-    final borderColor =
-        error != null ? AppColors.danger : AppColors.borderHi;
+    final borderColor = error != null ? AppColors.danger : AppColors.borderHi;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,8 +119,10 @@ class _PhoneInputState extends State<PhoneInput> {
                   color: AppColors.surfaceAlt,
                   border: Border(right: BorderSide(color: AppColors.border)),
                 ),
-                child: Text('+269',
-                    style: AppText.mono(size: 15, weight: FontWeight.w600)),
+                child: Text(
+                  '+269',
+                  style: AppText.mono(size: 15, weight: FontWeight.w600),
+                ),
               ),
               Expanded(
                 child: Padding(
@@ -140,9 +141,10 @@ class _PhoneInputState extends State<PhoneInput> {
                       isDense: true,
                       hintText: '300 00 00',
                       hintStyle: AppText.mono(
-                          size: 16,
-                          letterSpacing: 0.6,
-                          color: AppColors.inkFaint),
+                        size: 16,
+                        letterSpacing: 0.6,
+                        color: AppColors.inkFaint,
+                      ),
                     ),
                   ),
                 ),
@@ -152,8 +154,7 @@ class _PhoneInputState extends State<PhoneInput> {
         ),
         if (error != null) ...[
           const SizedBox(height: 6),
-          Text(error,
-              style: AppText.ui(size: 12, color: AppColors.danger)),
+          Text(error, style: AppText.ui(size: 12, color: AppColors.danger)),
         ],
       ],
     );
@@ -197,8 +198,10 @@ class PinDigitsInput extends StatelessWidget {
           ),
           AnimatedBuilder(
             animation: controller,
-            builder: (_, _) => Text('${controller.text.length}/8',
-                style: AppText.mono(size: 12.5, color: AppColors.inkLow)),
+            builder: (_, _) => Text(
+              '${controller.text.length}/8',
+              style: AppText.mono(size: 12.5, color: AppColors.inkLow),
+            ),
           ),
         ],
       ),

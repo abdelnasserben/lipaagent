@@ -81,7 +81,11 @@ class PayoutStatusPill extends StatelessWidget {
 
 /// Generic actor/customer status pill (active/suspended/etc).
 class GenericStatusPill extends StatelessWidget {
-  const GenericStatusPill({super.key, required this.label, required this.active});
+  const GenericStatusPill({
+    super.key,
+    required this.label,
+    required this.active,
+  });
   final String label;
   final bool active;
   @override

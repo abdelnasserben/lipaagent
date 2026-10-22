@@ -67,21 +67,21 @@ class ApiError implements Exception {
   /// True for the 422 codes that mean the actor's account/wallet is unusable
   /// and not self-recoverable (spec §3.1 / §5.4).
   bool get isAccountBlocked => const {
-        'ACTOR_PENDING_KYC',
-        'ACTOR_SUSPENDED',
-        'ACTOR_CLOSED',
-        'AGENT_NOT_FOUND',
-        'WALLET_FROZEN',
-        'WALLET_SUSPENDED',
-        'WALLET_CLOSED',
-      }.contains(code);
+    'ACTOR_PENDING_KYC',
+    'ACTOR_SUSPENDED',
+    'ACTOR_CLOSED',
+    'AGENT_NOT_FOUND',
+    'WALLET_FROZEN',
+    'WALLET_SUSPENDED',
+    'WALLET_CLOSED',
+  }.contains(code);
 
   /// A network/transport failure with no HTTP response (timeout, no route).
   factory ApiError.network([String? message]) => ApiError(
-        statusCode: 0,
-        code: 'NETWORK_ERROR',
-        message: message ?? 'Connexion impossible. Vérifiez votre réseau.',
-      );
+    statusCode: 0,
+    code: 'NETWORK_ERROR',
+    message: message ?? 'Connexion impossible. Vérifiez votre réseau.',
+  );
 
   @override
   String toString() => 'ApiError($statusCode $code: ${message ?? ''})';

@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
 
-enum BtnVariant { primary, primaryDark, secondary, ghost, danger, dangerOutline }
+enum BtnVariant {
+  primary,
+  primaryDark,
+  secondary,
+  ghost,
+  danger,
+  dangerOutline,
+}
 
 enum BtnSize { sm, md, lg }
 
@@ -37,15 +44,27 @@ class LipaButton extends StatelessWidget {
     };
     final (bg, fg, bd) = switch (variant) {
       BtnVariant.primary => (AppColors.brand, Colors.white, AppColors.brand),
-      BtnVariant.primaryDark =>
-        (AppColors.nearBlack, Colors.white, AppColors.nearBlack),
-      BtnVariant.secondary =>
-        (AppColors.surface, AppColors.inkHi, AppColors.borderHi),
-      BtnVariant.ghost =>
-        (Colors.transparent, AppColors.inkHi, Colors.transparent),
+      BtnVariant.primaryDark => (
+        AppColors.nearBlack,
+        Colors.white,
+        AppColors.nearBlack,
+      ),
+      BtnVariant.secondary => (
+        AppColors.surface,
+        AppColors.inkHi,
+        AppColors.borderHi,
+      ),
+      BtnVariant.ghost => (
+        Colors.transparent,
+        AppColors.inkHi,
+        Colors.transparent,
+      ),
       BtnVariant.danger => (AppColors.danger, Colors.white, AppColors.danger),
-      BtnVariant.dangerOutline =>
-        (AppColors.surface, AppColors.danger, AppColors.danger),
+      BtnVariant.dangerOutline => (
+        AppColors.surface,
+        AppColors.danger,
+        AppColors.danger,
+      ),
     };
     final disabled = onPressed == null || loading;
 
@@ -75,11 +94,15 @@ class LipaButton extends StatelessWidget {
                       width: 16,
                       height: 16,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: fg),
+                        strokeWidth: 2,
+                        color: fg,
+                      ),
                     )
                   else if (icon != null)
                     IconTheme(
-                        data: IconThemeData(color: fg, size: 18), child: icon!),
+                      data: IconThemeData(color: fg, size: 18),
+                      child: icon!,
+                    ),
                   if ((icon != null || loading)) SizedBox(width: gap),
                   Flexible(
                     child: Text(
@@ -106,7 +129,11 @@ class LipaButton extends StatelessWidget {
 enum PillKind { success, pending, declined, warn, info, neutral }
 
 class StatusPill extends StatelessWidget {
-  const StatusPill({super.key, required this.label, this.kind = PillKind.success});
+  const StatusPill({
+    super.key,
+    required this.label,
+    this.kind = PillKind.success,
+  });
 
   final String label;
   final PillKind kind;
@@ -137,12 +164,7 @@ class StatusPill extends StatelessWidget {
 
 /// A small circular icon button (the bell / search / download header buttons).
 class CircleButton extends StatelessWidget {
-  const CircleButton({
-    super.key,
-    required this.child,
-    this.onTap,
-    this.badge,
-  });
+  const CircleButton({super.key, required this.child, this.onTap, this.badge});
 
   final Widget child;
   final VoidCallback? onTap;
@@ -198,9 +220,14 @@ class CountBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.pill),
         border: Border.all(color: Colors.white, width: 2),
       ),
-      child: Text(text,
-          style: AppText.ui(
-              size: 10, weight: FontWeight.w700, color: Colors.white)),
+      child: Text(
+        text,
+        style: AppText.ui(
+          size: 10,
+          weight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
@@ -237,17 +264,21 @@ class ScreenHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: AppText.ui(
-                        size: 19,
-                        weight: FontWeight.w700,
-                        letterSpacing: -0.28)),
+                Text(
+                  title,
+                  style: AppText.ui(
+                    size: 19,
+                    weight: FontWeight.w700,
+                    letterSpacing: -0.28,
+                  ),
+                ),
                 if (subtitle != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
-                    child: Text(subtitle!,
-                        style: AppText.ui(
-                            size: 12.5, color: AppColors.inkMid)),
+                    child: Text(
+                      subtitle!,
+                      style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                    ),
                   ),
               ],
             ),
@@ -304,18 +335,23 @@ class DetailRow extends StatelessWidget {
                         ? AppText.mono(
                             size: 13.5,
                             weight: FontWeight.w600,
-                            color: valueColor ?? AppColors.inkHi)
+                            color: valueColor ?? AppColors.inkHi,
+                          )
                         : AppText.ui(
                             size: 13.5,
                             weight: FontWeight.w600,
-                            color: valueColor ?? AppColors.inkHi),
+                            color: valueColor ?? AppColors.inkHi,
+                          ),
                   ),
                 ),
                 if (copy)
                   const Padding(
                     padding: EdgeInsets.only(left: 6),
-                    child: Icon(Icons.copy_rounded,
-                        size: 14, color: AppColors.inkLow),
+                    child: Icon(
+                      Icons.copy_rounded,
+                      size: 14,
+                      color: AppColors.inkLow,
+                    ),
                   ),
               ],
             ),
@@ -389,8 +425,10 @@ class InfoBanner extends StatelessWidget {
           Icon(icon, size: 18, color: fg),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(text,
-                style: AppText.ui(size: 12.5, color: fg, height: 1.5)),
+            child: Text(
+              text,
+              style: AppText.ui(size: 12.5, color: fg, height: 1.5),
+            ),
           ),
         ],
       ),
@@ -430,15 +468,18 @@ class EmptyState extends StatelessWidget {
             child: Icon(icon, color: AppColors.inkLow, size: 26),
           ),
           const SizedBox(height: 14),
-          Text(title,
-              textAlign: TextAlign.center,
-              style: AppText.ui(size: 15, weight: FontWeight.w700)),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: AppText.ui(size: 15, weight: FontWeight.w700),
+          ),
           if (message != null) ...[
             const SizedBox(height: 6),
-            Text(message!,
-                textAlign: TextAlign.center,
-                style: AppText.ui(
-                    size: 13, color: AppColors.inkMid, height: 1.5)),
+            Text(
+              message!,
+              textAlign: TextAlign.center,
+              style: AppText.ui(size: 13, color: AppColors.inkMid, height: 1.5),
+            ),
           ],
         ],
       ),
@@ -459,9 +500,11 @@ class ErrorRetry extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Text(message,
-              textAlign: TextAlign.center,
-              style: AppText.ui(size: 13, color: AppColors.inkMid)),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: AppText.ui(size: 13, color: AppColors.inkMid),
+          ),
           if (onRetry != null) ...[
             const SizedBox(height: 12),
             LipaButton(

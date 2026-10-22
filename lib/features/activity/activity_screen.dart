@@ -31,9 +31,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
           title: 'Activité',
           subtitle: 'Vos transactions',
           action: CircleButton(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const StatementScreen()),
-            ),
+            onTap: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const StatementScreen())),
             child: const Icon(Icons.description_outlined),
           ),
         ),
@@ -71,8 +71,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 children: const [
                   Padding(
                     padding: EdgeInsets.all(16),
-                    child:
-                        ErrorRetry(message: 'Impossible de charger l’activité.'),
+                    child: ErrorRetry(
+                      message: 'Impossible de charger l’activité.',
+                    ),
                   ),
                 ],
               ),
@@ -104,7 +105,8 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(i == 0 ? AppRadius.xl : 0),
                         bottom: Radius.circular(
-                            i == txs.length - 1 ? AppRadius.xl : 0),
+                          i == txs.length - 1 ? AppRadius.xl : 0,
+                        ),
                       ),
                     ),
                     child: TxRow(
@@ -144,14 +146,18 @@ class _Chip extends StatelessWidget {
         decoration: BoxDecoration(
           color: active ? AppColors.inkHi : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          border:
-              Border.all(color: active ? AppColors.inkHi : AppColors.border),
+          border: Border.all(
+            color: active ? AppColors.inkHi : AppColors.border,
+          ),
         ),
-        child: Text(label,
-            style: AppText.ui(
-                size: 12.5,
-                weight: FontWeight.w600,
-                color: active ? Colors.white : AppColors.inkMid)),
+        child: Text(
+          label,
+          style: AppText.ui(
+            size: 12.5,
+            weight: FontWeight.w600,
+            color: active ? Colors.white : AppColors.inkMid,
+          ),
+        ),
       ),
     );
   }

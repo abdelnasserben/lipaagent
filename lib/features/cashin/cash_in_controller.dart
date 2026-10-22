@@ -34,15 +34,14 @@ class CashInState {
     AgentCashInResult? result,
     String? errorMessage,
     bool clearError = false,
-  }) =>
-      CashInState(
-        step: step ?? this.step,
-        looking: looking ?? this.looking,
-        customer: customer ?? this.customer,
-        amount: amount ?? this.amount,
-        result: result ?? this.result,
-        errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
-      );
+  }) => CashInState(
+    step: step ?? this.step,
+    looking: looking ?? this.looking,
+    customer: customer ?? this.customer,
+    amount: amount ?? this.amount,
+    result: result ?? this.result,
+    errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+  );
 }
 
 /// Drives the cash-in flow: customer lookup → amount → submit. One controller
@@ -64,13 +63,20 @@ class CashInController extends StateNotifier<CashInState> {
         phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
       );
       state = state.copyWith(
-          looking: false, customer: c, step: CashInStep.amount);
+        looking: false,
+        customer: c,
+        step: CashInStep.amount,
+      );
     } on ApiError catch (e) {
       state = state.copyWith(
-          looking: false, errorMessage: frenchMessageForError(e));
+        looking: false,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          looking: false, errorMessage: 'Une erreur est survenue.');
+        looking: false,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 
@@ -97,16 +103,19 @@ class CashInController extends StateNotifier<CashInState> {
       state = state.copyWith(step: CashInStep.done, result: res);
     } on ApiError catch (e) {
       state = state.copyWith(
-          step: CashInStep.amount, errorMessage: frenchMessageForError(e));
+        step: CashInStep.amount,
+        errorMessage: frenchMessageForError(e),
+      );
     } catch (_) {
       state = state.copyWith(
-          step: CashInStep.amount,
-          errorMessage: 'Une erreur est survenue.');
+        step: CashInStep.amount,
+        errorMessage: 'Une erreur est survenue.',
+      );
     }
   }
 }
 
 final cashInControllerProvider =
     StateNotifierProvider.autoDispose<CashInController, CashInState>((ref) {
-  return CashInController(ref);
-});
+      return CashInController(ref);
+    });

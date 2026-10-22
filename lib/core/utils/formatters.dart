@@ -14,8 +14,8 @@ String fmtKmf(int n, {bool signed = false}) {
   final sign = n < 0
       ? '−'
       : signed
-          ? '+'
-          : '';
+      ? '+'
+      : '';
   return '$sign$grouped KMF';
 }
 

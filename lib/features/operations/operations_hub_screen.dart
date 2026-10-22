@@ -28,7 +28,8 @@ class OperationsHubScreen extends ConsumerWidget {
         Expanded(
           child: profile.when(
             loading: () => const Center(
-                child: CircularProgressIndicator(color: AppColors.brand)),
+              child: CircularProgressIndicator(color: AppColors.brand),
+            ),
             error: (_, _) => const Padding(
               padding: EdgeInsets.all(16),
               child: ErrorRetry(message: 'Profil indisponible.'),
@@ -50,56 +51,67 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
-        _Section(title: 'Espèces', children: [
-          if (profile.canDoCashIn)
-            _OpRow(
-              icon: Icons.south_west_rounded,
-              title: 'Dépôt client (cash-in)',
-              subtitle: 'Créditer le portefeuille d’un client',
-              onTap: () => _push(context, const CashInScreen()),
-            ),
-          if (profile.canDoCashOut)
-            _OpRow(
-              icon: Icons.north_east_rounded,
-              title: 'Retrait marchand (cash-out)',
-              subtitle: 'Décaisser pour un marchand',
-              onTap: () => _push(context, const CashOutScreen()),
-            ),
-          if (!profile.canDoCashIn && !profile.canDoCashOut)
-            const _Disabled(
-                text: 'Les opérations espèces ne sont pas activées sur votre compte.'),
-        ]),
+        _Section(
+          title: 'Espèces',
+          children: [
+            if (profile.canDoCashIn)
+              _OpRow(
+                icon: Icons.south_west_rounded,
+                title: 'Dépôt client (cash-in)',
+                subtitle: 'Créditer le portefeuille d’un client',
+                onTap: () => _push(context, const CashInScreen()),
+              ),
+            if (profile.canDoCashOut)
+              _OpRow(
+                icon: Icons.north_east_rounded,
+                title: 'Retrait marchand (cash-out)',
+                subtitle: 'Décaisser pour un marchand',
+                onTap: () => _push(context, const CashOutScreen()),
+              ),
+            if (!profile.canDoCashIn && !profile.canDoCashOut)
+              const _Disabled(
+                text:
+                    'Les opérations espèces ne sont pas activées sur votre compte.',
+              ),
+          ],
+        ),
         const SizedBox(height: 18),
-        _Section(title: 'Clients', children: [
-          _OpRow(
-            icon: Icons.person_add_alt_1_rounded,
-            title: 'Enrôler un client',
-            subtitle: 'Créer un compte + KYC',
-            onTap: () => _push(context, const EnrollScreen()),
-          ),
-          _OpRow(
-            icon: Icons.badge_outlined,
-            title: 'KYC client',
-            subtitle: 'Compléter le dossier d’un client existant',
-            onTap: () => _push(context, const KycCustomerScreen()),
-          ),
-        ]),
-        const SizedBox(height: 18),
-        _Section(title: 'Cartes', children: [
-          _OpRow(
-            icon: Icons.search_rounded,
-            title: 'Rechercher une carte',
-            subtitle: 'Par UID NFC — perte, vol, remplacement',
-            onTap: () => _push(context, const CardLookupScreen()),
-          ),
-          if (profile.canSellCards)
+        _Section(
+          title: 'Clients',
+          children: [
             _OpRow(
-              icon: Icons.add_card_rounded,
-              title: 'Vendre une carte',
-              subtitle: 'Depuis votre stock attribué',
-              onTap: () => _push(context, const CardSaleScreen()),
+              icon: Icons.person_add_alt_1_rounded,
+              title: 'Enrôler un client',
+              subtitle: 'Créer un compte + KYC',
+              onTap: () => _push(context, const EnrollScreen()),
             ),
-        ]),
+            _OpRow(
+              icon: Icons.badge_outlined,
+              title: 'KYC client',
+              subtitle: 'Compléter le dossier d’un client existant',
+              onTap: () => _push(context, const KycCustomerScreen()),
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        _Section(
+          title: 'Cartes',
+          children: [
+            _OpRow(
+              icon: Icons.search_rounded,
+              title: 'Rechercher une carte',
+              subtitle: 'Par UID NFC — perte, vol, remplacement',
+              onTap: () => _push(context, const CardLookupScreen()),
+            ),
+            if (profile.canSellCards)
+              _OpRow(
+                icon: Icons.add_card_rounded,
+                title: 'Vendre une carte',
+                subtitle: 'Depuis votre stock attribué',
+                onTap: () => _push(context, const CardSaleScreen()),
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -122,12 +134,15 @@ class _Section extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
-          child: Text(title.toUpperCase(),
-              style: AppText.ui(
-                  size: 11.5,
-                  weight: FontWeight.w700,
-                  color: AppColors.inkLow,
-                  letterSpacing: 0.8)),
+          child: Text(
+            title.toUpperCase(),
+            style: AppText.ui(
+              size: 11.5,
+              weight: FontWeight.w700,
+              color: AppColors.inkLow,
+              letterSpacing: 0.8,
+            ),
+          ),
         ),
         LipaCard(
           padding: EdgeInsets.zero,
@@ -173,11 +188,15 @@ class _OpRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: AppText.ui(size: 14.5, weight: FontWeight.w600)),
+                  Text(
+                    title,
+                    style: AppText.ui(size: 14.5, weight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: AppText.ui(size: 12.5, color: AppColors.inkMid)),
+                  Text(
+                    subtitle,
+                    style: AppText.ui(size: 12.5, color: AppColors.inkMid),
+                  ),
                 ],
               ),
             ),

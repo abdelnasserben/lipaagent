@@ -46,13 +46,17 @@ class PartyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.ui(size: 15.5, weight: FontWeight.w700)),
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppText.ui(size: 15.5, weight: FontWeight.w700),
+                ),
                 const SizedBox(height: 3),
-                Text(subtitle,
-                    style: AppText.mono(size: 13, color: AppColors.inkMid)),
+                Text(
+                  subtitle,
+                  style: AppText.mono(size: 13, color: AppColors.inkMid),
+                ),
               ],
             ),
           ),

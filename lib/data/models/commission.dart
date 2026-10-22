@@ -30,15 +30,15 @@ class Commission {
   final DateTime? createdAt;
 
   factory Commission.fromJson(Map<String, dynamic> json) => Commission(
-        id: (json['id'] ?? '') as String,
-        transactionId: (json['transactionId'] ?? '') as String,
-        appliedRuleId: (json['appliedRuleId'] ?? '') as String,
-        amount: _int(json['amount']),
-        basisAmount: _int(json['basisAmount']),
-        settlementMode: SettlementMode.parse(json['settlementMode'] as String?),
-        status: PayoutStatus.parse(json['status'] as String?),
-        paidAt: tryParseInstant(json['paidAt']),
-        paymentTransactionId: json['paymentTransactionId'] as String?,
-        createdAt: tryParseInstant(json['createdAt']),
-      );
+    id: (json['id'] ?? '') as String,
+    transactionId: (json['transactionId'] ?? '') as String,
+    appliedRuleId: (json['appliedRuleId'] ?? '') as String,
+    amount: _int(json['amount']),
+    basisAmount: _int(json['basisAmount']),
+    settlementMode: SettlementMode.parse(json['settlementMode'] as String?),
+    status: PayoutStatus.parse(json['status'] as String?),
+    paidAt: tryParseInstant(json['paidAt']),
+    paymentTransactionId: json['paymentTransactionId'] as String?,
+    createdAt: tryParseInstant(json['createdAt']),
+  );
 }

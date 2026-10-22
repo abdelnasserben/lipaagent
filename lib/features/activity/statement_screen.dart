@@ -69,8 +69,11 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.calendar_today,
-                                size: 16, color: AppColors.inkMid),
+                            const Icon(
+                              Icons.calendar_today,
+                              size: 16,
+                              color: AppColors.inkMid,
+                            ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
@@ -103,23 +106,27 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
                 },
                 child: statements.when(
                   loading: () => const Center(
-                      child:
-                          CircularProgressIndicator(color: AppColors.brand)),
-                  error: (_, _) => ListView(children: const [
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: ErrorRetry(message: 'Relevé indisponible.'),
-                    ),
-                  ]),
+                    child: CircularProgressIndicator(color: AppColors.brand),
+                  ),
+                  error: (_, _) => ListView(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: ErrorRetry(message: 'Relevé indisponible.'),
+                      ),
+                    ],
+                  ),
                   data: (entries) {
                     if (entries.isEmpty) {
-                      return ListView(children: const [
-                        EmptyState(
-                          icon: Icons.description_outlined,
-                          title: 'Relevé vide',
-                          message: 'Aucune écriture pour cette période.',
-                        ),
-                      ]);
+                      return ListView(
+                        children: const [
+                          EmptyState(
+                            icon: Icons.description_outlined,
+                            title: 'Relevé vide',
+                            message: 'Aucune écriture pour cette période.',
+                          ),
+                        ],
+                      );
                     }
                     return ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
@@ -145,11 +152,8 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await Printing.layoutPdf(
-        onLayout: (_) => statementPdfBytes(
-          entries,
-          from: _range?.start,
-          to: _range?.end,
-        ),
+        onLayout: (_) =>
+            statementPdfBytes(entries, from: _range?.start, to: _range?.end),
         name: 'releve-lipa.pdf',
       );
     } catch (_) {
@@ -201,10 +205,12 @@ class _EntryRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(entry.descriptionFr,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.ui(size: 14, weight: FontWeight.w600)),
+                Text(
+                  entry.descriptionFr,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppText.ui(size: 14, weight: FontWeight.w600),
+                ),
                 const SizedBox(height: 2),
                 Text(
                   entry.postedAt != null ? fmtDateTimeFr(entry.postedAt!) : '—',
@@ -220,13 +226,16 @@ class _EntryRow extends StatelessWidget {
               Text(
                 fmtKmf(entry.signedAmount, signed: credit),
                 style: AppText.mono(
-                    size: 14,
-                    weight: FontWeight.w600,
-                    color: credit ? AppColors.brandDeep : AppColors.inkHi),
+                  size: 14,
+                  weight: FontWeight.w600,
+                  color: credit ? AppColors.brandDeep : AppColors.inkHi,
+                ),
               ),
               const SizedBox(height: 2),
-              Text('Solde ${fmtKmfNoUnit(entry.runningBalance)}',
-                  style: AppText.mono(size: 11, color: AppColors.inkLow)),
+              Text(
+                'Solde ${fmtKmfNoUnit(entry.runningBalance)}',
+                style: AppText.mono(size: 11, color: AppColors.inkLow),
+              ),
             ],
           ),
         ],

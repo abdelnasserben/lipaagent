@@ -27,11 +27,15 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
 
     ref.listen(totpControllerProvider, (prev, next) {
       if (next.confirmed) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('TOTP activé',
-              style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.brandDeep,
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'TOTP activé',
+              style: AppText.ui(color: Colors.white),
+            ),
+            backgroundColor: AppColors.brandDeep,
+          ),
+        );
         Navigator.of(context).pop();
       }
     });
@@ -68,9 +72,10 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                     ),
                     if (state.error != null) ...[
                       const SizedBox(height: 14),
-                      Text(state.error!,
-                          style:
-                              AppText.ui(size: 13, color: AppColors.danger)),
+                      Text(
+                        state.error!,
+                        style: AppText.ui(size: 13, color: AppColors.danger),
+                      ),
                     ],
                   ] else ...[
                     Center(
@@ -85,15 +90,20 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text('Clé secrète',
-                        style: AppText.ui(size: 13, weight: FontWeight.w600)),
+                    Text(
+                      'Clé secrète',
+                      style: AppText.ui(size: 13, weight: FontWeight.w600),
+                    ),
                     const SizedBox(height: 8),
                     _SecretBox(secret: setup.secret),
                     const SizedBox(height: 8),
                     Text(
                       'Scannez le QR (illustratif) ou saisissez la clé dans votre application, puis entrez le code à 6 chiffres.',
                       style: AppText.ui(
-                          size: 12.5, color: AppColors.inkMid, height: 1.5),
+                        size: 12.5,
+                        color: AppColors.inkMid,
+                        height: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const FieldLabelInline('Code de vérification'),
@@ -101,9 +111,10 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                     CodeField(onChanged: (v) => setState(() => _code = v)),
                     if (state.error != null) ...[
                       const SizedBox(height: 14),
-                      Text(state.error!,
-                          style:
-                              AppText.ui(size: 13, color: AppColors.danger)),
+                      Text(
+                        state.error!,
+                        style: AppText.ui(size: 13, color: AppColors.danger),
+                      ),
                     ],
                     const SizedBox(height: 22),
                     LipaButton(
@@ -113,8 +124,8 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                       loading: state.loading,
                       onPressed: _code.length == 6
                           ? () => ref
-                              .read(totpControllerProvider.notifier)
-                              .confirm(_code)
+                                .read(totpControllerProvider.notifier)
+                                .confirm(_code)
                           : null,
                     ),
                   ],
@@ -145,11 +156,13 @@ class _SecretBox extends StatelessWidget {
     return InkWell(
       onTap: () {
         Clipboard.setData(ClipboardData(text: secret));
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Clé copiée', style: AppText.ui(color: Colors.white)),
-          backgroundColor: AppColors.nearBlack,
-          duration: const Duration(seconds: 1),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Clé copiée', style: AppText.ui(color: Colors.white)),
+            backgroundColor: AppColors.nearBlack,
+            duration: const Duration(seconds: 1),
+          ),
+        );
       },
       borderRadius: BorderRadius.circular(AppRadius.md),
       child: Container(
@@ -162,9 +175,14 @@ class _SecretBox extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Text(secret,
-                  style: AppText.mono(
-                      size: 14, weight: FontWeight.w600, letterSpacing: 1)),
+              child: Text(
+                secret,
+                style: AppText.mono(
+                  size: 14,
+                  weight: FontWeight.w600,
+                  letterSpacing: 1,
+                ),
+              ),
             ),
             const Icon(Icons.copy_rounded, size: 16, color: AppColors.inkLow),
           ],

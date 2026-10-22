@@ -25,14 +25,14 @@ class CardStockItem {
   final DateTime? assignedAt;
 
   factory CardStockItem.fromJson(Map<String, dynamic> json) => CardStockItem(
-        id: (json['id'] ?? '') as String,
-        nfcUid: (json['nfcUid'] ?? '') as String,
-        internalCardNumber: (json['internalCardNumber'] ?? '') as String,
-        batchRef: (json['batchRef'] ?? '') as String,
-        status: CardStockStatus.parse(json['status'] as String?),
-        producedAt: tryParseInstant(json['producedAt']),
-        assignedAt: tryParseInstant(json['assignedAt']),
-      );
+    id: (json['id'] ?? '') as String,
+    nfcUid: (json['nfcUid'] ?? '') as String,
+    internalCardNumber: (json['internalCardNumber'] ?? '') as String,
+    batchRef: (json['batchRef'] ?? '') as String,
+    status: CardStockStatus.parse(json['status'] as String?),
+    producedAt: tryParseInstant(json['producedAt']),
+    assignedAt: tryParseInstant(json['assignedAt']),
+  );
 }
 
 /// `AgentCardSaleResponse` (spec §7.5).
@@ -61,15 +61,15 @@ class CardSaleResult {
   final DateTime? completedAt;
 
   factory CardSaleResult.fromJson(Map<String, dynamic> json) => CardSaleResult(
-        transactionId: (json['transactionId'] ?? '') as String,
-        status: TransactionStatus.parse(json['status'] as String?),
-        cardId: (json['cardId'] ?? '') as String,
-        customerId: (json['customerId'] ?? '') as String,
-        cardPrice: _int(json['cardPrice']),
-        commissionAmount: _int(json['commissionAmount']),
-        replayed: json['replayed'] == true,
-        completedAt: tryParseInstant(json['completedAt']),
-      );
+    transactionId: (json['transactionId'] ?? '') as String,
+    status: TransactionStatus.parse(json['status'] as String?),
+    cardId: (json['cardId'] ?? '') as String,
+    customerId: (json['customerId'] ?? '') as String,
+    cardPrice: _int(json['cardPrice']),
+    commissionAmount: _int(json['commissionAmount']),
+    replayed: json['replayed'] == true,
+    completedAt: tryParseInstant(json['completedAt']),
+  );
 }
 
 /// `AgentCardReplacementResponse` (spec §7.5).

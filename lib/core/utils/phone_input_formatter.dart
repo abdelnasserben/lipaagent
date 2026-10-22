@@ -20,13 +20,13 @@ class ComorianPhoneFormatter extends TextInputFormatter {
     var digits = newValue.text.replaceAll(RegExp(r'\D'), '');
     // Refuse a leading digit that isn't a known operator prefix: drop it rather
     // than letting the user build a number the API will never accept.
-    if (digits.isNotEmpty && !PhoneValidator.validPrefixes.contains(digits[0])) {
+    if (digits.isNotEmpty &&
+        !PhoneValidator.validPrefixes.contains(digits[0])) {
       return oldValue;
     }
-    final capped =
-        digits.length > PhoneValidator.length
-            ? digits.substring(0, PhoneValidator.length)
-            : digits;
+    final capped = digits.length > PhoneValidator.length
+        ? digits.substring(0, PhoneValidator.length)
+        : digits;
     final formatted = fmtPhoneLocal(capped);
     // Keep the caret at the end — this field is only ever appended/backspaced.
     return TextEditingValue(

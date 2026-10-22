@@ -89,7 +89,7 @@ class NfcCardScanner implements CardScanner {
 /// or a plain [cancelled] dismissal.
 class _NfcSheetResult {
   const _NfcSheetResult({this.uid, this.switchToManual = false})
-      : cancelled = uid == null && !switchToManual;
+    : cancelled = uid == null && !switchToManual;
   final String? uid;
   final bool switchToManual;
   final bool cancelled;
@@ -106,7 +106,8 @@ bool isValidNfcUid(String raw) {
 /// base tag carries the `id` directly; on iOS we read it from whichever tag
 /// tech is present (MiFare / FeliCa / ISO15693). Returns null if none found.
 String? nfcUidFromTag(NfcTag tag) {
-  final id = NfcTagAndroid.from(tag)?.id ??
+  final id =
+      NfcTagAndroid.from(tag)?.id ??
       MiFareIos.from(tag)?.identifier ??
       FeliCaIos.from(tag)?.currentIDm ??
       Iso15693Ios.from(tag)?.identifier;
@@ -155,8 +156,10 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
             // Read something, but not a UID we recognize — keep the session
             // open and let the agent retry or switch to manual entry.
             if (mounted) {
-              setState(() => _error =
-                  'Carte non reconnue. Réessayez ou saisissez l’UID.');
+              setState(
+                () => _error =
+                    'Carte non reconnue. Réessayez ou saisissez l’UID.',
+              );
             }
           }
         },
@@ -186,8 +189,7 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
     if (!mounted) return;
     // Close the NFC sheet; the scanner opens manual entry next.
     _done = true;
-    Navigator.of(context)
-        .pop(const _NfcSheetResult(switchToManual: true));
+    Navigator.of(context).pop(const _NfcSheetResult(switchToManual: true));
   }
 
   @override
@@ -222,8 +224,10 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
           Row(
             children: [
               Expanded(
-                child: Text('Scanner la carte',
-                    style: AppText.ui(size: 18, weight: FontWeight.w700)),
+                child: Text(
+                  'Scanner la carte',
+                  style: AppText.ui(size: 18, weight: FontWeight.w700),
+                ),
               ),
               CircleButton(
                 onTap: () => Navigator.of(context).pop(),
@@ -240,8 +244,11 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
                 color: AppColors.brandSoft,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.nfc_rounded,
-                  size: 44, color: AppColors.brandDeep),
+              child: const Icon(
+                Icons.nfc_rounded,
+                size: 44,
+                color: AppColors.brandDeep,
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -262,11 +269,14 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
           Center(
             child: TextButton(
               onPressed: _switchToManual,
-              child: Text('Saisir l’UID manuellement',
-                  style: AppText.ui(
-                      size: 14,
-                      weight: FontWeight.w600,
-                      color: AppColors.brandDeep)),
+              child: Text(
+                'Saisir l’UID manuellement',
+                style: AppText.ui(
+                  size: 14,
+                  weight: FontWeight.w600,
+                  color: AppColors.brandDeep,
+                ),
+              ),
             ),
           ),
         ],
@@ -304,7 +314,11 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.fromLTRB(
-          16, 14, 16, 24 + MediaQuery.of(context).viewInsets.bottom),
+        16,
+        14,
+        16,
+        24 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -323,8 +337,10 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
           Row(
             children: [
               Expanded(
-                child: Text('Saisir l’UID',
-                    style: AppText.ui(size: 18, weight: FontWeight.w700)),
+                child: Text(
+                  'Saisir l’UID',
+                  style: AppText.ui(size: 18, weight: FontWeight.w700),
+                ),
               ),
               CircleButton(
                 onTap: () => Navigator.of(context).pop(),
@@ -353,21 +369,25 @@ class _UidEntrySheetState extends State<_UidEntrySheet> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 borderSide: BorderSide(
-                    color: showError ? AppColors.danger : AppColors.border),
+                  color: showError ? AppColors.danger : AppColors.border,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 borderSide: BorderSide(
-                    color: showError ? AppColors.danger : AppColors.brand,
-                    width: 1.5),
+                  color: showError ? AppColors.danger : AppColors.brand,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
           if (showError)
             Padding(
               padding: const EdgeInsets.only(top: 6, left: 4),
-              child: Text('UID invalide : 14 caractères hex attendus.',
-                  style: AppText.ui(size: 12, color: AppColors.danger)),
+              child: Text(
+                'UID invalide : 14 caractères hex attendus.',
+                style: AppText.ui(size: 12, color: AppColors.danger),
+              ),
             ),
           const SizedBox(height: 14),
           LipaButton(

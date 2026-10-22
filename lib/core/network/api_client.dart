@@ -19,10 +19,10 @@ class ApiClient {
     required AppConfig config,
     required TokenStore tokenStore,
     Dio? dio,
-  })  : _config = config,
-        // ignore: prefer_initializing_formals
-        _tokenStore = tokenStore,
-        _dio = dio ?? Dio() {
+  }) : _config = config,
+       // ignore: prefer_initializing_formals
+       _tokenStore = tokenStore,
+       _dio = dio ?? Dio() {
     _dio.options
       ..baseUrl = config.baseUrl
       ..connectTimeout = config.connectTimeout
@@ -32,10 +32,7 @@ class ApiClient {
       ..validateStatus = (status) => status != null && status < 500;
 
     _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: _onRequest,
-        onError: _onError,
-      ),
+      InterceptorsWrapper(onRequest: _onRequest, onError: _onError),
     );
   }
 
@@ -132,9 +129,9 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? query,
     String? bearer,
-  }) =>
-      _send(() =>
-          _dio.get(path, queryParameters: query, options: _opts(bearer)));
+  }) => _send(
+    () => _dio.get(path, queryParameters: query, options: _opts(bearer)),
+  );
 
   Future<Response<dynamic>> post(
     String path, {
@@ -142,26 +139,22 @@ class ApiClient {
     Map<String, String>? headers,
     String? bearer,
     bool skipAuth = false,
-  }) =>
-      _send(() => _dio.post(
-            path,
-            data: body,
-            options: _opts(bearer, headers: headers, skipAuth: skipAuth),
-          ));
+  }) => _send(
+    () => _dio.post(
+      path,
+      data: body,
+      options: _opts(bearer, headers: headers, skipAuth: skipAuth),
+    ),
+  );
 
-  Future<Response<dynamic>> put(
-    String path, {
-    Object? body,
-    String? bearer,
-  }) =>
+  Future<Response<dynamic>> put(String path, {Object? body, String? bearer}) =>
       _send(() => _dio.put(path, data: body, options: _opts(bearer)));
 
   Future<Response<dynamic>> delete(
     String path, {
     Object? body,
     String? bearer,
-  }) =>
-      _send(() => _dio.delete(path, data: body, options: _opts(bearer)));
+  }) => _send(() => _dio.delete(path, data: body, options: _opts(bearer)));
 
   /// Multipart POST for KYC document upload (spec §5.5 / §11.4). Sends exactly
   /// the `documentType` + `file` fields and lets Dio set the multipart
@@ -170,15 +163,16 @@ class ApiClient {
     String path, {
     required FormData formData,
     Map<String, String>? headers,
-  }) =>
-      _send(() => _dio.post(
-            path,
-            data: formData,
-            options: Options(
-              headers: {...?headers},
-              contentType: 'multipart/form-data',
-            ),
-          ));
+  }) => _send(
+    () => _dio.post(
+      path,
+      data: formData,
+      options: Options(
+        headers: {...?headers},
+        contentType: 'multipart/form-data',
+      ),
+    ),
+  );
 
   Options _opts(
     String? bearer, {

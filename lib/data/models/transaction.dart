@@ -64,50 +64,49 @@ class AgentTransaction {
   factory AgentTransaction.fromJson(
     Map<String, dynamic> json, {
     String? walletId,
-  }) =>
-      AgentTransaction(
-        id: (json['id'] ?? '') as String,
-        type: TransactionType.parse(json['type'] as String?),
-        status: TransactionStatus.parse(json['status'] as String?),
-        sourceWalletId: (json['sourceWalletId'] ?? '') as String,
-        destinationWalletId: (json['destinationWalletId'] ?? '') as String,
-        initiatorType: (json['initiatorType'] ?? '') as String,
-        initiatorId: (json['initiatorId'] ?? '') as String,
-        requestedAmount: _int(json['requestedAmount']),
-        feeAmount: _int(json['feeAmount']),
-        commissionAmount: _int(json['commissionAmount']),
-        netAmountToDestination: _int(json['netAmountToDestination']),
-        cardId: json['cardId'] as String?,
-        terminalId: json['terminalId'] as String?,
-        declineReason: json['declineReason'] as String?,
-        correlationId: json['correlationId'] as String?,
-        createdAt: tryParseInstant(json['createdAt']),
-        completedAt: tryParseInstant(json['completedAt']),
-        declinedAt: tryParseInstant(json['declinedAt']),
-        agentWalletId: walletId,
-      );
+  }) => AgentTransaction(
+    id: (json['id'] ?? '') as String,
+    type: TransactionType.parse(json['type'] as String?),
+    status: TransactionStatus.parse(json['status'] as String?),
+    sourceWalletId: (json['sourceWalletId'] ?? '') as String,
+    destinationWalletId: (json['destinationWalletId'] ?? '') as String,
+    initiatorType: (json['initiatorType'] ?? '') as String,
+    initiatorId: (json['initiatorId'] ?? '') as String,
+    requestedAmount: _int(json['requestedAmount']),
+    feeAmount: _int(json['feeAmount']),
+    commissionAmount: _int(json['commissionAmount']),
+    netAmountToDestination: _int(json['netAmountToDestination']),
+    cardId: json['cardId'] as String?,
+    terminalId: json['terminalId'] as String?,
+    declineReason: json['declineReason'] as String?,
+    correlationId: json['correlationId'] as String?,
+    createdAt: tryParseInstant(json['createdAt']),
+    completedAt: tryParseInstant(json['completedAt']),
+    declinedAt: tryParseInstant(json['declinedAt']),
+    agentWalletId: walletId,
+  );
 
   AgentTransaction withWallet(String? walletId) => AgentTransaction(
-        id: id,
-        type: type,
-        status: status,
-        sourceWalletId: sourceWalletId,
-        destinationWalletId: destinationWalletId,
-        initiatorType: initiatorType,
-        initiatorId: initiatorId,
-        requestedAmount: requestedAmount,
-        feeAmount: feeAmount,
-        commissionAmount: commissionAmount,
-        netAmountToDestination: netAmountToDestination,
-        cardId: cardId,
-        terminalId: terminalId,
-        declineReason: declineReason,
-        correlationId: correlationId,
-        createdAt: createdAt,
-        completedAt: completedAt,
-        declinedAt: declinedAt,
-        agentWalletId: walletId,
-      );
+    id: id,
+    type: type,
+    status: status,
+    sourceWalletId: sourceWalletId,
+    destinationWalletId: destinationWalletId,
+    initiatorType: initiatorType,
+    initiatorId: initiatorId,
+    requestedAmount: requestedAmount,
+    feeAmount: feeAmount,
+    commissionAmount: commissionAmount,
+    netAmountToDestination: netAmountToDestination,
+    cardId: cardId,
+    terminalId: terminalId,
+    declineReason: declineReason,
+    correlationId: correlationId,
+    createdAt: createdAt,
+    completedAt: completedAt,
+    declinedAt: declinedAt,
+    agentWalletId: walletId,
+  );
 }
 
 /// `AgentStatementEntryResponse` (spec §7.3) — a wallet ledger entry.
@@ -161,14 +160,15 @@ class StatementEntry {
   int get signedAmount => entryType.isCredit ? amount : -amount;
 
   factory StatementEntry.fromJson(Map<String, dynamic> json) => StatementEntry(
-        id: (json['id'] ?? '') as String,
-        transactionId: (json['transactionId'] ?? '') as String,
-        entryType: EntryType.parse(json['entryType'] as String?),
-        amount: _int(json['amount']),
-        runningBalance: _int(json['runningBalance']),
-        description: (json['description'] ?? '') as String,
-        postedAt: tryParseInstant(json['postedAt']),
-        globalSequence:
-            json['globalSequence'] is num ? _int(json['globalSequence']) : null,
-      );
+    id: (json['id'] ?? '') as String,
+    transactionId: (json['transactionId'] ?? '') as String,
+    entryType: EntryType.parse(json['entryType'] as String?),
+    amount: _int(json['amount']),
+    runningBalance: _int(json['runningBalance']),
+    description: (json['description'] ?? '') as String,
+    postedAt: tryParseInstant(json['postedAt']),
+    globalSequence: json['globalSequence'] is num
+        ? _int(json['globalSequence'])
+        : null,
+  );
 }
