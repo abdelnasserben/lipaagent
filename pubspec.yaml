@@ -37,6 +37,9 @@ dependencies:
   # chip fall back to manual UID entry; even on NFC phones the agent can opt
   # into manual entry. Abstracted behind the Scanner seam (see core/scan).
   nfc_manager: 4.2.1
+  retrofit: ^4.10.0
+  json_annotation: ^4.12.0
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +49,10 @@ dev_dependencies:
   # Generates Android/iOS launcher icons from a single source PNG.
   # Dev-only: it does not ship in the built app.
   flutter_launcher_icons: ^0.14.1
+  swagger_parser: ^1.45.0
+  build_runner: ^2.15.1
+  json_serializable: ^6.15.2
+  retrofit_generator: ^10.3.2
 
 flutter:
   uses-material-design: true

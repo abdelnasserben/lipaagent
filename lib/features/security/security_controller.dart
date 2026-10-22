@@ -1,8 +1,9 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/login_response.dart';
 
 /// Session-scoped "TOTP is enrolled" flag for the connected agent. The agent
 /// profile (spec §7.2) carries no TOTP field, so we track it for the session:
@@ -43,8 +44,15 @@ class ChangePinController extends Notifier<ActionResult> {
     state = const ActionResult(loading: true);
     try {
       await ref
-          .read(authRepositoryProvider)
-          .changePin(currentPin: currentPin, newPin: newPin);
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthPinController.change(
+              body: ChangeAuthPinRequest(
+                currentPin: currentPin,
+                newPin: newPin,
+              ),
+            ),
+          );
       if (!ref.mounted) return;
       state = const ActionResult(done: true);
     } on ApiError catch (e) {
@@ -75,14 +83,14 @@ class TotpState {
   });
 
   final bool loading;
-  final TotpSetup? setup;
+  final TotpSetupResponse? setup;
   final String? error;
   final bool confirmed;
   final bool revoked;
 
   TotpState copyWith({
     bool? loading,
-    TotpSetup? setup,
+    TotpSetupResponse? setup,
     String? error,
     bool clearError = false,
     bool? confirmed,
@@ -103,7 +111,10 @@ class TotpController extends Notifier<TotpState> {
   Future<void> start() async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      final setup = await ref.read(authRepositoryProvider).startTotpSetup();
+      final res = await ref
+          .read(apiClientProvider)
+          .send((api) => api.agentTotpController.setup());
+      final setup = requireData(res.data);
       if (!ref.mounted) return;
       state = state.copyWith(loading: false, setup: setup);
     } on ApiError catch (e) {
@@ -115,7 +126,13 @@ class TotpController extends Notifier<TotpState> {
   Future<void> confirm(String code) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      await ref.read(authRepositoryProvider).confirmTotp(code);
+      await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentTotpController.confirm(
+              body: TotpConfirmRequest(code: code),
+            ),
+          );
       if (!ref.mounted) return;
       ref.read(totpEnrolledProvider.notifier).set(true);
       state = state.copyWith(loading: false, confirmed: true);
@@ -128,7 +145,13 @@ class TotpController extends Notifier<TotpState> {
   Future<void> revoke(String code) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
-      await ref.read(authRepositoryProvider).revokeTotp(code);
+      await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentTotpController.revoke(
+              body: TotpRevokeRequest(code: code),
+            ),
+          );
       if (!ref.mounted) return;
       ref.read(totpEnrolledProvider.notifier).set(false);
       state = state.copyWith(loading: false, revoked: true);

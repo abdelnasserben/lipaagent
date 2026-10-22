@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -11,8 +14,6 @@ import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import '../../core/widgets/pin_sheet.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/cash_result.dart';
-import '../../data/models/enums.dart';
 import 'cash_out_controller.dart';
 
 /// Cash-out (withdrawal) flow with the control-tier loop (spec §8):
@@ -181,15 +182,16 @@ class _AmountStep extends ConsumerWidget {
         if (merchant != null)
           PartyCard(
             icon: Icons.storefront_rounded,
-            name: merchant.businessName,
+            name: merchant.businessName ?? '',
             subtitle: '${merchant.externalRef} · ${merchant.phonePretty}',
-            statusLabel: merchant.canCashOut
-                ? merchant.status.frLabel
+            statusLabel: (merchant.canCashOut ?? false)
+                ? MerchantStatus.parse(merchant.status?.json).frLabel
                 : 'Retrait bloqué',
             statusActive:
-                merchant.canCashOut && merchant.status == MerchantStatus.active,
+                (merchant.canCashOut ?? false) &&
+                merchant.status == MerchantLookupResponseStatus.active,
           ),
-        if (merchant != null && !merchant.canCashOut) ...[
+        if (merchant != null && !(merchant.canCashOut ?? false)) ...[
           const SizedBox(height: 12),
           const InfoBanner(
             kind: PillKind.warn,
@@ -262,7 +264,7 @@ class _AmountStep extends ConsumerWidget {
 
 class _ApprovalScreen extends ConsumerWidget {
   const _ApprovalScreen({required this.result});
-  final AgentCashOutResult result;
+  final AgentMerchantCashOutResponse result;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -304,7 +306,7 @@ class _ApprovalScreen extends ConsumerWidget {
 
 class _DoneScreen extends ConsumerWidget {
   const _DoneScreen({required this.result, required this.merchantName});
-  final AgentCashOutResult result;
+  final AgentMerchantCashOutResponse result;
   final String merchantName;
 
   @override

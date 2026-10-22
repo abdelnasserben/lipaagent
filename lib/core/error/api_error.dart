@@ -1,5 +1,6 @@
-/// Backend error code → typed handling. Mirrors the codes listed in the
-/// Agent spec §5 (per-endpoint "Primary errors").
+/// An error answer of the backend (`{ "error": { code, message, details,
+/// correlationId } }`), or a network failure. Error bodies are not in the
+/// contract. Branch on [code], never on [message] (technical English).
 ///
 /// We keep the raw `code` string so unknown/future codes never crash the app.
 class ApiError implements Exception {
@@ -78,11 +79,12 @@ class ApiError implements Exception {
   }.contains(code);
 
   /// A network/transport failure with no HTTP response (timeout, no route).
-  factory ApiError.network([String? message]) => ApiError(
-    statusCode: 0,
-    code: 'NETWORK_ERROR',
-    message: message ?? 'Connexion impossible. Vérifiez votre réseau.',
-  );
+  factory ApiError.network() =>
+      const ApiError(statusCode: 0, code: 'NETWORK_ERROR');
+
+  /// A success response without the expected `data`.
+  factory ApiError.emptyResponse() =>
+      const ApiError(statusCode: 0, code: 'EMPTY_RESPONSE');
 
   @override
   String toString() => 'ApiError($statusCode $code: ${message ?? ''})';
@@ -216,3 +218,9 @@ String frenchMessageForError(ApiError e) {
           : 'Une erreur est survenue. Réessayez. (Réf. $ref)';
   }
 }
+
+/// French text for any failure caught by a controller: the translated code of
+/// an [ApiError] (with its correlation id for support), else a generic text.
+String errorMessage(Object error) => error is ApiError
+    ? frenchMessageForError(error)
+    : 'Une erreur est survenue. Réessayez.';

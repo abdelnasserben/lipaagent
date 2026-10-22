@@ -1,9 +1,9 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/enrollment.dart';
-import '../../data/repositories/agent_repository.dart';
 
 enum EnrollStep { form, submitting, done, error }
 
@@ -15,12 +15,12 @@ class EnrollState {
   });
 
   final EnrollStep step;
-  final EnrollCustomerResult? result;
+  final EnrollCustomerResponse? result;
   final String? errorMessage;
 
   EnrollState copyWith({
     EnrollStep? step,
-    EnrollCustomerResult? result,
+    EnrollCustomerResponse? result,
     String? errorMessage,
     bool clearError = false,
   }) => EnrollState(
@@ -35,12 +35,15 @@ class EnrollState {
 class EnrollController extends Notifier<EnrollState> {
   @override
   EnrollState build() => const EnrollState();
-  AgentRepository get _repo => ref.read(agentRepositoryProvider);
+  ApiClient get _api => ref.read(apiClientProvider);
 
-  Future<void> submit(EnrollCustomerForm form) async {
+  Future<void> submit(EnrollCustomerRequest form) async {
     state = state.copyWith(step: EnrollStep.submitting, clearError: true);
     try {
-      final res = await _repo.enrollCustomer(form);
+      final answer = await _api.send(
+        (api) => api.agentEnrollmentController.enroll(body: form),
+      );
+      final res = requireData(answer.data);
       if (!ref.mounted) return;
       state = state.copyWith(step: EnrollStep.done, result: res);
     } on ApiError catch (e) {

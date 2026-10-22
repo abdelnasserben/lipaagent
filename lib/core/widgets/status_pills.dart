@@ -1,6 +1,6 @@
+import '../../api/enums.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../data/models/enums.dart';
 import 'common.dart';
 
 /// French status pill for transactions.

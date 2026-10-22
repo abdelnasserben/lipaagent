@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
+import 'cards_controller.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
-import '../../data/models/enums.dart';
-import '../../data/models/lookup.dart';
 import 'card_replace_screen.dart';
 
 /// Card lookup by scanned NFC UID (spec §5.4 / §5.6). The result drives the
@@ -21,32 +23,16 @@ class CardLookupScreen extends ConsumerStatefulWidget {
 }
 
 class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
-  CardLookup? _card;
-  bool _busy = false;
-  String? _error;
+  CardLookupController get _controller =>
+      ref.read(cardLookupControllerProvider.notifier);
 
   Future<void> _scan() async {
     final uid = await ref.read(cardScannerProvider).scanCardUid(context);
     if (uid == null) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final card = await ref.read(agentRepositoryProvider).lookupCard(uid);
-      setState(() => _card = card);
-    } on ApiError catch (e) {
-      setState(() => _error = frenchMessageForError(e));
-    } catch (_) {
-      setState(() => _error = 'Une erreur est survenue.');
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+    await _controller.lookup(uid);
   }
 
   Future<void> _report(bool stolen) async {
-    final card = _card;
-    if (card == null || card.customerId == null) return;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -85,50 +71,27 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
     );
     if (confirmed != true) return;
 
-    setState(() => _busy = true);
-    try {
-      final repo = ref.read(agentRepositoryProvider);
-      final updated = stolen
-          ? await repo.reportCardStolen(
-              customerId: card.customerId!,
-              cardId: card.cardId,
-            )
-          : await repo.reportCardLost(
-              customerId: card.customerId!,
-              cardId: card.cardId,
-            );
-      setState(() => _card = updated);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              stolen ? 'Carte déclarée volée' : 'Carte déclarée perdue',
-              style: AppText.ui(color: Colors.white),
-            ),
-            backgroundColor: AppColors.nearBlack,
-          ),
-        );
-      }
-    } on ApiError catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              frenchMessageForError(e),
-              style: AppText.ui(color: Colors.white),
-            ),
-            backgroundColor: AppColors.danger,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+    final failure = await _controller.report(stolen: stolen);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          failure != null
+              ? errorMessage(failure)
+              : (stolen ? 'Carte déclarée volée' : 'Carte déclarée perdue'),
+          style: AppText.ui(color: Colors.white),
+        ),
+        backgroundColor: failure != null
+            ? AppColors.danger
+            : AppColors.nearBlack,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final card = _card;
+    final s = ref.watch(cardLookupControllerProvider);
+    final card = s.result;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
@@ -156,15 +119,15 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                     icon: const Icon(Icons.nfc_rounded),
                     size: BtnSize.lg,
                     full: true,
-                    loading: _busy && card == null,
-                    onPressed: _busy ? null : _scan,
+                    loading: s.busy && card == null,
+                    onPressed: s.busy ? null : _scan,
                   ),
-                  if (_error != null) ...[
+                  if (s.error != null) ...[
                     const SizedBox(height: 14),
                     InfoBanner(
                       kind: PillKind.declined,
                       icon: Icons.error_outline,
-                      text: _error!,
+                      text: errorMessage(s.error!),
                     ),
                   ],
                   if (card != null) ...[
@@ -180,8 +143,9 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                               icon: const Icon(Icons.help_outline_rounded),
                               variant: BtnVariant.dangerOutline,
                               size: BtnSize.lg,
-                              loading: _busy,
-                              onPressed: card.status == CardStatus.lost
+                              loading: s.busy,
+                              onPressed:
+                                  card.status == CardLookupResponseStatus.lost
                                   ? null
                                   : () => _report(false),
                             ),
@@ -195,8 +159,9 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                               ),
                               variant: BtnVariant.danger,
                               size: BtnSize.lg,
-                              loading: _busy,
-                              onPressed: card.status == CardStatus.stolen
+                              loading: s.busy,
+                              onPressed:
+                                  card.status == CardLookupResponseStatus.stolen
                                   ? null
                                   : () => _report(true),
                             ),
@@ -236,7 +201,7 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
 
 class _CardCard extends StatelessWidget {
   const _CardCard({required this.card});
-  final CardLookup card;
+  final CardLookupResponse card;
 
   @override
   Widget build(BuildContext context) {
@@ -273,18 +238,18 @@ class _CardCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        card.cardType.frLabel,
+                        CardType.parse(card.cardType?.json).frLabel,
                         style: AppText.ui(size: 12.5, color: AppColors.inkMid),
                       ),
                     ],
                   ),
                 ),
-                CardStatusPill(status: card.status),
+                CardStatusPill(status: CardStatus.parse(card.status?.json)),
               ],
             ),
           ),
           const Divider(height: 1, color: AppColors.border),
-          DetailRow(label: 'UID NFC', value: card.nfcUid, mono: true),
+          DetailRow(label: 'UID NFC', value: card.nfcUid ?? '', mono: true),
           if (card.customerFullName != null)
             DetailRow(label: 'Titulaire', value: card.customerFullName!),
           if (card.customerPhoneMasked != null)
@@ -293,7 +258,11 @@ class _CardCard extends StatelessWidget {
               value: card.customerPhoneMasked!,
               mono: true,
             ),
-          DetailRow(label: 'Statut', value: card.status.frLabel, last: true),
+          DetailRow(
+            label: 'Statut',
+            value: CardStatus.parse(card.status?.json).frLabel,
+            last: true,
+          ),
         ],
       ),
     );

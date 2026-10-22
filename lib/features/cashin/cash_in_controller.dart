@@ -1,10 +1,10 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
+import '../../api/operation_key.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/cash_result.dart';
-import '../../data/models/lookup.dart';
-import '../../data/repositories/agent_repository.dart';
 import '../agent/agent_providers.dart';
 
 enum CashInStep { lookup, amount, submitting, done, error }
@@ -21,17 +21,17 @@ class CashInState {
 
   final CashInStep step;
   final bool looking;
-  final CustomerLookup? customer;
+  final CustomerLookupResponse? customer;
   final int amount;
-  final AgentCashInResult? result;
+  final AgentCashResponse? result;
   final String? errorMessage;
 
   CashInState copyWith({
     CashInStep? step,
     bool? looking,
-    CustomerLookup? customer,
+    CustomerLookupResponse? customer,
     int? amount,
-    AgentCashInResult? result,
+    AgentCashResponse? result,
     String? errorMessage,
     bool clearError = false,
   }) => CashInState(
@@ -52,15 +52,18 @@ class CashInController extends Notifier<CashInState> {
   static const _countryCode = '269';
   final _operationKey = OperationKey();
 
-  AgentRepository get _repo => ref.read(agentRepositoryProvider);
+  ApiClient get _api => ref.read(apiClientProvider);
 
   Future<void> lookup(String phoneNumber) async {
     state = state.copyWith(looking: true, clearError: true);
     try {
-      final c = await _repo.lookupCustomer(
-        phoneCountryCode: _countryCode,
-        phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
+      final answer = await _api.send(
+        (api) => api.agentTransactionController.lookupCustomer(
+          phoneCountryCode: _countryCode,
+          phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
+        ),
       );
+      final c = requireData(answer.data);
       if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
@@ -88,17 +91,22 @@ class CashInController extends Notifier<CashInState> {
       state = state.copyWith(step: CashInStep.lookup, clearError: true);
 
   Future<void> submit() async {
-    final customer = state.customer;
-    if (customer == null || state.amount <= 0) return;
+    final customerId = state.customer?.customerId;
+    if (customerId == null || state.amount <= 0) return;
     state = state.copyWith(step: CashInStep.submitting, clearError: true);
     try {
-      final res = await _repo.cashIn(
-        idempotencyKey: _operationKey.forIntent(
-          '${customer.customerId}|${state.amount}',
+      final answer = await _api.send(
+        (api) => api.agentTransactionController.cashIn(
+          idempotencyKey: _operationKey.forIntent(
+            '$customerId|${state.amount}',
+          ),
+          body: AgentCashInRequest(
+            customerId: customerId,
+            amount: state.amount,
+          ),
         ),
-        customerId: customer.customerId,
-        amount: state.amount,
       );
+      final res = requireData(answer.data);
       if (!ref.mounted) return;
       // The float moved — refresh balance / dashboard.
       ref.invalidate(balanceProvider);

@@ -1,10 +1,11 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
+import '../../api/operation_key.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/cash_result.dart';
-import '../../data/models/lookup.dart';
-import '../../data/repositories/agent_repository.dart';
 import '../agent/agent_providers.dart';
 
 /// Where the cash-out flow currently is.
@@ -32,9 +33,9 @@ class CashOutState {
   final CashOutStep step;
   final bool looking;
   final bool submitting;
-  final MerchantLookup? merchant;
+  final MerchantLookupResponse? merchant;
   final int amount;
-  final AgentCashOutResult? result;
+  final AgentMerchantCashOutResponse? result;
   final String? errorMessage;
 
   /// Inline error shown inside the PIN sheet (wrong merchant PIN / locked).
@@ -44,9 +45,9 @@ class CashOutState {
     CashOutStep? step,
     bool? looking,
     bool? submitting,
-    MerchantLookup? merchant,
+    MerchantLookupResponse? merchant,
     int? amount,
-    AgentCashOutResult? result,
+    AgentMerchantCashOutResponse? result,
     String? errorMessage,
     String? pinError,
     bool clearError = false,
@@ -86,15 +87,18 @@ class CashOutController extends Notifier<CashOutState> {
     return key;
   }
 
-  AgentRepository get _repo => ref.read(agentRepositoryProvider);
+  ApiClient get _api => ref.read(apiClientProvider);
 
   Future<void> lookup(String phoneNumber) async {
     state = state.copyWith(looking: true, clearError: true);
     try {
-      final m = await _repo.lookupMerchant(
-        phoneCountryCode: _countryCode,
-        phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
+      final answer = await _api.send(
+        (api) => api.agentTransactionController.lookupMerchant(
+          phoneCountryCode: _countryCode,
+          phoneNumber: phoneNumber.replaceAll(RegExp(r'\D'), ''),
+        ),
       );
+      final m = requireData(answer.data);
       if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
@@ -142,21 +146,27 @@ class CashOutController extends Notifier<CashOutState> {
   Future<void> submitPin(String pin) => _send(pin: pin);
 
   Future<void> _send({String? pin}) async {
-    final merchant = state.merchant;
-    if (merchant == null || state.amount <= 0) return;
+    final merchantId = state.merchant?.merchantId;
+    if (merchantId == null || state.amount <= 0) return;
     state = state.copyWith(
       submitting: true,
       clearError: true,
       clearPinError: true,
     );
     try {
-      final res = await _repo.cashOut(
-        idempotencyKey: _intentKey(merchant.merchantId),
-        merchantId: merchant.merchantId,
-        amount: state.amount,
-        merchantPin: pin,
-        confirmationAcknowledged: _confirmationAcknowledged ? true : null,
+      final idempotencyKey = _intentKey(merchantId);
+      final answer = await _api.send(
+        (api) => api.agentTransactionController.cashOut(
+          idempotencyKey: idempotencyKey,
+          body: AgentMerchantCashOutRequest(
+            merchantId: merchantId,
+            amount: state.amount,
+            merchantPin: pin,
+            confirmationAcknowledged: _confirmationAcknowledged ? true : null,
+          ),
+        ),
       );
+      final res = requireData(answer.data);
       if (!ref.mounted) return;
       if (res.isExecuted) {
         ref.invalidate(balanceProvider);

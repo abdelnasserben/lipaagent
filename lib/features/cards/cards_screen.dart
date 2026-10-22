@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/card.dart';
 import '../agent/agent_providers.dart';
 import 'card_lookup_screen.dart';
 import 'card_sale_screen.dart';
@@ -19,7 +19,7 @@ class CardsScreen extends ConsumerWidget {
     final stock = ref.watch(cardStockProvider);
     final profile = ref.watch(profileProvider);
     final canSell = profile.maybeWhen(
-      data: (p) => p.canSellCards,
+      data: (p) => p.canSellCards ?? false,
       orElse: () => false,
     );
 
@@ -109,7 +109,7 @@ class CardsScreen extends ConsumerWidget {
 
 class _StockRow extends StatelessWidget {
   const _StockRow({required this.item});
-  final CardStockItem item;
+  final AgentCardStockView item;
 
   @override
   Widget build(BuildContext context) {
@@ -145,16 +145,16 @@ class _StockRow extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      item.internalCardNumber,
+                      item.internalCardNumber ?? '',
                       maxLines: 1,
                       softWrap: false,
                       style: AppText.mono(size: 15, weight: FontWeight.w600),
                     ),
                   ),
                 ),
-                if (item.batchRef.isNotEmpty) ...[
+                if ((item.batchRef ?? '').isNotEmpty) ...[
                   const SizedBox(width: 8),
-                  _BatchChip(batchRef: item.batchRef),
+                  _BatchChip(batchRef: item.batchRef!),
                 ],
               ],
             ),

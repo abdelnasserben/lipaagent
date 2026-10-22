@@ -60,8 +60,13 @@ class SessionController extends Notifier<SessionState> {
 
   Future<void> logout() async {
     try {
-      await ref.read(authRepositoryProvider).logout();
+      await ref
+          .read(apiClientProvider)
+          .send((api) => api.agentAuthController.logout());
+    } catch (_) {
+      // The device forgets the session anyway.
     } finally {
+      await ref.read(tokenStoreProvider).clear();
       state = const SessionState(status: SessionStatus.unauthenticated);
       _resetUserScopedState();
     }
@@ -69,12 +74,9 @@ class SessionController extends Notifier<SessionState> {
 
   /// Tears down per-user state that would otherwise leak across accounts.
   ///
-  /// [agentRepositoryProvider] is a long-lived singleton; we rebuild it so the
-  /// next agent starts clean. The `autoDispose` data
-  /// providers unmount with the shell at logout and start fresh on re-login.
+  /// The `autoDispose` data providers unmount with the shell at logout and start fresh on re-login.
   /// (Cf. the Lipa customer app's user-scoped state reset.)
   void _resetUserScopedState() {
-    ref.invalidate(agentRepositoryProvider);
     // Session-scoped TOTP flag must not leak to the next agent.
     ref.read(totpEnrolledProvider.notifier).set(false);
   }

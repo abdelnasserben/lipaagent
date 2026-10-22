@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/agent_profile.dart';
 import '../agent/agent_providers.dart';
 
 /// Assigned transaction limits (spec §5.2). Null when no profile is assigned.
@@ -54,7 +55,7 @@ class LimitsScreen extends ConsumerWidget {
 
 class _Body extends StatelessWidget {
   const _Body({required this.limits});
-  final AgentLimits limits;
+  final AgentLimitsResponse limits;
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +77,11 @@ class _Body extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      limits.profileName,
+                      limits.profileName ?? '',
                       style: AppText.ui(size: 15, weight: FontWeight.w700),
                     ),
                     Text(
-                      'KYC requis : ${limits.requiredKycLevel.frLabel}',
+                      'KYC requis : ${KycLevel.parse(limits.requiredKycLevel).frLabel}',
                       style: AppText.ui(size: 12.5, color: AppColors.inkMid),
                     ),
                   ],

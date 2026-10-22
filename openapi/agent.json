@@ -1,0 +1,2766 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Lipa API",
+    "description": "Success bodies are wrapped in { data, timestamp }, lists in { data, pagination }, errors in { error: { code, message, details, correlationId, timestamp } }. Error codes are stable; messages are for developers only.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer-jwt": []
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/agent/auth-pin": {
+      "put": {
+        "tags": [
+          "agent-auth-pin-controller"
+        ],
+        "operationId": "change",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeAuthPinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/{id}/read": {
+      "post": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "markRead",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "post": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "markAllRead",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMarkAllReadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/totp-setup": {
+      "post": {
+        "tags": [
+          "agent-totp-controller"
+        ],
+        "operationId": "setup",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseTotpSetupResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "agent-totp-controller"
+        ],
+        "operationId": "revoke",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TotpRevokeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/totp-confirm": {
+      "post": {
+        "tags": [
+          "agent-totp-controller"
+        ],
+        "operationId": "confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TotpConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/refresh": {
+      "post": {
+        "tags": [
+          "agent-auth-controller"
+        ],
+        "operationId": "refresh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/logout": {
+      "post": {
+        "tags": [
+          "agent-auth-controller"
+        ],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/login": {
+      "post": {
+        "tags": [
+          "agent-auth-controller"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/login/verify-mfa": {
+      "post": {
+        "tags": [
+          "agent-auth-controller"
+        ],
+        "operationId": "verifyMfa",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyMfaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseLoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/auth-pin/setup": {
+      "post": {
+        "tags": [
+          "agent-auth-pin-controller"
+        ],
+        "operationId": "setup_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetAuthPinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/agent/auth-pin/reset": {
+      "post": {
+        "tags": [
+          "agent-auth-pin-controller"
+        ],
+        "operationId": "reset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetAuthPinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/agent/customers/{customerId}/kyc-documents": {
+      "get": {
+        "tags": [
+          "agent-kyc-controller"
+        ],
+        "operationId": "listDocuments",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListKycDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "agent-kyc-controller"
+        ],
+        "operationId": "uploadDocument",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "documentType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseKycDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/customers/{customerId}/cards/{cardId}/report-stolen": {
+      "post": {
+        "tags": [
+          "agent-card-controller"
+        ],
+        "operationId": "reportStolen",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCardLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/customers/{customerId}/cards/{cardId}/report-lost": {
+      "post": {
+        "tags": [
+          "agent-card-controller"
+        ],
+        "operationId": "reportLost",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCardLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/customers/{customerId}/cards/{cardId}/replace": {
+      "post": {
+        "tags": [
+          "agent-card-replacement-controller"
+        ],
+        "operationId": "replace",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentCardReplaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentCardReplacementResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/customers/enroll": {
+      "post": {
+        "tags": [
+          "agent-enrollment-controller"
+        ],
+        "operationId": "enroll",
+        "parameters": [
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollCustomerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseEnrollCustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/cash-out": {
+      "post": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "cashOut",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentMerchantCashOutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentMerchantCashOutResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/cash-in": {
+      "post": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "cashIn",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentCashInRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentCashResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/card-sales": {
+      "post": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "sellCard",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Correlation-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentCardSaleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentCardSaleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListNotificationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/unread": {
+      "get": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "unreadCount",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseUnreadCountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/transactions": {
+      "get": {
+        "tags": [
+          "agent-transaction-list-controller"
+        ],
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseAgentTransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/transactions/{id}": {
+      "get": {
+        "tags": [
+          "agent-transaction-list-controller"
+        ],
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentTransactionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/summary/daily": {
+      "get": {
+        "tags": [
+          "agent-summary-controller"
+        ],
+        "operationId": "daily",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentDailySummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/statements": {
+      "get": {
+        "tags": [
+          "agent-statement-controller"
+        ],
+        "operationId": "list_2",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseAgentStatementEntryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/merchants/lookup": {
+      "get": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "lookupMerchant",
+        "parameters": [
+          {
+            "name": "phoneCountryCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMerchantLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/me": {
+      "get": {
+        "tags": [
+          "agent-me-controller"
+        ],
+        "operationId": "getProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentProfileResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/lookup": {
+      "get": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "lookupCustomer",
+        "parameters": [
+          {
+            "name": "phoneCountryCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCustomerLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/limits": {
+      "get": {
+        "tags": [
+          "agent-limits-controller"
+        ],
+        "operationId": "getLimits",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentLimitsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/commissions": {
+      "get": {
+        "tags": [
+          "agent-commission-controller"
+        ],
+        "operationId": "list_3",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseAgentCommissionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/cards/lookup": {
+      "get": {
+        "tags": [
+          "agent-transaction-controller"
+        ],
+        "operationId": "lookupCard",
+        "parameters": [
+          {
+            "name": "nfcUid",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseCardLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/card-stock": {
+      "get": {
+        "tags": [
+          "agent-card-stock-controller"
+        ],
+        "operationId": "listMyStock",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "ASSIGNED_TO_AGENT",
+              "enum": [
+                "IN_WAREHOUSE",
+                "ASSIGNED_TO_AGENT",
+                "SOLD",
+                "RETURNED",
+                "SPOILED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseAgentCardStockView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/balance": {
+      "get": {
+        "tags": [
+          "agent-me-controller"
+        ],
+        "operationId": "getBalance",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAgentBalanceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChangeAuthPinRequest": {
+        "type": "object",
+        "properties": {
+          "currentPin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,8}"
+          },
+          "newPin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,8}"
+          }
+        },
+        "required": [
+          "currentPin",
+          "newPin"
+        ]
+      },
+      "ApiResponseVoid": {
+        "type": "object",
+        "properties": {
+          "data": {},
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseMarkAllReadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MarkAllReadResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MarkAllReadResponse": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResponseTotpSetupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TotpSetupResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TotpSetupResponse": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string"
+          },
+          "qrUri": {
+            "type": "string"
+          }
+        }
+      },
+      "TotpConfirmRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{6}"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "ApiResponseTokenResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TokenResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "tokenType": {
+            "type": "string"
+          },
+          "accessToken": {
+            "type": "string"
+          },
+          "accessTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "refreshTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "phoneCountryCode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{1,5}"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,15}"
+          },
+          "pin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,8}"
+          }
+        },
+        "required": [
+          "phoneCountryCode",
+          "phoneNumber",
+          "pin"
+        ]
+      },
+      "ApiResponseLoginResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LoginResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "mfaRequired": {
+            "type": "boolean"
+          },
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mfaFactor": {
+            "type": "string"
+          },
+          "tokens": {
+            "$ref": "#/components/schemas/Tokens"
+          },
+          "pinSetupRequired": {
+            "type": "boolean"
+          },
+          "pinSetupToken": {
+            "type": "string"
+          },
+          "pinSetupTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Tokens": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "accessTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "refreshTokenExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "VerifyMfaRequest": {
+        "type": "object",
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "pattern": "\\d{6}"
+          }
+        },
+        "required": [
+          "challengeId",
+          "code"
+        ]
+      },
+      "SetAuthPinRequest": {
+        "type": "object",
+        "properties": {
+          "pin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,8}"
+          }
+        },
+        "required": [
+          "pin"
+        ]
+      },
+      "ResetAuthPinRequest": {
+        "type": "object",
+        "properties": {
+          "phoneCountryCode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{1,5}"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,15}"
+          },
+          "totpCode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{6}"
+          },
+          "newPin": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,8}"
+          }
+        },
+        "required": [
+          "newPin",
+          "phoneCountryCode",
+          "phoneNumber",
+          "totpCode"
+        ]
+      },
+      "ApiResponseKycDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/KycDocumentResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "KycDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ownerActorType": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER",
+              "MERCHANT",
+              "AGENT",
+              "MERCHANT_OPERATOR",
+              "BACKOFFICE_USER",
+              "SYSTEM"
+            ]
+          },
+          "ownerActorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": [
+              "NATIONAL_ID",
+              "PASSPORT",
+              "PROOF_OF_ADDRESS",
+              "BUSINESS_LICENSE",
+              "OTHER"
+            ]
+          },
+          "contentHash": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "uploadedByActorType": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER",
+              "MERCHANT",
+              "AGENT",
+              "MERCHANT_OPERATOR",
+              "BACKOFFICE_USER",
+              "SYSTEM"
+            ]
+          },
+          "uploadedByActorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_REVIEW",
+              "ACCEPTED",
+              "REJECTED"
+            ]
+          },
+          "reviewedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rejectionReason": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseCardLookupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CardLookupResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CardLookupResponse": {
+        "type": "object",
+        "properties": {
+          "cardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nfcUid": {
+            "type": "string"
+          },
+          "internalCardLast4": {
+            "type": "string"
+          },
+          "maskedInternalCardNumber": {
+            "type": "string"
+          },
+          "cardType": {
+            "type": "string",
+            "enum": [
+              "STANDARD",
+              "PREMIUM",
+              "CORPORATE"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ISSUED",
+              "ACTIVE",
+              "BLOCKED",
+              "LOST",
+              "STOLEN",
+              "EXPIRED",
+              "CLOSED"
+            ]
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerFullName": {
+            "type": "string"
+          },
+          "customerPhoneMasked": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          }
+        }
+      },
+      "AgentCardReplaceRequest": {
+        "type": "object",
+        "properties": {
+          "stockId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "replacementFee": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "replacementFee",
+          "stockId"
+        ]
+      },
+      "AgentCardReplacementResponse": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "AUTHORIZED",
+              "COMPLETED",
+              "DECLINED",
+              "REVERSED"
+            ]
+          },
+          "newCardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "oldCardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "replacementFee": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "commissionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiResponseAgentCardReplacementResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentCardReplacementResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EnrollCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "dateOfBirth": {
+            "type": "string"
+          },
+          "phoneCountryCode": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{1,5}"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{4,15}"
+          },
+          "nationalIdNumber": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "nationalIdType": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 0
+          },
+          "addressIsland": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "addressCity": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "addressDistrict": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "dateOfBirth",
+          "fullName",
+          "nationalIdNumber",
+          "nationalIdType",
+          "phoneCountryCode",
+          "phoneNumber"
+        ]
+      },
+      "ApiResponseEnrollCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EnrollCustomerResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EnrollCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalRef": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AgentMerchantCashOutRequest": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "merchantPin": {
+            "type": "string"
+          },
+          "confirmationAcknowledged": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "merchantId"
+        ]
+      },
+      "AgentMerchantCashOutResponse": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "EXECUTED",
+              "PENDING_PIN",
+              "PENDING_CONFIRMATION",
+              "PENDING_APPROVAL"
+            ]
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "approvalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "matchedThresholdAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "feeAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "commissionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "netAmountToDestination": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiResponseAgentMerchantCashOutResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentMerchantCashOutResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentCashInRequest": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "customerId"
+        ]
+      },
+      "AgentCashResponse": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "AUTHORIZED",
+              "COMPLETED",
+              "DECLINED",
+              "REVERSED"
+            ]
+          },
+          "requestedAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "feeAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "commissionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "netAmountToDestination": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiResponseAgentCashResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentCashResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentCardSaleRequest": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nfcUid": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[0-9A-Fa-f]{14}$"
+          },
+          "cardPrice": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "cardPrice",
+          "customerId",
+          "nfcUid"
+        ]
+      },
+      "AgentCardSaleResponse": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "AUTHORIZED",
+              "COMPLETED",
+              "DECLINED",
+              "REVERSED"
+            ]
+          },
+          "cardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cardPrice": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "commissionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "replayed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiResponseAgentCardSaleResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentCardSaleResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseListNotificationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationResponse"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NotificationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "TRANSACTION",
+              "BILL_PAYMENT",
+              "APPROVAL",
+              "RECONCILIATION",
+              "BILL_REMINDER"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "P2P_TRANSFER_SENT",
+              "P2P_TRANSFER_RECEIVED",
+              "MERCHANT_PAYMENT_SENT",
+              "MERCHANT_PAYMENT_RECEIVED",
+              "CASH_IN_CREDITED",
+              "MERCHANT_CASH_OUT_COMPLETED",
+              "MERCHANT_TRANSFER_SENT",
+              "MERCHANT_TRANSFER_RECEIVED",
+              "BILL_PAYMENT_QUEUED",
+              "BILL_PAYMENT_TO_PROCESS",
+              "BILL_PAYMENT_SUCCEEDED",
+              "BILL_PAYMENT_REFUNDED",
+              "BILL_PAYMENT_EXPIRED",
+              "BILL_PAYMENT_CANCELLED",
+              "APPROVAL_PENDING",
+              "APPROVAL_APPROVED",
+              "APPROVAL_REJECTED",
+              "RECONCILIATION_INCIDENT_OPENED",
+              "BILL_REMINDER_DUE"
+            ]
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "UNREAD",
+              "READ"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "readAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseUnreadCountResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UnreadCountResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UnreadCountResponse": {
+        "type": "object",
+        "properties": {
+          "unread": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AgentTransactionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "initiatorType": {
+            "type": "string"
+          },
+          "initiatorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "feeAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "commissionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "netAmountToDestination": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "balanceChange": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "declineReason": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "declinedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PagedResponseAgentTransactionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentTransactionResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "nextCursor": {
+            "type": "string"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ApiResponseAgentTransactionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentTransactionResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentDailySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalCompletedAmountToday": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalCompletedCountToday": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "commissionEarnedToday": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currentBalance": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "floatAlertThreshold": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "belowFloatAlert": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiResponseAgentDailySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentDailySummaryResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentStatementEntryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "side": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "runningBalance": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "postedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "globalSequence": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PagedResponseAgentStatementEntryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentStatementEntryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "ApiResponseMerchantLookupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MerchantLookupResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MerchantLookupResponse": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalRef": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "phoneCountryCode": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_KYC",
+              "ACTIVE",
+              "SUSPENDED",
+              "FROZEN",
+              "CLOSED"
+            ]
+          },
+          "kycLevel": {
+            "type": "string",
+            "enum": [
+              "KYC_NONE",
+              "KYC_BASIC",
+              "KYC_VERIFIED",
+              "KYC_ENHANCED"
+            ]
+          },
+          "canCashOut": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AgentProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalRef": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phoneCountryCode": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "zone": {
+            "type": "string"
+          },
+          "kycLevel": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "limitProfileId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canSellCards": {
+            "type": "boolean"
+          },
+          "canDoCashIn": {
+            "type": "boolean"
+          },
+          "canDoCashOut": {
+            "type": "boolean"
+          },
+          "floatAlertThreshold": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "contractRef": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseAgentProfileResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentProfileResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseCustomerLookupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CustomerLookupResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CustomerLookupResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phoneCountryCode": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_KYC",
+              "ACTIVE",
+              "SUSPENDED",
+              "FROZEN",
+              "CLOSED"
+            ]
+          },
+          "kycLevel": {
+            "type": "string",
+            "enum": [
+              "KYC_NONE",
+              "KYC_BASIC",
+              "KYC_VERIFIED",
+              "KYC_ENHANCED"
+            ]
+          }
+        }
+      },
+      "AgentLimitsResponse": {
+        "type": "object",
+        "properties": {
+          "limitProfileId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "profileName": {
+            "type": "string"
+          },
+          "maxTransactionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "minTransactionAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxDailyAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxWeeklyAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxMonthlyAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxDailyTransactionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxMonthlyTransactionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredKycLevel": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseAgentLimitsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentLimitsResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseListKycDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KycDocumentResponse"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AgentCommissionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appliedRuleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "basisAmount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "settlementMode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paymentTransactionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PagedResponseAgentCommissionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentCommissionResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "AgentCardStockView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nfcUid": {
+            "type": "string"
+          },
+          "internalCardNumber": {
+            "type": "string"
+          },
+          "batchRef": {
+            "type": "string"
+          },
+          "producedAt": {
+            "type": "string"
+          },
+          "assignedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "IN_WAREHOUSE",
+              "ASSIGNED_TO_AGENT",
+              "SOLD",
+              "RETURNED",
+              "SPOILED"
+            ]
+          }
+        }
+      },
+      "PagedResponseAgentCardStockView": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentCardStockView"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "AgentBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "availableBalance": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "heldBalance": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "accountStatus": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiResponseAgentBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AgentBalanceResponse"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TotpRevokeRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\d{6}"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "bearer-jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

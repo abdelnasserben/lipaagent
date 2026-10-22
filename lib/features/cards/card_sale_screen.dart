@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
@@ -12,11 +15,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/card.dart';
-import '../../data/models/enums.dart';
-import '../../data/models/lookup.dart';
-import '../../data/repositories/agent_repository.dart';
-import '../agent/agent_providers.dart';
+import 'cards_controller.dart';
 
 /// Card sale (spec §5.6): confirm the customer, scan the card from assigned
 /// stock, declare a price, sell. Always shows the price returned by the API
@@ -30,14 +29,11 @@ class CardSaleScreen extends ConsumerStatefulWidget {
 
 class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
   final _phone = TextEditingController();
-  final _operationKey = OperationKey();
-
-  CustomerLookup? _customer;
   String? _nfcUid;
   int _price = 0;
-  bool _busy = false;
-  String? _error;
-  CardSaleResult? _result;
+
+  CardSaleController get _controller =>
+      ref.read(cardSaleControllerProvider.notifier);
 
   @override
   void dispose() {
@@ -45,69 +41,22 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
     super.dispose();
   }
 
-  Future<void> _lookup() async {
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final c = await ref
-          .read(agentRepositoryProvider)
-          .lookupCustomer(
-            phoneCountryCode: '269',
-            phoneNumber: _phone.text.replaceAll(RegExp(r'\D'), ''),
-          );
-      setState(() => _customer = c);
-    } on ApiError catch (e) {
-      setState(() => _error = frenchMessageForError(e));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   Future<void> _scan() async {
     final uid = await ref.read(cardScannerProvider).scanCardUid(context);
     if (uid != null) setState(() => _nfcUid = uid);
   }
 
-  Future<void> _sell() async {
-    final customer = _customer;
-    final uid = _nfcUid;
-    if (customer == null || uid == null || _price <= 0) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final res = await ref
-          .read(agentRepositoryProvider)
-          .sellCard(
-            idempotencyKey: _operationKey.forIntent(
-              '${customer.customerId}|$uid|$_price',
-            ),
-            customerId: customer.customerId,
-            nfcUid: uid,
-            cardPrice: _price,
-          );
-      ref.invalidate(balanceProvider);
-      ref.invalidate(cardStockProvider);
-      ref.invalidate(transactionsProvider);
-      setState(() => _result = res);
-    } on ApiError catch (e) {
-      setState(() => _error = frenchMessageForError(e));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_result != null) {
+    final s = ref.watch(cardSaleControllerProvider);
+    final result = s.result;
+    final customer = s.customer;
+    if (result != null) {
       return ResultScreen(
         title: 'Vente de carte',
         headline: 'Carte vendue',
-        subtitle: 'Carte activée pour ${_customer?.fullName ?? 'le client'}.',
-        replayed: _result!.replayed,
+        subtitle: 'Carte activée pour ${customer?.fullName ?? 'le client'}.',
+        replayed: result.replayed ?? false,
         onDone: () => Navigator.of(context).pop(),
         detail: LipaCard(
           padding: EdgeInsets.zero,
@@ -115,19 +64,19 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
             children: [
               DetailRow(
                 label: 'Prix facturé',
-                value: fmtKmf(_result!.cardPrice),
+                value: fmtKmf(result.cardPrice ?? 0),
                 mono: true,
                 valueColor: AppColors.brandDeep,
               ),
-              if (_result!.commissionAmount > 0)
+              if ((result.commissionAmount ?? 0) > 0)
                 DetailRow(
                   label: 'Commission',
-                  value: fmtKmf(_result!.commissionAmount),
+                  value: fmtKmf(result.commissionAmount ?? 0),
                   mono: true,
                 ),
               DetailRow(
                 label: 'Réf.',
-                value: shortId(_result!.transactionId),
+                value: shortId(result.transactionId ?? ''),
                 mono: true,
                 last: true,
               ),
@@ -137,7 +86,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
       );
     }
 
-    final canSell = _customer != null && _nfcUid != null && _price > 0;
+    final canSell = customer != null && _nfcUid != null && _price > 0;
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -156,7 +105,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   // Step 1 — customer.
                   const _StepLabel(n: 1, text: 'Client'),
                   const SizedBox(height: 10),
-                  if (_customer == null) ...[
+                  if (customer == null) ...[
                     PhoneInput(
                       controller: _phone,
                       onChanged: (_) => setState(() {}),
@@ -166,19 +115,23 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                       label: 'Rechercher le client',
                       variant: BtnVariant.secondary,
                       full: true,
-                      loading: _busy && _customer == null,
+                      loading: s.busy,
                       onPressed: PhoneValidator.isComplete(_phone.text)
-                          ? _lookup
+                          ? () => _controller.lookup(_phone.text)
                           : null,
                     ),
                   ] else
                     PartyCard(
-                      name: _customer!.fullName,
-                      subtitle: _customer!.phonePretty,
-                      statusLabel: _customer!.status.frLabel,
-                      statusActive: _customer!.status == CustomerStatus.active,
+                      name: customer.fullName ?? '',
+                      subtitle: customer.phonePretty,
+                      statusLabel: CustomerStatus.parse(
+                        customer.status?.json,
+                      ).frLabel,
+                      statusActive:
+                          customer.status ==
+                          CustomerLookupResponseStatus.active,
                       trailing: IconButton(
-                        onPressed: () => setState(() => _customer = null),
+                        onPressed: _controller.clearCustomer,
                         icon: const Icon(
                           Icons.edit_outlined,
                           size: 18,
@@ -202,10 +155,10 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                     quickAmounts: const [1000, 2500, 5000, 10000],
                     onChanged: (v) => setState(() => _price = v),
                   ),
-                  if (_error != null) ...[
+                  if (s.error != null) ...[
                     const SizedBox(height: 14),
                     Text(
-                      _error!,
+                      errorMessage(s.error!),
                       textAlign: TextAlign.center,
                       style: AppText.ui(size: 13, color: AppColors.danger),
                     ),
@@ -217,8 +170,11 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                         : 'Vendre la carte',
                     size: BtnSize.lg,
                     full: true,
-                    loading: _busy && _result == null && _customer != null,
-                    onPressed: canSell ? _sell : null,
+                    loading: s.busy && customer != null,
+                    onPressed: canSell
+                        ? () =>
+                              _controller.sell(nfcUid: _nfcUid!, price: _price)
+                        : null,
                   ),
                   const SizedBox(height: 8),
                   Text(

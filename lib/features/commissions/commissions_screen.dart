@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -6,8 +8,6 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
-import '../../data/models/commission.dart';
-import '../../data/models/enums.dart';
 import '../agent/agent_providers.dart';
 
 /// Commission payout history (spec §5.7).
@@ -62,8 +62,11 @@ class CommissionsScreen extends ConsumerWidget {
                       );
                     }
                     final total = items
-                        .where((c) => c.status == PayoutStatus.paid)
-                        .fold<int>(0, (s, c) => s + c.amount);
+                        .where(
+                          (c) =>
+                              PayoutStatus.parse(c.status) == PayoutStatus.paid,
+                        )
+                        .fold<int>(0, (s, c) => s + (c.amount ?? 0));
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                       children: [
@@ -135,7 +138,7 @@ class _TotalCard extends StatelessWidget {
 
 class _CommissionRow extends StatelessWidget {
   const _CommissionRow({required this.commission});
-  final Commission commission;
+  final AgentCommissionResponse commission;
 
   @override
   Widget build(BuildContext context) {
@@ -166,12 +169,12 @@ class _CommissionRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sur ${fmtKmf(c.basisAmount)}',
+                    'Sur ${fmtKmf(c.basisAmount ?? 0)}',
                     style: AppText.ui(size: 13.5, weight: FontWeight.w600),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${c.settlementMode.frLabel}${c.createdAt != null ? ' · ${fmtDateFr(c.createdAt!)}' : ''}',
+                    '${SettlementMode.parse(c.settlementMode).frLabel}${c.createdAt != null ? ' · ${fmtDateFr(c.createdAt!)}' : ''}',
                     style: AppText.ui(size: 12, color: AppColors.inkLow),
                   ),
                 ],
@@ -182,7 +185,7 @@ class _CommissionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  fmtKmf(c.amount, signed: true),
+                  fmtKmf(c.amount ?? 0, signed: true),
                   style: AppText.mono(
                     size: 14,
                     weight: FontWeight.w600,
@@ -190,7 +193,7 @@ class _CommissionRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                PayoutStatusPill(status: c.status),
+                PayoutStatusPill(status: PayoutStatus.parse(c.status)),
               ],
             ),
           ],

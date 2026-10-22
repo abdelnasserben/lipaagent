@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/agent_profile.dart';
 import '../agent/agent_providers.dart';
 import '../cards/card_lookup_screen.dart';
 import '../cards/card_sale_screen.dart';
@@ -44,7 +45,7 @@ class OperationsHubScreen extends ConsumerWidget {
 
 class _Body extends StatelessWidget {
   const _Body({required this.profile});
-  final AgentProfile profile;
+  final AgentProfileResponse profile;
 
   @override
   Widget build(BuildContext context) {
@@ -54,21 +55,21 @@ class _Body extends StatelessWidget {
         _Section(
           title: 'Espèces',
           children: [
-            if (profile.canDoCashIn)
+            if (profile.canDoCashIn ?? false)
               _OpRow(
                 icon: Icons.south_west_rounded,
                 title: 'Dépôt client (cash-in)',
                 subtitle: 'Créditer le compte d’un client',
                 onTap: () => _push(context, const CashInScreen()),
               ),
-            if (profile.canDoCashOut)
+            if (profile.canDoCashOut ?? false)
               _OpRow(
                 icon: Icons.north_east_rounded,
                 title: 'Retrait marchand (cash-out)',
                 subtitle: 'Décaisser pour un marchand',
                 onTap: () => _push(context, const CashOutScreen()),
               ),
-            if (!profile.canDoCashIn && !profile.canDoCashOut)
+            if (!profile.hasAnyCashOps)
               const _Disabled(
                 text:
                     'Les opérations espèces ne sont pas activées sur votre compte.',
@@ -103,7 +104,7 @@ class _Body extends StatelessWidget {
               subtitle: 'Par UID NFC — perte, vol, remplacement',
               onTap: () => _push(context, const CardLookupScreen()),
             ),
-            if (profile.canSellCards)
+            if (profile.canSellCards ?? false)
               _OpRow(
                 icon: Icons.add_card_rounded,
                 title: 'Vendre une carte',

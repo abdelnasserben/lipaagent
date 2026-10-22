@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/providers.dart';
+import '../../core/error/api_error.dart';
+import 'notifications_controller.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/notification.dart';
 import '../agent/agent_providers.dart';
 
 /// Shared notification inbox (spec §5.8). MVP reality: the agent inbox is empty
@@ -18,6 +20,8 @@ class NotificationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationsProvider);
+    // Keeps the controller alive while its requests run.
+    ref.watch(notificationsControllerProvider);
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -29,11 +33,12 @@ class NotificationsScreen extends ConsumerWidget {
               onBack: () => Navigator.of(context).pop(),
               action: TextButton(
                 onPressed: () async {
-                  await ref
-                      .read(agentRepositoryProvider)
-                      .markAllNotificationsRead();
-                  ref.invalidate(notificationsProvider);
-                  ref.invalidate(unreadCountProvider);
+                  final failure = await ref
+                      .read(notificationsControllerProvider.notifier)
+                      .markAllRead();
+                  if (failure != null && context.mounted) {
+                    _showError(context, failure);
+                  }
                 },
                 child: Text(
                   'Tout lire',
@@ -82,11 +87,14 @@ class NotificationsScreen extends ConsumerWidget {
                       itemBuilder: (_, i) => _NotifRow(
                         notif: items[i],
                         onTap: () async {
-                          await ref
-                              .read(agentRepositoryProvider)
-                              .markNotificationRead(items[i].id);
-                          ref.invalidate(notificationsProvider);
-                          ref.invalidate(unreadCountProvider);
+                          final id = items[i].id;
+                          if (id == null) return;
+                          final failure = await ref
+                              .read(notificationsControllerProvider.notifier)
+                              .markRead(id);
+                          if (failure != null && context.mounted) {
+                            _showError(context, failure);
+                          }
                         },
                       ),
                     );
@@ -101,9 +109,26 @@ class NotificationsScreen extends ConsumerWidget {
   }
 }
 
+/// The app owns the wording of each notification code.
+String _title(NotificationResponse n) => switch (n.code) {
+  NotificationResponseCode.cashInCredited => 'Dépôt crédité',
+  NotificationResponseCode.merchantCashOutCompleted =>
+    'Retrait marchand effectué',
+  _ => 'Notification',
+};
+
+void _showError(BuildContext context, Object failure) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(errorMessage(failure)),
+      backgroundColor: AppColors.danger,
+    ),
+  );
+}
+
 class _NotifRow extends StatelessWidget {
   const _NotifRow({required this.notif, required this.onTap});
-  final AppNotification notif;
+  final NotificationResponse notif;
   final VoidCallback onTap;
 
   @override
@@ -131,7 +156,7 @@ class _NotifRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    notif.title,
+                    _title(notif),
                     style: AppText.ui(
                       size: 14,
                       weight: notif.isUnread
@@ -139,10 +164,10 @@ class _NotifRow extends StatelessWidget {
                           : FontWeight.w600,
                     ),
                   ),
-                  if (notif.body.isNotEmpty) ...[
+                  if (notif.amount != null) ...[
                     const SizedBox(height: 3),
                     Text(
-                      notif.body,
+                      fmtKmf(notif.amount!),
                       style: AppText.ui(
                         size: 13,
                         color: AppColors.inkMid,

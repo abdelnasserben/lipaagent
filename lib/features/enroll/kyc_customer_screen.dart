@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
-import '../../core/providers.dart';
+import 'kyc_controller.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/validators.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
-import '../../data/models/enums.dart';
-import '../../data/models/lookup.dart';
 import 'kyc_documents_screen.dart';
 
 /// Reopen an *existing* customer's KYC file (spec §5.5).
@@ -29,9 +30,6 @@ class KycCustomerScreen extends ConsumerStatefulWidget {
 
 class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
   final _phone = TextEditingController();
-  CustomerLookup? _customer;
-  bool _busy = false;
-  String? _error;
 
   @override
   void dispose() {
@@ -39,36 +37,14 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
     super.dispose();
   }
 
-  Future<void> _lookup() async {
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final c = await ref
-          .read(agentRepositoryProvider)
-          .lookupCustomer(
-            phoneCountryCode: '269',
-            phoneNumber: PhoneValidator.digitsOf(_phone.text),
-          );
-      setState(() => _customer = c);
-    } on ApiError catch (e) {
-      setState(() => _error = frenchMessageForError(e));
-    } catch (_) {
-      setState(() => _error = 'Une erreur est survenue.');
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  void _openDocuments() {
-    final c = _customer;
-    if (c == null) return;
+  void _openDocuments(CustomerLookupResponse c) {
+    final customerId = c.customerId;
+    if (customerId == null) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => KycDocumentsScreen(
-          customerId: c.customerId,
-          customerName: c.fullName,
+          customerId: customerId,
+          customerName: c.fullName ?? '',
         ),
       ),
     );
@@ -76,7 +52,8 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final customer = _customer;
+    final s = ref.watch(kycCustomerControllerProvider);
+    final customer = s.customer;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
@@ -103,22 +80,27 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                       label: 'Rechercher le client',
                       variant: BtnVariant.secondary,
                       full: true,
-                      loading: _busy,
+                      loading: s.busy,
                       onPressed: PhoneValidator.isComplete(_phone.text)
-                          ? _lookup
+                          ? () => ref
+                                .read(kycCustomerControllerProvider.notifier)
+                                .lookup(_phone.text)
                           : null,
                     ),
                   ] else ...[
                     PartyCard(
-                      name: customer.fullName,
+                      name: customer.fullName ?? '',
                       subtitle: customer.phonePretty,
-                      statusLabel: customer.status.frLabel,
-                      statusActive: customer.status == CustomerStatus.active,
+                      statusLabel: CustomerStatus.parse(
+                        customer.status?.json,
+                      ).frLabel,
+                      statusActive:
+                          customer.status ==
+                          CustomerLookupResponseStatus.active,
                       trailing: IconButton(
-                        onPressed: () => setState(() {
-                          _customer = null;
-                          _error = null;
-                        }),
+                        onPressed: ref
+                            .read(kycCustomerControllerProvider.notifier)
+                            .clear,
                         icon: const Icon(
                           Icons.edit_outlined,
                           size: 18,
@@ -127,14 +109,16 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _KycLevelCard(level: customer.kycLevel),
+                    _KycLevelCard(
+                      level: KycLevel.parse(customer.kycLevel?.json),
+                    ),
                     const SizedBox(height: 16),
                     LipaButton(
                       label: 'Gérer les documents KYC',
                       icon: const Icon(Icons.folder_open_rounded),
                       size: BtnSize.lg,
                       full: true,
-                      onPressed: _openDocuments,
+                      onPressed: () => _openDocuments(customer),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -144,10 +128,10 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                       style: AppText.ui(size: 12, color: AppColors.inkLow),
                     ),
                   ],
-                  if (_error != null) ...[
+                  if (s.error != null) ...[
                     const SizedBox(height: 14),
                     Text(
-                      _error!,
+                      errorMessage(s.error!),
                       textAlign: TextAlign.center,
                       style: AppText.ui(size: 13, color: AppColors.danger),
                     ),

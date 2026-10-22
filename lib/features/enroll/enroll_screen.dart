@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -8,7 +9,6 @@ import '../../core/utils/validators.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/enrollment.dart';
 import 'enroll_controller.dart';
 import 'kyc_documents_screen.dart';
 
@@ -65,7 +65,7 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
   }
 
   void _submit() {
-    final form = EnrollCustomerForm(
+    final form = EnrollCustomerRequest(
       fullName: _fullName.text.trim(),
       dateOfBirth: _isoDate(_dob!),
       phoneCountryCode: '269',
@@ -305,7 +305,7 @@ class _IslandPicker extends StatelessWidget {
 
 class _DoneScreen extends StatelessWidget {
   const _DoneScreen({required this.result, required this.name});
-  final EnrollCustomerResult result;
+  final EnrollCustomerResponse result;
   final String name;
 
   @override
@@ -320,7 +320,7 @@ class _DoneScreen extends StatelessWidget {
       onSecondary: () => Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => KycDocumentsScreen(
-            customerId: result.customerId,
+            customerId: result.customerId ?? '',
             customerName: name,
           ),
         ),
@@ -329,9 +329,16 @@ class _DoneScreen extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
-            _CopyRow(label: 'Référence client', value: result.externalRef),
-            _CopyRow(label: 'ID client', value: result.customerId),
-            _CopyRow(label: 'Compte', value: result.accountId, last: true),
+            _CopyRow(
+              label: 'Référence client',
+              value: result.externalRef ?? '',
+            ),
+            _CopyRow(label: 'ID client', value: result.customerId ?? ''),
+            _CopyRow(
+              label: 'Compte',
+              value: result.accountId ?? '',
+              last: true,
+            ),
           ],
         ),
       ),

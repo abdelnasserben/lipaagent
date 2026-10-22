@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -6,7 +9,6 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
-import '../../data/models/agent_profile.dart';
 import '../agent/agent_providers.dart';
 import '../auth/session_controller.dart';
 import '../commissions/commissions_screen.dart';
@@ -44,7 +46,7 @@ class ProfileScreen extends ConsumerWidget {
 
 class _Body extends ConsumerWidget {
   const _Body({required this.profile});
-  final AgentProfile profile;
+  final AgentProfileResponse profile;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,7 +67,7 @@ class _Body extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: Text(
-                  _initials(profile.fullName),
+                  _initials(profile.fullName ?? ''),
                   style: AppText.ui(
                     size: 20,
                     weight: FontWeight.w700,
@@ -79,7 +81,7 @@ class _Body extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      profile.fullName,
+                      profile.fullName ?? '',
                       style: AppText.ui(size: 17, weight: FontWeight.w700),
                     ),
                     const SizedBox(height: 3),
@@ -89,8 +91,8 @@ class _Body extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     GenericStatusPill(
-                      label: profile.status.frLabel,
-                      active: profile.status.isActive,
+                      label: AgentStatus.parse(profile.status).frLabel,
+                      active: AgentStatus.parse(profile.status).isActive,
                     ),
                   ],
                 ),
@@ -105,15 +107,21 @@ class _Body extends ConsumerWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              DetailRow(label: 'Référence agent', value: profile.externalRef),
+              DetailRow(
+                label: 'Référence agent',
+                value: profile.externalRef ?? '',
+              ),
               if (profile.zone != null && profile.zone!.isNotEmpty)
                 DetailRow(label: 'Zone', value: profile.zone!),
-              DetailRow(label: 'Niveau KYC', value: profile.kycLevel.frLabel),
+              DetailRow(
+                label: 'Niveau KYC',
+                value: KycLevel.parse(profile.kycLevel).frLabel,
+              ),
               if (profile.contractRef != null)
                 DetailRow(label: 'Contrat', value: profile.contractRef!),
               DetailRow(
                 label: 'Seuil d’alerte float',
-                value: fmtKmf(profile.floatAlertThreshold),
+                value: fmtKmf(profile.floatAlertThreshold ?? 0),
                 mono: true,
                 last: true,
               ),
@@ -132,9 +140,9 @@ class _Body extends ConsumerWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            _Cap(label: 'Dépôts', on: profile.canDoCashIn),
-            _Cap(label: 'Retraits', on: profile.canDoCashOut),
-            _Cap(label: 'Vente de cartes', on: profile.canSellCards),
+            _Cap(label: 'Dépôts', on: profile.canDoCashIn ?? false),
+            _Cap(label: 'Retraits', on: profile.canDoCashOut ?? false),
+            _Cap(label: 'Vente de cartes', on: profile.canSellCards ?? false),
           ],
         ),
         const SizedBox(height: 20),

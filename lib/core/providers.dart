@@ -1,11 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../data/repositories/agent_repository.dart';
-import '../data/repositories/auth_repository.dart';
+import '../api/api_client.dart';
 import 'auth/token_store.dart';
 import 'config/app_environment.dart';
-import 'network/api_client.dart';
 import 'scan/scanner.dart';
 
 /// Build-time configuration (`--dart-define=ENV=local|prod`).
@@ -23,23 +21,12 @@ final tokenStoreProvider = Provider<TokenStore>((ref) {
   return TokenStore(ref.watch(secureStorageProvider));
 });
 
-/// Dio-backed API client.
+/// The typed API client: `ref.read(apiClientProvider).send((api) => …)`.
 final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(
     config: ref.watch(appConfigProvider),
     tokenStore: ref.watch(tokenStoreProvider),
   );
-});
-
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return ApiAuthRepository(
-    ref.watch(apiClientProvider),
-    ref.watch(tokenStoreProvider),
-  );
-});
-
-final agentRepositoryProvider = Provider<AgentRepository>((ref) {
-  return ApiAgentRepository(ref.watch(apiClientProvider));
 });
 
 /// Hardware-scan seam (see core/scan/scanner.dart). Uses real NFC where the

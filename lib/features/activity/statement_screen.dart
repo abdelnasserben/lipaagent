@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
@@ -8,7 +10,6 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/utils/transaction_receipt.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/transaction.dart';
 import '../agent/agent_providers.dart';
 
 /// Wallet ledger statement (spec §5.3) — a date window + the ledger entries
@@ -148,7 +149,7 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
 
   /// Generates the statement PDF for the currently-loaded entries and opens
   /// the system print/preview sheet (save/share from there).
-  Future<void> _downloadPdf(List<StatementEntry> entries) async {
+  Future<void> _downloadPdf(List<AgentStatementEntryResponse> entries) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await Printing.layoutPdf(
@@ -177,11 +178,11 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
 
 class _EntryRow extends StatelessWidget {
   const _EntryRow({required this.entry});
-  final StatementEntry entry;
+  final AgentStatementEntryResponse entry;
 
   @override
   Widget build(BuildContext context) {
-    final credit = entry.side.isCredit;
+    final credit = entry.entrySide.isCredit;
     return LipaCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -206,7 +207,7 @@ class _EntryRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  entry.descriptionFr,
+                  entry.kind.frLabel,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppText.ui(size: 14, weight: FontWeight.w600),
@@ -233,7 +234,7 @@ class _EntryRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'Solde ${fmtKmfNoUnit(entry.runningBalance)}',
+                'Solde ${fmtKmfNoUnit(entry.runningBalance ?? 0)}',
                 style: AppText.mono(size: 11, color: AppColors.inkLow),
               ),
             ],

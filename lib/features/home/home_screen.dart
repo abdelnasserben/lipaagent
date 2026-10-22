@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -6,7 +8,6 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/lipa_brand.dart';
-import '../../data/models/agent_profile.dart';
 import '../activity/statement_screen.dart';
 import '../activity/transaction_detail_screen.dart';
 import '../activity/tx_row.dart';
@@ -57,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 2),
                       Text(
                         profile.maybeWhen(
-                          data: (p) => p.fullName,
+                          data: (p) => p.fullName ?? '',
                           orElse: () => '…',
                         ),
                         style: AppText.ui(
@@ -158,7 +159,7 @@ class HomeScreen extends ConsumerWidget {
                               divider: i > 0,
                               onTap: () => _push(
                                 context,
-                                TransactionDetailScreen(txId: txs[i].id),
+                                TransactionDetailScreen(txId: txs[i].id ?? ''),
                               ),
                             ),
                         ],
@@ -183,8 +184,8 @@ class _FloatCard extends StatefulWidget {
     required this.onCashOut,
     required this.onStatement,
   });
-  final AsyncValue<AgentBalance> balance;
-  final AsyncValue<AgentProfile> profile;
+  final AsyncValue<AgentBalanceResponse> balance;
+  final AsyncValue<AgentProfileResponse> profile;
   final VoidCallback onCashIn;
   final VoidCallback onCashOut;
   final VoidCallback onStatement;
@@ -199,11 +200,11 @@ class _FloatCardState extends State<_FloatCard> {
   @override
   Widget build(BuildContext context) {
     final threshold = widget.profile.maybeWhen(
-      data: (p) => p.floatAlertThreshold,
+      data: (p) => p.floatAlertThreshold ?? 0,
       orElse: () => 0,
     );
     final below = widget.balance.maybeWhen(
-      data: (b) => b.availableBalance < threshold && threshold > 0,
+      data: (b) => (b.availableBalance ?? 0) < threshold && threshold > 0,
       orElse: () => false,
     );
 
@@ -258,7 +259,9 @@ class _FloatCardState extends State<_FloatCard> {
                     textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
-                        _hidden ? '••• •••' : fmtKmfNoUnit(b.availableBalance),
+                        _hidden
+                            ? '••• •••'
+                            : fmtKmfNoUnit(b.availableBalance ?? 0),
                         style: AppText.mono(
                           size: 38,
                           weight: FontWeight.w600,
@@ -281,12 +284,13 @@ class _FloatCardState extends State<_FloatCard> {
                       children: [
                         TextSpan(
                           text:
-                              '${fmtKmfNoUnit(b.heldBalance)} KMF réservés · Compte ',
+                              '${fmtKmfNoUnit(b.heldBalance ?? 0)} KMF réservés · Compte ',
                         ),
                         TextSpan(
-                          text: '● ${b.accountStatus.frLabel}',
+                          text:
+                              '● ${AccountStatus.parse(b.accountStatus).frLabel}',
                           style: TextStyle(
-                            color: b.accountStatus.isActive
+                            color: AccountStatus.parse(b.accountStatus).isActive
                                 ? const Color(0xFF8FD1A8)
                                 : const Color(0xFFE0A24A),
                           ),
@@ -409,7 +413,7 @@ class _HeroAction extends StatelessWidget {
 
 class _SummaryGrid extends StatelessWidget {
   const _SummaryGrid({required this.summary});
-  final AsyncValue<AgentDailySummary> summary;
+  final AsyncValue<AgentDailySummaryResponse> summary;
 
   @override
   Widget build(BuildContext context) {
@@ -421,7 +425,7 @@ class _SummaryGrid extends StatelessWidget {
           Expanded(
             child: _Stat(
               label: 'Volume',
-              value: fmtKmfNoUnit(s.totalCompletedAmountToday),
+              value: fmtKmfNoUnit(s.totalCompletedAmountToday ?? 0),
               unit: 'KMF',
               icon: Icons.swap_horiz_rounded,
             ),
@@ -438,7 +442,7 @@ class _SummaryGrid extends StatelessWidget {
           Expanded(
             child: _Stat(
               label: 'Commission',
-              value: fmtKmfNoUnit(s.commissionEarnedToday),
+              value: fmtKmfNoUnit(s.commissionEarnedToday ?? 0),
               unit: 'KMF',
               icon: Icons.savings_outlined,
               accent: true,
@@ -513,19 +517,19 @@ class _Stat extends StatelessWidget {
 /// Capability-gated quick-op chips (spec §11.3): hidden when the agent can't.
 class _QuickOps extends StatelessWidget {
   const _QuickOps({required this.profile});
-  final AgentProfile profile;
+  final AgentProfileResponse profile;
 
   @override
   Widget build(BuildContext context) {
     final tiles = <Widget>[
-      if (profile.canDoCashIn)
+      if (profile.canDoCashIn ?? false)
         _OpTile(
           icon: Icons.south_west_rounded,
           label: 'Dépôt client',
           sub: 'Cash-in',
           onTap: () => _push(context, const CashInScreen()),
         ),
-      if (profile.canDoCashOut)
+      if (profile.canDoCashOut ?? false)
         _OpTile(
           icon: Icons.north_east_rounded,
           label: 'Retrait marchand',

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -10,8 +13,6 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/cash_result.dart';
-import '../../data/models/enums.dart';
 import 'cash_in_controller.dart';
 
 /// Cash-in (deposit) flow: confirm the customer, then the amount. The agent
@@ -128,10 +129,11 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
       children: [
         if (customer != null)
           PartyCard(
-            name: customer.fullName,
+            name: customer.fullName ?? '',
             subtitle: customer.phonePretty,
-            statusLabel: customer.status.frLabel,
-            statusActive: customer.status == CustomerStatus.active,
+            statusLabel: CustomerStatus.parse(customer.status?.json).frLabel,
+            statusActive:
+                customer.status == CustomerLookupResponseStatus.active,
           ),
         const SizedBox(height: 8),
         Align(
@@ -184,7 +186,7 @@ class _AmountStepState extends ConsumerState<_AmountStep> {
 
 class _DoneScreen extends ConsumerWidget {
   const _DoneScreen({required this.result, required this.customerName});
-  final AgentCashInResult result;
+  final AgentCashResponse result;
   final String customerName;
 
   @override
@@ -194,8 +196,8 @@ class _DoneScreen extends ConsumerWidget {
       headline: 'Dépôt effectué',
       subtitle: customerName.isEmpty
           ? null
-          : '${fmtKmf(result.requestedAmount)} crédités à $customerName.',
-      replayed: result.replayed,
+          : '${fmtKmf(result.requestedAmount ?? 0)} crédités à $customerName.',
+      replayed: result.replayed ?? false,
       onDone: () => Navigator.of(context).pop(),
       detail: LipaCard(
         padding: EdgeInsets.zero,
@@ -203,30 +205,30 @@ class _DoneScreen extends ConsumerWidget {
           children: [
             DetailRow(
               label: 'Montant',
-              value: fmtKmf(result.requestedAmount),
+              value: fmtKmf(result.requestedAmount ?? 0),
               mono: true,
             ),
-            if (result.feeAmount > 0)
+            if ((result.feeAmount ?? 0) > 0)
               DetailRow(
                 label: 'Frais',
-                value: fmtKmf(result.feeAmount),
+                value: fmtKmf(result.feeAmount ?? 0),
                 mono: true,
               ),
-            if (result.commissionAmount > 0)
+            if ((result.commissionAmount ?? 0) > 0)
               DetailRow(
                 label: 'Commission',
-                value: fmtKmf(result.commissionAmount),
+                value: fmtKmf(result.commissionAmount ?? 0),
                 mono: true,
                 valueColor: AppColors.brandDeep,
               ),
             DetailRow(
               label: 'Crédité au client',
-              value: fmtKmf(result.netAmountToDestination),
+              value: fmtKmf(result.netAmountToDestination ?? 0),
               mono: true,
             ),
             DetailRow(
               label: 'Réf.',
-              value: shortId(result.transactionId),
+              value: shortId(result.transactionId ?? ''),
               mono: true,
               last: true,
             ),

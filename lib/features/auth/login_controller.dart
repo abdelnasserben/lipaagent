@@ -1,8 +1,11 @@
+import '../../api/api_client.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/auth/token_store.dart';
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
-import '../../data/models/login_response.dart';
 import '../security/security_controller.dart';
 import 'session_controller.dart';
 
@@ -66,13 +69,19 @@ class LoginController extends Notifier<LoginState> {
       phoneNumber: phoneNumber,
     );
     try {
-      final res = await ref
-          .read(authRepositoryProvider)
-          .login(
-            phoneCountryCode: _countryCode,
-            phoneNumber: _digits(phoneNumber),
-            pin: pin,
+      final answer = await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthController.login(
+              body: LoginRequest(
+                phoneCountryCode: _countryCode,
+                phoneNumber: _digits(phoneNumber),
+                pin: pin,
+              ),
+            ),
           );
+      final res = requireData(answer.data);
+      if (res.branch == LoginBranch.session) await _saveSession(res);
       if (!ref.mounted) return;
       switch (res.branch) {
         case LoginBranch.session:
@@ -123,9 +132,14 @@ class LoginController extends Notifier<LoginState> {
     if (challengeId == null) return;
     state = state.copyWith(submitting: true, clearError: true);
     try {
-      await ref
-          .read(authRepositoryProvider)
-          .verifyMfa(challengeId: challengeId, code: code);
+      final answer = await ref
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthController.verifyMfa(
+              body: VerifyMfaRequest(challengeId: challengeId, code: code),
+            ),
+          );
+      await _saveSession(requireData(answer.data));
       if (!ref.mounted) return;
       ref.read(sessionControllerProvider.notifier).markAuthenticated();
       state = state.copyWith(submitting: false);
@@ -152,8 +166,13 @@ class LoginController extends Notifier<LoginState> {
     state = state.copyWith(submitting: true, clearError: true);
     try {
       await ref
-          .read(authRepositoryProvider)
-          .setupPin(pinSetupToken: token, pin: pin);
+          .read(apiClientProvider)
+          .sendWithBearer(
+            token,
+            (api) => api.agentAuthPinController.setup1(
+              body: SetAuthPinRequest(pin: pin),
+            ),
+          );
       if (!ref.mounted) return;
       state = state.copyWith(submitting: false, step: AuthStep.login);
     } on ApiError catch (e) {
@@ -186,12 +205,16 @@ class LoginController extends Notifier<LoginState> {
     );
     try {
       await ref
-          .read(authRepositoryProvider)
-          .resetPinViaTotp(
-            phoneCountryCode: _countryCode,
-            phoneNumber: _digits(phoneNumber),
-            totpCode: totpCode,
-            newPin: newPin,
+          .read(apiClientProvider)
+          .send(
+            (api) => api.agentAuthPinController.reset(
+              body: ResetAuthPinRequest(
+                phoneCountryCode: _countryCode,
+                phoneNumber: _digits(phoneNumber),
+                totpCode: totpCode,
+                newPin: newPin,
+              ),
+            ),
           );
       if (!ref.mounted) return;
       state = state.copyWith(
@@ -212,6 +235,13 @@ class LoginController extends Notifier<LoginState> {
         errorMessage: 'Une erreur est survenue.',
       );
     }
+  }
+
+  /// Stores the session tokens of a login or MFA answer.
+  Future<void> _saveSession(LoginResponse res) async {
+    final tokens = AuthTokens.fromTokens(res.tokens);
+    if (tokens == null) throw ApiError.emptyResponse();
+    await ref.read(tokenStoreProvider).save(tokens);
   }
 
   String _digits(String s) => s.replaceAll(RegExp(r'\D'), '');

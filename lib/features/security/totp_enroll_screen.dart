@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/code_field.dart';
 import '../../core/widgets/common.dart';
-import '../../core/widgets/lipa_brand.dart';
 import 'security_controller.dart';
 
 /// TOTP enrollment (spec §3.7): start → show secret/QR → confirm with a code.
@@ -86,7 +86,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                           borderRadius: BorderRadius.circular(AppRadius.lg),
                           border: Border.all(color: AppColors.border),
                         ),
-                        child: FakeQr(size: 180, seedText: setup.secret),
+                        child: QrImageView(data: setup.qrUri ?? '', size: 180),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -95,7 +95,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
                       style: AppText.ui(size: 13, weight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
-                    _SecretBox(secret: setup.secret),
+                    _SecretBox(secret: setup.secret ?? ''),
                     const SizedBox(height: 8),
                     Text(
                       'Scannez le QR (illustratif) ou saisissez la clé dans votre application, puis entrez le code à 6 chiffres.',

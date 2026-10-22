@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -115,7 +116,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) =>
-                              TransactionDetailScreen(txId: txs[i].id),
+                              TransactionDetailScreen(txId: txs[i].id ?? ''),
                         ),
                       ),
                     ),

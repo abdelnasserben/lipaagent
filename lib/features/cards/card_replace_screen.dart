@@ -1,73 +1,49 @@
 import 'package:flutter/material.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
-import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/amount_input.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/result_screen.dart';
-import '../../data/models/card.dart';
-import '../../data/models/lookup.dart';
-import '../../data/repositories/agent_repository.dart';
 import '../agent/agent_providers.dart';
+import 'cards_controller.dart';
 
 /// Card replacement (spec §5.6): pick a card from assigned stock, declare a
 /// fee, replace the customer's reported card. Shows the fee returned by the API.
 class CardReplaceScreen extends ConsumerStatefulWidget {
   const CardReplaceScreen({super.key, required this.card});
-  final CardLookup card;
+  final CardLookupResponse card;
 
   @override
   ConsumerState<CardReplaceScreen> createState() => _CardReplaceScreenState();
 }
 
 class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
-  final _operationKey = OperationKey();
-  CardStockItem? _stock;
+  AgentCardStockView? _stock;
   int _fee = 0;
-  bool _busy = false;
-  String? _error;
-  CardReplacementResult? _result;
 
-  Future<void> _replace() async {
-    final stock = _stock;
-    if (stock == null || _fee <= 0 || widget.card.customerId == null) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final res = await ref
-          .read(agentRepositoryProvider)
-          .replaceCard(
-            idempotencyKey: _operationKey.forIntent('${stock.id}|$_fee'),
-            customerId: widget.card.customerId!,
-            cardId: widget.card.cardId,
-            stockId: stock.id,
-            replacementFee: _fee,
-          );
-      ref.invalidate(balanceProvider);
-      ref.invalidate(cardStockProvider);
-      ref.invalidate(transactionsProvider);
-      setState(() => _result = res);
-    } on ApiError catch (e) {
-      setState(() => _error = frenchMessageForError(e));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
+  void _replace() {
+    final stockId = _stock?.id;
+    if (stockId == null) return;
+    ref
+        .read(cardReplaceControllerProvider.notifier)
+        .replace(card: widget.card, stockId: stockId, fee: _fee);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_result != null) {
+    final s = ref.watch(cardReplaceControllerProvider);
+    final result = s.result;
+    if (result != null) {
       return ResultScreen(
         title: 'Remplacement',
         headline: 'Carte remplacée',
         subtitle: 'Nouvelle carte activée pour le client.',
-        replayed: _result!.replayed,
+        replayed: result.replayed ?? false,
         onDone: () => Navigator.of(context)
           ..pop()
           ..maybePop(),
@@ -75,27 +51,27 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              if (_result!.replacementFee != null)
+              if (result.replacementFee != null)
                 DetailRow(
                   label: 'Frais facturés',
-                  value: fmtKmf(_result!.replacementFee!),
+                  value: fmtKmf(result.replacementFee!),
                   mono: true,
                   valueColor: AppColors.brandDeep,
                 ),
-              if ((_result!.commissionAmount ?? 0) > 0)
+              if ((result.commissionAmount ?? 0) > 0)
                 DetailRow(
                   label: 'Commission',
-                  value: fmtKmf(_result!.commissionAmount!),
+                  value: fmtKmf(result.commissionAmount!),
                   mono: true,
                 ),
               DetailRow(
                 label: 'Nouvelle carte',
-                value: shortId(_result!.newCardId),
+                value: shortId(result.newCardId ?? ''),
                 mono: true,
               ),
               DetailRow(
                 label: 'Ancienne carte',
-                value: shortId(_result!.oldCardId),
+                value: shortId(result.oldCardId ?? ''),
                 mono: true,
                 last: true,
               ),
@@ -175,10 +151,10 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
                     quickAmounts: const [500, 1000, 2000, 5000],
                     onChanged: (v) => setState(() => _fee = v),
                   ),
-                  if (_error != null) ...[
+                  if (s.error != null) ...[
                     const SizedBox(height: 14),
                     Text(
-                      _error!,
+                      errorMessage(s.error!),
                       textAlign: TextAlign.center,
                       style: AppText.ui(size: 13, color: AppColors.danger),
                     ),
@@ -190,7 +166,7 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
                         : 'Remplacer la carte',
                     size: BtnSize.lg,
                     full: true,
-                    loading: _busy,
+                    loading: s.busy,
                     onPressed: _stock != null && _fee > 0 ? _replace : null,
                   ),
                 ],
@@ -209,7 +185,7 @@ class _StockOption extends StatelessWidget {
     required this.selected,
     required this.onTap,
   });
-  final CardStockItem item;
+  final AgentCardStockView item;
   final bool selected;
   final VoidCallback onTap;
 
@@ -247,12 +223,12 @@ class _StockOption extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.internalCardNumber,
+                        item.internalCardNumber ?? '',
                         style: AppText.mono(size: 14, weight: FontWeight.w600),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'UID ${item.nfcUid} · ${item.batchRef}',
+                        'UID ${item.nfcUid ?? ''} · ${item.batchRef ?? ''}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppText.ui(size: 12, color: AppColors.inkLow),

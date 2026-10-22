@@ -1,18 +1,19 @@
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../../data/models/enums.dart';
-import '../../data/models/transaction.dart';
 import 'formatters.dart';
 
 /// Builds the share/PDF artefacts for an agent transaction receipt and the
 /// account statement. Pure presentation logic so the activity detail and the
 /// statement screen reuse the exact same rendering. Mirrors the Lipa customer
 /// app's `transaction_receipt.dart`, adapted to the agent's account-scoped
-/// [AgentTransaction] / [StatementEntry] models.
+/// [AgentTransactionResponse] / [AgentStatementEntryResponse] models.
 
 /// PDF theme backed by a real TrueType font. The default PDF font (Helvetica)
 /// lacks the Unicode minus sign U+2212 used in amounts (it renders as a missing
@@ -34,28 +35,28 @@ String _statusLabelFr(TransactionStatus s) => switch (s) {
 };
 
 /// A plain-text recap suitable for the native share sheet.
-String receiptShareText(AgentTransaction t) {
+String receiptShareText(AgentTransactionResponse t) {
   final incoming = t.incoming;
   final sign = incoming ? '+' : '−';
   final at = t.effectiveAt;
   final lines = <String>[
     'Reçu Lipa',
     '',
-    'Opération : ${t.type.frLabel}',
-    'Montant : $sign${fmtKmfNoUnit(t.requestedAmount)} KMF',
-    'Statut : ${_statusLabelFr(t.status)}',
+    'Opération : ${t.kind.frLabel}',
+    'Montant : $sign${fmtKmfNoUnit(t.requestedAmount ?? 0)} KMF',
+    'Statut : ${_statusLabelFr(t.state)}',
     if (at != null) 'Date : ${fmtDateTimeFr(at)}',
-    if (t.feeAmount > 0) 'Frais : ${fmtKmfNoUnit(t.feeAmount)} KMF',
-    if (t.commissionAmount > 0)
-      'Commission : ${fmtKmfNoUnit(t.commissionAmount)} KMF',
-    'Montant net : ${fmtKmfNoUnit(t.netAmountToDestination)} KMF',
-    'Référence : ${t.id}',
+    if ((t.feeAmount ?? 0) > 0) 'Frais : ${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF',
+    if ((t.commissionAmount ?? 0) > 0)
+      'Commission : ${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF',
+    'Montant net : ${fmtKmfNoUnit(t.netAmountToDestination ?? 0)} KMF',
+    'Référence : ${t.id ?? ''}',
   ];
   return lines.join('\n');
 }
 
 /// Renders the agent receipt as a printable/shareable PDF document.
-Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
+Future<Uint8List> receiptPdfBytes(AgentTransactionResponse t) async {
   final doc = pw.Document(theme: await _pdfTheme());
   final incoming = t.incoming;
   final sign = incoming ? '+' : '−';
@@ -117,7 +118,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
           ),
           pw.SizedBox(height: 28),
           pw.Text(
-            t.type.frLabel,
+            t.kind.frLabel,
             style: pw.TextStyle(
               color: ink,
               fontSize: 16,
@@ -126,7 +127,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
           ),
           pw.SizedBox(height: 18),
           pw.Text(
-            '$sign${fmtKmfNoUnit(t.requestedAmount)} KMF',
+            '$sign${fmtKmfNoUnit(t.requestedAmount ?? 0)} KMF',
             style: pw.TextStyle(
               color: ink,
               fontSize: 30,
@@ -134,14 +135,18 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
             ),
           ),
           pw.SizedBox(height: 28),
-          row('Statut', _statusLabelFr(t.status)),
+          row('Statut', _statusLabelFr(t.state)),
           if (at != null) row('Date', fmtDateTimeFr(at)),
-          row('Type', t.type.frLabel),
-          if (t.feeAmount > 0) row('Frais', '${fmtKmfNoUnit(t.feeAmount)} KMF'),
-          if (t.commissionAmount > 0)
-            row('Commission', '${fmtKmfNoUnit(t.commissionAmount)} KMF'),
-          row('Montant net', '${fmtKmfNoUnit(t.netAmountToDestination)} KMF'),
-          row('Référence', t.id, last: true),
+          row('Type', t.kind.frLabel),
+          if ((t.feeAmount ?? 0) > 0)
+            row('Frais', '${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF'),
+          if ((t.commissionAmount ?? 0) > 0)
+            row('Commission', '${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF'),
+          row(
+            'Montant net',
+            '${fmtKmfNoUnit(t.netAmountToDestination ?? 0)} KMF',
+          ),
+          row('Référence', t.id ?? '', last: true),
           pw.Spacer(),
           pw.Text(
             'Ce reçu est généré par l’application Lipa à titre informatif.',
@@ -158,7 +163,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
 /// Renders a account statement (a date window's entries with running balance)
 /// as a printable/shareable PDF. [from]/[to] are the chosen window, null = all.
 Future<Uint8List> statementPdfBytes(
-  List<StatementEntry> entries, {
+  List<AgentStatementEntryResponse> entries, {
   DateTime? from,
   DateTime? to,
 }) async {
@@ -224,8 +229,8 @@ Future<Uint8List> statementPdfBytes(
     ],
   );
 
-  pw.TableRow entryRow(StatementEntry e) {
-    final isCredit = e.side.isCredit;
+  pw.TableRow entryRow(AgentStatementEntryResponse e) {
+    final isCredit = e.entrySide.isCredit;
     return pw.TableRow(
       decoration: const pw.BoxDecoration(
         border: pw.Border(top: pw.BorderSide(color: line, width: 0.6)),
@@ -240,12 +245,12 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
-          child: cell(e.descriptionFr),
+          child: cell(e.kind.frLabel),
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
           child: cell(
-            '${isCredit ? '+' : '−'}${fmtKmfNoUnit(e.amount)}',
+            '${isCredit ? '+' : '−'}${fmtKmfNoUnit(e.amount ?? 0)}',
             align: pw.TextAlign.right,
             color: isCredit ? credit : ink,
           ),
@@ -253,7 +258,7 @@ Future<Uint8List> statementPdfBytes(
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
           child: cell(
-            fmtKmfNoUnit(e.runningBalance),
+            fmtKmfNoUnit(e.runningBalance ?? 0),
             align: pw.TextAlign.right,
             color: inkMid,
           ),

@@ -1,18 +1,17 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/error/api_error.dart';
-import '../../core/providers.dart';
+import 'kyc_controller.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
-import '../../data/models/enrollment.dart';
-import '../../data/models/enums.dart';
-import '../../data/repositories/agent_repository.dart';
 
 /// KYC documents for a customer (spec §5.5): list + capture/pick + upload.
 /// The capture goes through `image_picker` (camera or gallery), the only
@@ -42,30 +41,12 @@ const int _kMaxImageDimension = 1600;
 const int _kMaxFileBytes = 10 * 1024 * 1024;
 
 class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
-  late Future<List<KycDocument>> _future;
-  bool _uploading = false;
+  // The type being added (wire value, e.g. NATIONAL_ID).
   KycDocumentType _selectedType = KycDocumentType.nationalId;
 
   // A captured-but-not-yet-sent document, held for confirmation/preview.
   Uint8List? _pendingBytes;
   String? _pendingName;
-  String? _pendingMime;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = ref
-        .read(agentRepositoryProvider)
-        .getKycDocuments(widget.customerId);
-  }
-
-  void _reload() {
-    setState(() {
-      _future = ref
-          .read(agentRepositoryProvider)
-          .getKycDocuments(widget.customerId);
-    });
-  }
 
   /// Pick/capture an image and stage it for confirmation — does NOT upload yet.
   Future<void> _pick(ImageSource source) async {
@@ -86,7 +67,6 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
     setState(() {
       _pendingBytes = bytes;
       _pendingName = picked.name;
-      _pendingMime = picked.mimeType;
     });
   }
 
@@ -94,7 +74,6 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
     setState(() {
       _pendingBytes = null;
       _pendingName = null;
-      _pendingMime = null;
     });
   }
 
@@ -102,39 +81,30 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
   Future<void> _confirmUpload() async {
     final bytes = _pendingBytes;
     if (bytes == null) return;
-    setState(() => _uploading = true);
-    try {
-      await ref
-          .read(agentRepositoryProvider)
-          .uploadKycDocument(
-            customerId: widget.customerId,
-            documentType: _selectedType,
-            file: KycUploadFile(
-              bytes: bytes,
-              filename: _pendingName ?? 'document.jpg',
-              contentType: _pendingMime,
-            ),
-          );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Document envoyé',
-            style: AppText.ui(color: Colors.white),
-          ),
-          backgroundColor: AppColors.brandDeep,
-          duration: const Duration(seconds: 1),
-        ),
-      );
-      _discardPending();
-      _reload();
-    } on ApiError catch (e) {
-      if (mounted) _snack(frenchMessageForError(e), error: true);
-    } catch (_) {
-      if (mounted) _snack('Échec de l’envoi.', error: true);
-    } finally {
-      if (mounted) setState(() => _uploading = false);
+    final failure = await ref
+        .read(kycUploadControllerProvider.notifier)
+        .upload(
+          customerId: widget.customerId,
+          documentType: _selectedType.wire,
+          bytes: bytes,
+          filename: _pendingName ?? 'document.jpg',
+        );
+    if (!mounted) return;
+    if (failure != null) {
+      _snack(errorMessage(failure), error: true);
+      return;
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Document envoyé',
+          style: AppText.ui(color: Colors.white),
+        ),
+        backgroundColor: AppColors.brandDeep,
+        duration: const Duration(seconds: 1),
+      ),
+    );
+    _discardPending();
   }
 
   void _snack(String msg, {bool error = false}) {
@@ -192,6 +162,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final uploading = ref.watch(kycUploadControllerProvider).busy;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(
@@ -231,9 +202,9 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                     _PendingPreview(
                       bytes: _pendingBytes!,
                       typeLabel: _selectedType.frLabel,
-                      uploading: _uploading,
+                      uploading: uploading,
                       onConfirm: _confirmUpload,
-                      onDiscard: _uploading ? null : _discardPending,
+                      onDiscard: uploading ? null : _discardPending,
                     ),
                   const SizedBox(height: 24),
                   Text(
@@ -241,33 +212,37 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                     style: AppText.ui(size: 15, weight: FontWeight.w700),
                   ),
                   const SizedBox(height: 12),
-                  FutureBuilder<List<KycDocument>>(
-                    future: _future,
-                    builder: (ctx, snap) {
-                      if (snap.connectionState == ConnectionState.waiting) {
-                        return const Padding(
+                  ref
+                      .watch(kycDocumentsProvider(widget.customerId))
+                      .when(
+                        error: (e, _) => ErrorRetry(
+                          message: errorMessage(e),
+                          onRetry: () => ref.invalidate(
+                            kycDocumentsProvider(widget.customerId),
+                          ),
+                        ),
+                        loading: () => const Padding(
                           padding: EdgeInsets.all(24),
                           child: Center(
                             child: CircularProgressIndicator(
                               color: AppColors.brand,
                             ),
                           ),
-                        );
-                      }
-                      final docs = snap.data ?? const [];
-                      if (docs.isEmpty) {
-                        return const EmptyState(
-                          icon: Icons.folder_open_rounded,
-                          title: 'Aucun document',
-                          message:
-                              'Ajoutez la pièce d’identité du client et tout justificatif requis.',
-                        );
-                      }
-                      return Column(
-                        children: [for (final d in docs) _DocRow(doc: d)],
-                      );
-                    },
-                  ),
+                        ),
+                        data: (docs) {
+                          if (docs.isEmpty) {
+                            return const EmptyState(
+                              icon: Icons.folder_open_rounded,
+                              title: 'Aucun document',
+                              message:
+                                  'Ajoutez la pièce d’identité du client et tout justificatif requis.',
+                            );
+                          }
+                          return Column(
+                            children: [for (final d in docs) _DocRow(doc: d)],
+                          );
+                        },
+                      ),
                 ],
               ),
             ),
@@ -392,13 +367,13 @@ class _TypePicker extends StatelessWidget {
 
 class _DocRow extends StatelessWidget {
   const _DocRow({required this.doc});
-  final KycDocument doc;
+  final KycDocumentResponse doc;
 
   @override
   Widget build(BuildContext context) {
     final (pillKind, pillLabel) = switch (doc.status) {
-      KycDocumentStatus.accepted => (PillKind.success, 'Acceptée'),
-      KycDocumentStatus.rejected => (PillKind.declined, 'Rejetée'),
+      KycDocumentResponseStatus.accepted => (PillKind.success, 'Acceptée'),
+      KycDocumentResponseStatus.rejected => (PillKind.declined, 'Rejetée'),
       _ => (PillKind.pending, 'En revue'),
     };
     return Padding(
@@ -428,7 +403,7 @@ class _DocRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    doc.documentType.frLabel,
+                    KycDocumentType.parse(doc.documentType?.json).frLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppText.ui(size: 14, weight: FontWeight.w600),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
@@ -10,7 +12,6 @@ import '../../core/utils/formatters.dart';
 import '../../core/utils/transaction_receipt.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
-import '../../data/models/transaction.dart';
 import '../agent/agent_providers.dart';
 
 /// Full transaction detail (spec §5.3). Fetched fresh by id so the screen is
@@ -53,7 +54,7 @@ class TransactionDetailScreen extends ConsumerWidget {
 
 class _Body extends StatelessWidget {
   const _Body({required this.tx});
-  final AgentTransaction tx;
+  final AgentTransactionResponse tx;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,7 @@ class _Body extends StatelessWidget {
           ),
           child: Column(
             children: [
-              TxStatusPill(status: tx.status),
+              TxStatusPill(status: tx.state),
               const SizedBox(height: 14),
               Text(
                 fmtKmf(tx.signedAmount, signed: incoming),
@@ -84,7 +85,7 @@ class _Body extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                tx.type.frLabel,
+                tx.kind.frLabel,
                 style: AppText.ui(size: 13.5, color: AppColors.inkMid),
               ),
             ],
@@ -95,7 +96,7 @@ class _Body extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              DetailRow(label: 'Type', value: tx.type.frLabel),
+              DetailRow(label: 'Type', value: tx.kind.frLabel),
               if (tx.completedAt != null)
                 DetailRow(
                   label: 'Effectué le',
@@ -113,25 +114,25 @@ class _Body extends StatelessWidget {
                 ),
               DetailRow(
                 label: 'Montant',
-                value: fmtKmf(tx.requestedAmount),
+                value: fmtKmf(tx.requestedAmount ?? 0),
                 mono: true,
               ),
-              if (tx.feeAmount > 0)
+              if ((tx.feeAmount ?? 0) > 0)
                 DetailRow(
                   label: 'Frais',
-                  value: fmtKmf(tx.feeAmount),
+                  value: fmtKmf(tx.feeAmount ?? 0),
                   mono: true,
                 ),
-              if (tx.commissionAmount > 0)
+              if ((tx.commissionAmount ?? 0) > 0)
                 DetailRow(
                   label: 'Commission',
-                  value: fmtKmf(tx.commissionAmount),
+                  value: fmtKmf(tx.commissionAmount ?? 0),
                   mono: true,
                   valueColor: AppColors.brandDeep,
                 ),
               DetailRow(
                 label: 'Net destinataire',
-                value: fmtKmf(tx.netAmountToDestination),
+                value: fmtKmf(tx.netAmountToDestination ?? 0),
                 mono: true,
               ),
               if (tx.declineReason != null)
@@ -140,8 +141,8 @@ class _Body extends StatelessWidget {
                   value: tx.declineReason!,
                   valueColor: AppColors.danger,
                 ),
-              DetailRow(label: 'Initiateur', value: tx.initiatorType),
-              _CopyRow(label: 'Réf. transaction', value: tx.id),
+              DetailRow(label: 'Initiateur', value: tx.initiatorType ?? ''),
+              _CopyRow(label: 'Réf. transaction', value: tx.id ?? ''),
               if (tx.correlationId != null)
                 _CopyRow(
                   label: 'Corrélation',
@@ -179,7 +180,10 @@ class _Body extends StatelessWidget {
 
   /// Generates the receipt PDF locally and opens the system print/preview
   /// sheet, from which the user can save or share the file.
-  Future<void> _openReceiptPdf(BuildContext context, AgentTransaction t) async {
+  Future<void> _openReceiptPdf(
+    BuildContext context,
+    AgentTransactionResponse t,
+  ) async {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await Printing.layoutPdf(
@@ -194,7 +198,10 @@ class _Body extends StatelessWidget {
   }
 
   /// Opens the native share sheet with a plain-text recap of the transaction.
-  Future<void> _shareReceipt(BuildContext context, AgentTransaction t) async {
+  Future<void> _shareReceipt(
+    BuildContext context,
+    AgentTransactionResponse t,
+  ) async {
     final box = context.findRenderObject() as RenderBox?;
     await SharePlus.instance.share(
       ShareParams(

@@ -1,26 +1,27 @@
+import '../../api/enums.dart';
+import '../../api/generated/export.dart';
+import '../../api/model_helpers.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
-import '../../data/models/enums.dart';
-import '../../data/models/transaction.dart';
 
 /// A single transaction row (icon, type+time, signed amount + status dot).
 /// Direction comes from the backend's balanceChange (incoming = credited).
 class TxRow extends StatelessWidget {
   const TxRow({super.key, required this.tx, this.divider = false, this.onTap});
 
-  final AgentTransaction tx;
+  final AgentTransactionResponse tx;
   final bool divider;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final incoming = tx.incoming;
-    final (icon, label) = _present(tx.type, incoming);
+    final (icon, label) = _present(tx.kind, incoming);
     final at = tx.effectiveAt;
-    final amountColor = tx.status.isDeclined
+    final amountColor = tx.state.isDeclined
         ? AppColors.inkLow
         : (incoming ? AppColors.brandDeep : AppColors.inkHi);
 
@@ -78,7 +79,7 @@ class TxRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 3),
-                _StatusDot(status: tx.status),
+                _StatusDot(status: tx.state),
               ],
             ),
           ],
