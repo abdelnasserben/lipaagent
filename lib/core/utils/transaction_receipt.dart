@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 import '../../data/models/enums.dart';
 import '../../data/models/transaction.dart';
@@ -16,11 +16,11 @@ import 'formatters.dart';
 
 /// PDF theme backed by a real TrueType font. The default PDF font (Helvetica)
 /// lacks the Unicode minus sign U+2212 used in amounts (it renders as a missing
-/// glyph / tofu box), so we load Open Sans — which covers it — via printing's
-/// Google Fonts helper. The font bytes are cached after the first download.
+/// glyph / tofu box), so we use Open Sans, shipped in assets/fonts: receipts
+/// work offline.
 Future<pw.ThemeData> _pdfTheme() async => pw.ThemeData.withFont(
-  base: await PdfGoogleFonts.openSansRegular(),
-  bold: await PdfGoogleFonts.openSansBold(),
+  base: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-Regular.ttf')),
+  bold: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-Bold.ttf')),
 );
 
 /// French status label, matching `TxStatusPill`.

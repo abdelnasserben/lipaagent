@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'app_tokens.dart';
 
 /// Typography helpers. The design uses Bricolage Grotesque for UI text and
-/// DM Mono for figures, codes, and references — same as the Customer app.
+/// DM Mono for figures, codes, and references — same as the back-office.
+/// Both are shipped in assets/fonts (declared in pubspec.yaml).
 class AppText {
   AppText._();
+
+  static const uiFamily = 'BricolageGrotesque';
+  static const monoFamily = 'DMMono';
 
   static TextStyle ui({
     double size = 14,
@@ -15,7 +18,8 @@ class AppText {
     double? letterSpacing,
     double? height,
   }) {
-    return GoogleFonts.bricolageGrotesque(
+    return TextStyle(
+      fontFamily: uiFamily,
       fontSize: size,
       fontWeight: weight,
       color: color,
@@ -31,7 +35,8 @@ class AppText {
     double? letterSpacing,
     double? height,
   }) {
-    return GoogleFonts.dmMono(
+    return TextStyle(
+      fontFamily: monoFamily,
       fontSize: size,
       fontWeight: weight,
       color: color,
@@ -45,6 +50,7 @@ class AppText {
 ThemeData buildAppTheme() {
   final base = ThemeData(
     useMaterial3: true,
+    fontFamily: AppText.uiFamily,
     scaffoldBackgroundColor: AppColors.bg,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.brand,
@@ -57,9 +63,10 @@ ThemeData buildAppTheme() {
   );
 
   return base.copyWith(
-    textTheme: GoogleFonts.bricolageGrotesqueTextTheme(
-      base.textTheme,
-    ).apply(bodyColor: AppColors.inkHi, displayColor: AppColors.inkHi),
+    textTheme: base.textTheme.apply(
+      bodyColor: AppColors.inkHi,
+      displayColor: AppColors.inkHi,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.bg,
       surfaceTintColor: Colors.transparent,
@@ -68,8 +75,9 @@ ThemeData buildAppTheme() {
     ),
     // Placeholders must read clearly as *hints*, not pre-filled values: a faint
     // ink tone at normal weight, never the strong input ink.
-    inputDecorationTheme: InputDecorationTheme(
-      hintStyle: GoogleFonts.bricolageGrotesque(
+    inputDecorationTheme: const InputDecorationTheme(
+      hintStyle: TextStyle(
+        fontFamily: AppText.uiFamily,
         color: AppColors.inkFaint,
         fontWeight: FontWeight.w400,
       ),
