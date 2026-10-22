@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
+import '../../l10n/l10n.dart';
 
 /// Official Lipa mark — a solid dot followed by two echoing arcs.
 /// Transcribed from the Customer design `tokens.jsx` LipaMark (viewBox 0 0 100 100).
@@ -64,17 +65,11 @@ class _LipaMarkPainter extends CustomPainter {
 
 /// Wordmark: mark + "Lipa" + an uppercase subtitle.
 ///
-/// The Agent app surfaces the "AGENT" subtitle by default so the operator
+/// The Agent app always shows the "AGENT" subtitle so the operator
 /// always knows which Lipa surface they are in (vs the Customer app).
 class LipaWordmark extends StatelessWidget {
-  const LipaWordmark({
-    super.key,
-    this.subtitle = 'Agent',
-    this.dark = false,
-    this.size = 36,
-  });
+  const LipaWordmark({super.key, this.dark = false, this.size = 36});
 
-  final String? subtitle;
   final bool dark;
   final double size;
 
@@ -90,7 +85,7 @@ class LipaWordmark extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Lipa',
+              l10n.commonLipa,
               style: AppText.ui(
                 size: size * 0.55,
                 weight: FontWeight.w700,
@@ -99,10 +94,10 @@ class LipaWordmark extends StatelessWidget {
                 height: 1,
               ),
             ),
-            if (subtitle != null) ...[
+            ...[
               const SizedBox(height: 4),
               Text(
-                subtitle!.toUpperCase(),
+                l10n.lipaBrandAgent.toUpperCase(),
                 style: AppText.ui(
                   size: 10,
                   weight: FontWeight.w600,

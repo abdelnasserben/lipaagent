@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
+import '../../l10n/l10n.dart';
 
 enum EnrollStep { form, submitting, done, error }
 
@@ -50,13 +51,13 @@ class EnrollController extends Notifier<EnrollState> {
       if (!ref.mounted) return;
       state = state.copyWith(
         step: EnrollStep.form,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         step: EnrollStep.form,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }

@@ -11,6 +11,7 @@ import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/result_screen.dart';
 import 'enroll_controller.dart';
 import 'kyc_documents_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Customer enrollment (spec §5.5): create the customer + account, then offer to
 /// upload KYC documents. National-ID type is a small fixed picker matching the
@@ -59,7 +60,7 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
       initialDate: DateTime(now.year - 25),
       firstDate: DateTime(now.year - 100),
       lastDate: now.subtract(const Duration(days: 1)),
-      helpText: 'Date de naissance',
+      helpText: l10n.enrollDateNaissance,
     );
     if (picked != null) setState(() => _dob = picked);
   }
@@ -95,52 +96,52 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Enrôler un client',
-              subtitle: 'Nouveau compte + KYC',
+              title: l10n.commonEnrolerClient,
+              subtitle: l10n.enrollNouveauCompteKyc,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const FieldLabel('Nom complet'),
+                  FieldLabel(l10n.enrollNomComplet),
                   const SizedBox(height: 8),
                   BoxedTextField(
                     controller: _fullName,
-                    hintText: 'Prénom et nom',
+                    hintText: l10n.enrollPrenomNom,
                     textCapitalization: TextCapitalization.words,
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 18),
-                  const FieldLabel('Date de naissance'),
+                  FieldLabel(l10n.enrollDateNaissance),
                   const SizedBox(height: 8),
                   _DateField(value: _dob, onTap: _pickDob),
                   const SizedBox(height: 18),
-                  const FieldLabel('Numéro de téléphone'),
+                  FieldLabel(l10n.commonNumeroTelephone),
                   const SizedBox(height: 8),
                   PhoneInput(
                     controller: _phone,
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 18),
-                  const FieldLabel('Type de pièce'),
+                  FieldLabel(l10n.enrollTypePiece),
                   const SizedBox(height: 8),
                   _IdTypePicker(
                     value: _idType,
                     onChanged: (v) => setState(() => _idType = v),
                   ),
                   const SizedBox(height: 18),
-                  const FieldLabel('Numéro de pièce'),
+                  FieldLabel(l10n.enrollNumeroPiece),
                   const SizedBox(height: 8),
                   BoxedTextField(
                     controller: _idNumber,
-                    hintText: 'N° de la pièce d’identité',
+                    hintText: l10n.enrollNPieceIdentite,
                     textCapitalization: TextCapitalization.characters,
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 22),
                   Text(
-                    'Adresse (facultatif)',
+                    l10n.enrollAdresseFacultatif,
                     style: AppText.ui(
                       size: 12.5,
                       weight: FontWeight.w700,
@@ -148,16 +149,19 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const FieldLabel('Île'),
+                  FieldLabel(l10n.enrollIle),
                   const SizedBox(height: 8),
                   _IslandPicker(
                     value: _island,
                     onChanged: (v) => setState(() => _island = v),
                   ),
                   const SizedBox(height: 14),
-                  BoxedTextField(controller: _city, hintText: 'Ville'),
+                  BoxedTextField(controller: _city, hintText: l10n.enrollVille),
                   const SizedBox(height: 10),
-                  BoxedTextField(controller: _district, hintText: 'Quartier'),
+                  BoxedTextField(
+                    controller: _district,
+                    hintText: l10n.enrollQuartier,
+                  ),
                   if (state.errorMessage != null) ...[
                     const SizedBox(height: 14),
                     Text(
@@ -167,7 +171,7 @@ class _EnrollScreenState extends ConsumerState<EnrollScreen> {
                   ],
                   const SizedBox(height: 22),
                   LipaButton(
-                    label: 'Créer le compte client',
+                    label: l10n.enrollCreerCompteClient,
                     size: BtnSize.lg,
                     full: true,
                     loading: submitting,
@@ -211,7 +215,7 @@ class _DateField extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               value == null
-                  ? 'Sélectionner une date'
+                  ? l10n.enrollSelectionnerDate
                   : '${value!.day.toString().padLeft(2, '0')}/${value!.month.toString().padLeft(2, '0')}/${value!.year}',
               style: AppText.ui(
                 size: 15,
@@ -230,10 +234,10 @@ class _IdTypePicker extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
 
-  static const _types = [
-    ('CNI', 'Carte nationale'),
-    ('PASSPORT', 'Passeport'),
-    ('OTHER', 'Autre'),
+  static final _types = [
+    ('CNI', l10n.enrollCarteNationale),
+    ('PASSPORT', l10n.commonPasseport),
+    ('OTHER', l10n.commonAutre),
   ];
 
   @override
@@ -272,6 +276,7 @@ class _IslandPicker extends StatelessWidget {
   final String? value;
   final ValueChanged<String?> onChanged;
 
+  // Values sent as addressIsland (proper nouns, not translated).
   static const _islands = ['Ngazidja', 'Anjouan', 'Mohéli'];
 
   @override
@@ -311,12 +316,11 @@ class _DoneScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultScreen(
-      title: 'Enrôlement',
-      headline: 'Client enrôlé',
-      subtitle:
-          '$name a été créé avec un compte actif. Ajoutez ses pièces KYC maintenant.',
+      title: l10n.enrollEnrolement,
+      headline: l10n.enrollClientEnrole,
+      subtitle: l10n.enrollEteCreeAvecCompte(name),
       onDone: () => Navigator.of(context).pop(),
-      secondaryLabel: 'Ajouter des documents KYC',
+      secondaryLabel: l10n.enrollAjouterDocumentsKyc,
       onSecondary: () => Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => KycDocumentsScreen(
@@ -330,12 +334,15 @@ class _DoneScreen extends StatelessWidget {
         child: Column(
           children: [
             _CopyRow(
-              label: 'Référence client',
+              label: l10n.enrollReferenceClient,
               value: result.externalRef ?? '',
             ),
-            _CopyRow(label: 'ID client', value: result.customerId ?? ''),
             _CopyRow(
-              label: 'Compte',
+              label: l10n.enrollIdClient,
+              value: result.customerId ?? '',
+            ),
+            _CopyRow(
+              label: l10n.enrollCompte,
               value: result.accountId ?? '',
               last: true,
             ),
@@ -360,7 +367,7 @@ class _CopyRow extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '$label copié',
+              l10n.commonCopie(label),
               style: AppText.ui(color: Colors.white),
             ),
             backgroundColor: AppColors.nearBlack,

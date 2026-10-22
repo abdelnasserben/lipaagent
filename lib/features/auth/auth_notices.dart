@@ -4,6 +4,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/common.dart';
 import 'login_controller.dart';
+import '../../l10n/l10n.dart';
 
 class SessionExpiredNotice extends ConsumerWidget {
   const SessionExpiredNotice({super.key});
@@ -37,12 +38,12 @@ class SessionExpiredNotice extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Vous avez été déconnecté',
+                      l10n.authNoticesVousAvezEteDeconnecte,
                       style: AppText.ui(size: 14.5, weight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Reconnectez-vous pour continuer vos opérations agent Lipa.',
+                      l10n.authNoticesReconnectezVousContinuerOperations,
                       style: AppText.ui(
                         size: 13,
                         color: AppColors.inkMid,
@@ -57,7 +58,7 @@ class SessionExpiredNotice extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         LipaButton(
-          label: 'Se reconnecter',
+          label: l10n.authNoticesSeReconnecter,
           size: BtnSize.lg,
           full: true,
           onPressed: () => ref
@@ -104,12 +105,12 @@ class PinLockedNotice extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Saisie du PIN bloquée',
+                      l10n.authNoticesSaisiePinBloquee,
                       style: AppText.ui(size: 14.5, weight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'PIN incorrect saisi 3 fois. Réessayez dans 15 minutes.',
+                      l10n.authNoticesPinIncorrectSaisi3,
                       style: AppText.ui(
                         size: 13,
                         color: AppColors.inkMid,
@@ -124,7 +125,7 @@ class PinLockedNotice extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         LipaButton(
-          label: 'Réinitialiser mon PIN',
+          label: l10n.authNoticesReinitialiserMonPin,
           variant: BtnVariant.secondary,
           size: BtnSize.lg,
           full: true,

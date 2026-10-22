@@ -6,6 +6,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import 'home_screen.dart';
+import '../../l10n/l10n.dart';
 
 class SummaryGrid extends StatelessWidget {
   const SummaryGrid({super.key, required this.summary});
@@ -15,12 +16,12 @@ class SummaryGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return summary.when(
       loading: () => const ActivitySkeleton(),
-      error: (_, _) => const ErrorRetry(message: 'Résumé indisponible.'),
+      error: (_, _) => ErrorRetry(message: l10n.summaryGridResumeIndisponible),
       data: (s) => Row(
         children: [
           Expanded(
             child: _Stat(
-              label: 'Volume',
+              label: l10n.summaryGridVolume,
               value: fmtKmfNoUnit(s.totalCompletedAmountToday ?? 0),
               unit: 'KMF',
               icon: Icons.swap_horiz_rounded,
@@ -29,7 +30,7 @@ class SummaryGrid extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: _Stat(
-              label: 'Opérations',
+              label: l10n.summaryGridOperations,
               value: '${s.totalCompletedCountToday}',
               icon: Icons.tag_rounded,
             ),
@@ -37,7 +38,7 @@ class SummaryGrid extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: _Stat(
-              label: 'Commission',
+              label: l10n.commonCommission,
               value: fmtKmfNoUnit(s.commissionEarnedToday ?? 0),
               unit: 'KMF',
               icon: Icons.savings_outlined,

@@ -7,6 +7,7 @@ import 'core/widgets/lipa_brand.dart';
 import 'features/agent/agent_shell.dart';
 import 'features/auth/auth_screen.dart';
 import 'features/auth/session_controller.dart';
+import 'l10n/l10n.dart';
 
 /// Root widget. Switches between the auth surface and the agent shell based on
 /// session state. Like the Lipa customer app, there is no GoRouter URL tree —
@@ -19,9 +20,14 @@ class LipaAgentApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(sessionControllerProvider);
     return MaterialApp(
-      title: 'Lipa Agent',
+      title: l10n.appLipaAgent,
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
+      // French texts for the app and for Flutter's own widgets (date
+      // picker, dialogs).
+      locale: appLocale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       home: switch (session.status) {
         SessionStatus.unknown => const _Splash(),
         SessionStatus.unauthenticated => const AuthScreen(),

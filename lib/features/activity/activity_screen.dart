@@ -9,6 +9,7 @@ import '../agent/agent_providers.dart';
 import 'statement_screen.dart';
 import 'transaction_detail_screen.dart';
 import 'tx_row.dart';
+import '../../l10n/l10n.dart';
 
 /// Wallet-scoped transaction history (spec §5.3). Tab root, with toutes /
 /// entrées / sorties filter chips (mirrors the Lipa customer activity screen).
@@ -29,8 +30,8 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     return Column(
       children: [
         ScreenHeader(
-          title: 'Activité',
-          subtitle: 'Vos transactions',
+          title: l10n.commonActivite,
+          subtitle: l10n.activityTransactions,
           action: CircleButton(
             onTap: () => Navigator.of(
               context,
@@ -42,10 +43,10 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: Row(
             children: [
-              for (final f in const [
-                ('all', 'Toutes'),
-                ('in', 'Entrées'),
-                ('out', 'Sorties'),
+              for (final f in [
+                ('all', l10n.activityToutes),
+                ('in', l10n.activityEntrees),
+                ('out', l10n.activitySorties),
               ])
                 Padding(
                   padding: const EdgeInsets.only(right: 6),
@@ -69,11 +70,11 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 child: CircularProgressIndicator(color: AppColors.brand),
               ),
               error: (_, _) => ListView(
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.all(16),
                     child: ErrorRetry(
-                      message: 'Impossible de charger l’activité.',
+                      message: l10n.commonImpossibleChargerActivite,
                     ),
                   ),
                 ],
@@ -86,12 +87,11 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 };
                 if (txs.isEmpty) {
                   return ListView(
-                    children: const [
+                    children: [
                       EmptyState(
                         icon: Icons.receipt_long_rounded,
-                        title: 'Aucune opération',
-                        message:
-                            'Vos dépôts, retraits et ventes de cartes apparaîtront ici.',
+                        title: l10n.activityAucuneOperation,
+                        message: l10n.activityDepotsRetraitsVentesCartes,
                       ),
                     ],
                   );

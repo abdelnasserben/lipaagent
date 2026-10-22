@@ -6,6 +6,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/code_field.dart';
 import '../../core/widgets/common.dart';
 import 'security_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// TOTP revocation (spec §3.7): step up with a current 6-digit code.
 class TotpRevokeScreen extends ConsumerStatefulWidget {
@@ -27,7 +28,7 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'TOTP révoqué',
+              l10n.totpRevokeTotpRevoque,
               style: AppText.ui(color: Colors.white),
             ),
             backgroundColor: AppColors.nearBlack,
@@ -43,22 +44,21 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Révoquer le TOTP',
+              title: l10n.commonRevoquerTotp,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const InfoBanner(
+                  InfoBanner(
                     kind: PillKind.warn,
                     icon: Icons.warning_amber_rounded,
-                    text:
-                        'Désactiver le TOTP réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.',
+                    text: l10n.totpRevokeDesactiverTotpReduitSecurite,
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Saisissez un code TOTP actuel pour confirmer',
+                    l10n.totpRevokeSaisissezCodeTotpActuel,
                     style: AppText.ui(size: 13, weight: FontWeight.w600),
                   ),
                   const SizedBox(height: 12),
@@ -72,7 +72,7 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
                   ],
                   const SizedBox(height: 22),
                   LipaButton(
-                    label: 'Révoquer le TOTP',
+                    label: l10n.commonRevoquerTotp,
                     variant: BtnVariant.danger,
                     size: BtnSize.lg,
                     full: true,

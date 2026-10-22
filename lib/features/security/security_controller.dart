@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Session-scoped "TOTP is enrolled" flag for the connected agent. The agent
 /// profile (spec §7.2) carries no TOTP field, so we track it for the session:
@@ -57,10 +58,10 @@ class ChangePinController extends Notifier<ActionResult> {
       state = const ActionResult(done: true);
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = ActionResult(error: frenchMessageForError(e));
+      state = ActionResult(error: apiErrorMessage(e));
     } catch (_) {
       if (!ref.mounted) return;
-      state = const ActionResult(error: 'Une erreur est survenue.');
+      state = ActionResult(error: l10n.commonErreurSurvenue);
     }
   }
 
@@ -119,7 +120,7 @@ class TotpController extends Notifier<TotpState> {
       state = state.copyWith(loading: false, setup: setup);
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(loading: false, error: frenchMessageForError(e));
+      state = state.copyWith(loading: false, error: apiErrorMessage(e));
     }
   }
 
@@ -138,7 +139,7 @@ class TotpController extends Notifier<TotpState> {
       state = state.copyWith(loading: false, confirmed: true);
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(loading: false, error: frenchMessageForError(e));
+      state = state.copyWith(loading: false, error: apiErrorMessage(e));
     }
   }
 
@@ -157,7 +158,7 @@ class TotpController extends Notifier<TotpState> {
       state = state.copyWith(loading: false, revoked: true);
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(loading: false, error: frenchMessageForError(e));
+      state = state.copyWith(loading: false, error: apiErrorMessage(e));
     }
   }
 }

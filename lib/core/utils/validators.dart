@@ -9,6 +9,8 @@
 /// The server stays authoritative; these checks only fail fast on the obvious.
 library;
 
+import '../../l10n/l10n.dart';
+
 /// Comorian mobile numbers are 7 digits and, with the two operators live in the
 /// country today, start with `3` (Telma/Telco) or `4` (Comores Câbles / others).
 /// Backend still validates 4..15 digits (spec §6.1), so this is a stricter
@@ -29,16 +31,16 @@ class PhoneValidator {
     return d.length == length && validPrefixes.contains(d[0]);
   }
 
-  /// A French error message for an incomplete/invalid number, or null when ok.
+  /// An error text for an incomplete/invalid number, or null when ok.
   /// Returns null for an empty field so the form doesn't shout before the user
   /// has typed anything.
   static String? errorText(String raw) {
     final d = digitsOf(raw);
     if (d.isEmpty) return null;
     if (!validPrefixes.contains(d[0])) {
-      return 'Le numéro doit commencer par 3 ou 4.';
+      return l10n.validatorsNumeroDoitCommencer3;
     }
-    if (d.length < length) return 'Le numéro doit contenir 7 chiffres.';
+    if (d.length < length) return l10n.validatorsNumeroDoitContenir7;
     return null;
   }
 }

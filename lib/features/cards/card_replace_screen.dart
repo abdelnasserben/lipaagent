@@ -11,6 +11,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/result_screen.dart';
 import '../agent/agent_providers.dart';
 import 'cards_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Card replacement (spec §5.6): pick a card from assigned stock, declare a
 /// fee, replace the customer's reported card. Shows the fee returned by the API.
@@ -40,9 +41,9 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
     final result = s.result;
     if (result != null) {
       return ResultScreen(
-        title: 'Remplacement',
-        headline: 'Carte remplacée',
-        subtitle: 'Nouvelle carte activée pour le client.',
+        title: l10n.cardReplaceRemplacement,
+        headline: l10n.cardReplaceCarteRemplacee,
+        subtitle: l10n.cardReplaceNouvelleCarteActiveeClient,
         replayed: result.replayed ?? false,
         onDone: () => Navigator.of(context)
           ..pop()
@@ -53,24 +54,24 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
             children: [
               if (result.replacementFee != null)
                 DetailRow(
-                  label: 'Frais facturés',
+                  label: l10n.cardReplaceFraisFactures,
                   value: fmtKmf(result.replacementFee!),
                   mono: true,
                   valueColor: AppColors.brandDeep,
                 ),
               if ((result.commissionAmount ?? 0) > 0)
                 DetailRow(
-                  label: 'Commission',
+                  label: l10n.commonCommission,
                   value: fmtKmf(result.commissionAmount!),
                   mono: true,
                 ),
               DetailRow(
-                label: 'Nouvelle carte',
+                label: l10n.cardReplaceNouvelleCarte,
                 value: shortId(result.newCardId ?? ''),
                 mono: true,
               ),
               DetailRow(
-                label: 'Ancienne carte',
+                label: l10n.cardReplaceAncienneCarte,
                 value: shortId(result.oldCardId ?? ''),
                 mono: true,
                 last: true,
@@ -89,7 +90,7 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Remplacer la carte',
+              title: l10n.commonRemplacerCarte,
               subtitle: widget.card.maskedInternalCardNumber ?? '',
               onBack: () => Navigator.of(context).pop(),
             ),
@@ -97,14 +98,13 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const InfoBanner(
+                  InfoBanner(
                     icon: Icons.sync_rounded,
-                    text:
-                        'Choisissez une carte de votre stock attribué pour remplacer la carte du client.',
+                    text: l10n.cardReplaceChoisissezCarteStockAttribue,
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Carte de remplacement',
+                    l10n.cardReplaceCarteRemplacement,
                     style: AppText.ui(size: 14.5, weight: FontWeight.w700),
                   ),
                   const SizedBox(height: 10),
@@ -118,14 +118,13 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
                       ),
                     ),
                     error: (_, _) =>
-                        const ErrorRetry(message: 'Stock indisponible.'),
+                        ErrorRetry(message: l10n.commonStockIndisponible),
                     data: (stock) {
                       if (stock.isEmpty) {
-                        return const InfoBanner(
+                        return InfoBanner(
                           kind: PillKind.warn,
                           icon: Icons.inventory_2_outlined,
-                          text:
-                              'Aucune carte disponible dans votre stock attribué.',
+                          text: l10n.cardReplaceAucuneCarteDisponibleDans,
                         );
                       }
                       return Column(
@@ -142,7 +141,7 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
                   ),
                   const SizedBox(height: 22),
                   Text(
-                    'Frais de remplacement',
+                    l10n.cardReplaceFraisRemplacement,
                     style: AppText.ui(size: 14.5, weight: FontWeight.w700),
                   ),
                   const SizedBox(height: 14),
@@ -162,8 +161,8 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
                   const SizedBox(height: 24),
                   LipaButton(
                     label: _fee > 0
-                        ? 'Remplacer pour ${fmtKmf(_fee)}'
-                        : 'Remplacer la carte',
+                        ? l10n.cardReplaceRemplacer(fmtKmf(_fee))
+                        : l10n.commonRemplacerCarte,
                     size: BtnSize.lg,
                     full: true,
                     loading: s.busy,

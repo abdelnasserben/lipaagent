@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
+import '../../l10n/l10n.dart';
 
 /// A single transaction row (icon, type+time, signed amount + status dot).
 /// Direction comes from the backend's balanceChange (incoming = credited).
@@ -90,25 +91,31 @@ class TxRow extends StatelessWidget {
 
   (IconData, String) _present(TransactionType type, bool incoming) {
     return switch (type) {
-      TransactionType.cashIn => (Icons.south_west_rounded, 'Dépôt client'),
+      TransactionType.cashIn => (
+        Icons.south_west_rounded,
+        l10n.commonDepotClient,
+      ),
       TransactionType.merchantCashOut => (
         Icons.north_east_rounded,
-        'Retrait marchand',
+        l10n.commonRetraitMarchand,
       ),
-      TransactionType.cardSale => (Icons.credit_card_rounded, 'Vente de carte'),
+      TransactionType.cardSale => (
+        Icons.credit_card_rounded,
+        l10n.commonVenteCarte,
+      ),
       TransactionType.cardReplacement => (
         Icons.sync_rounded,
-        'Remplacement de carte',
+        l10n.commonRemplacementCarte,
       ),
       TransactionType.commissionPayout => (
         Icons.savings_outlined,
-        'Commission',
+        l10n.commonCommission,
       ),
       TransactionType.agentFloatTopUp => (
         Icons.account_balance_wallet_outlined,
-        'Approvisionnement',
+        l10n.txRowApprovisionnement,
       ),
-      _ => (Icons.swap_horiz_rounded, type.frLabel),
+      _ => (Icons.swap_horiz_rounded, type.label),
     };
   }
 }
@@ -120,11 +127,11 @@ class _StatusDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (color, label) = switch (status) {
-      TransactionStatus.completed => (AppColors.brand, 'Effectué'),
-      TransactionStatus.pending => (AppColors.pending, 'En attente'),
-      TransactionStatus.authorized => (AppColors.info, 'Autorisé'),
-      TransactionStatus.declined => (AppColors.danger, 'Refusé'),
-      TransactionStatus.reversed => (AppColors.warn, 'Annulé'),
+      TransactionStatus.completed => (AppColors.brand, l10n.commonEffectue),
+      TransactionStatus.pending => (AppColors.pending, l10n.commonAttente),
+      TransactionStatus.authorized => (AppColors.info, l10n.commonAutorise),
+      TransactionStatus.declined => (AppColors.danger, l10n.commonRefuse),
+      TransactionStatus.reversed => (AppColors.warn, l10n.commonAnnule),
       TransactionStatus.unknown => (AppColors.inkLow, '—'),
     };
     return Row(

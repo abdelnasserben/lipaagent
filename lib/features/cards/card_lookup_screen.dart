@@ -12,6 +12,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
 import 'card_replace_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Card lookup by scanned NFC UID (spec §5.4 / §5.6). The result drives the
 /// report-lost / report-stolen / replace actions for a customer card.
@@ -38,27 +39,27 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: Text(
-          stolen ? 'Déclarer volée' : 'Déclarer perdue',
+          stolen ? l10n.cardLookupDeclarerVolee : l10n.cardLookupDeclarerPerdue,
           style: AppText.ui(size: 17, weight: FontWeight.w700),
         ),
         content: Text(
           stolen
-              ? 'Confirmer que cette carte est volée ? Elle sera bloquée immédiatement.'
-              : 'Confirmer que cette carte est perdue ? Elle sera bloquée immédiatement.',
+              ? l10n.cardLookupConfirmerCarteVoleeElle
+              : l10n.cardLookupConfirmerCartePerdueElle,
           style: AppText.ui(size: 14, color: AppColors.inkMid, height: 1.5),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              'Annuler',
+              l10n.commonAnnuler,
               style: AppText.ui(size: 14, color: AppColors.inkMid),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'Confirmer',
+              l10n.commonConfirmer,
               style: AppText.ui(
                 size: 14,
                 weight: FontWeight.w700,
@@ -78,7 +79,9 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
         content: Text(
           failure != null
               ? errorMessage(failure)
-              : (stolen ? 'Carte déclarée volée' : 'Carte déclarée perdue'),
+              : (stolen
+                    ? l10n.cardLookupCarteDeclareeVolee
+                    : l10n.cardLookupCarteDeclareePerdue),
           style: AppText.ui(color: Colors.white),
         ),
         backgroundColor: failure != null
@@ -98,24 +101,23 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Rechercher une carte',
-              subtitle: 'Par UID NFC',
+              title: l10n.commonRechercherCarte,
+              subtitle: l10n.cardLookupUidNfc,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const InfoBanner(
+                  InfoBanner(
                     icon: Icons.nfc_rounded,
-                    text:
-                        'Scannez la carte du client (ou saisissez son UID) pour la retrouver, puis déclarez-la perdue/volée ou remplacez-la.',
+                    text: l10n.cardLookupScannezCarteClientSaisissez,
                   ),
                   const SizedBox(height: 16),
                   LipaButton(
                     label: card == null
-                        ? 'Scanner la carte'
-                        : 'Scanner une autre carte',
+                        ? l10n.commonScannerCarte
+                        : l10n.cardLookupScannerAutreCarte,
                     icon: const Icon(Icons.nfc_rounded),
                     size: BtnSize.lg,
                     full: true,
@@ -139,7 +141,7 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                         children: [
                           Expanded(
                             child: LipaButton(
-                              label: 'Perdue',
+                              label: l10n.commonPerdue,
                               icon: const Icon(Icons.help_outline_rounded),
                               variant: BtnVariant.dangerOutline,
                               size: BtnSize.lg,
@@ -153,7 +155,7 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: LipaButton(
-                              label: 'Volée',
+                              label: l10n.commonVolee,
                               icon: const Icon(
                                 Icons.report_gmailerrorred_rounded,
                               ),
@@ -170,7 +172,7 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                       ),
                       const SizedBox(height: 10),
                       LipaButton(
-                        label: 'Remplacer la carte',
+                        label: l10n.commonRemplacerCarte,
                         icon: const Icon(Icons.sync_rounded),
                         variant: BtnVariant.secondary,
                         size: BtnSize.lg,
@@ -182,11 +184,10 @@ class _CardLookupScreenState extends ConsumerState<CardLookupScreen> {
                         ),
                       ),
                     ] else
-                      const InfoBanner(
+                      InfoBanner(
                         kind: PillKind.info,
                         icon: Icons.info_outline,
-                        text:
-                            'Cette carte n’est pas encore liée à un client. Les actions perte/vol/remplacement ne s’appliquent qu’aux cartes vendues.',
+                        text: l10n.cardLookupCarteNPasEncore,
                       ),
                   ],
                 ],
@@ -233,12 +234,12 @@ class _CardCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        card.maskedInternalCardNumber ?? 'Carte',
+                        card.maskedInternalCardNumber ?? l10n.cardLookupCarte,
                         style: AppText.mono(size: 16, weight: FontWeight.w600),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        CardType.parse(card.cardType?.json).frLabel,
+                        CardType.parse(card.cardType?.json).label,
                         style: AppText.ui(size: 12.5, color: AppColors.inkMid),
                       ),
                     ],
@@ -249,18 +250,25 @@ class _CardCard extends StatelessWidget {
             ),
           ),
           const Divider(height: 1, color: AppColors.border),
-          DetailRow(label: 'UID NFC', value: card.nfcUid ?? '', mono: true),
+          DetailRow(
+            label: l10n.cardLookupUidNfc2,
+            value: card.nfcUid ?? '',
+            mono: true,
+          ),
           if (card.customerFullName != null)
-            DetailRow(label: 'Titulaire', value: card.customerFullName!),
+            DetailRow(
+              label: l10n.cardLookupTitulaire,
+              value: card.customerFullName!,
+            ),
           if (card.customerPhoneMasked != null)
             DetailRow(
-              label: 'Téléphone',
+              label: l10n.cardLookupTelephone,
               value: card.customerPhoneMasked!,
               mono: true,
             ),
           DetailRow(
-            label: 'Statut',
-            value: CardStatus.parse(card.status?.json).frLabel,
+            label: l10n.commonStatut2,
+            value: CardStatus.parse(card.status?.json).label,
             last: true,
           ),
         ],

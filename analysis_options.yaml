@@ -4,6 +4,7 @@ analyzer:
   exclude:
     # Generated from the backend contract (dart run tool/api_generate.dart).
     - lib/api/generated/**
+    - lib/l10n/generated/**
 
 linter:
   rules:

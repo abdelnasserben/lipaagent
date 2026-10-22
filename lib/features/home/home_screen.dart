@@ -13,6 +13,7 @@ import '../notifications/notifications_screen.dart';
 import 'float_card.dart';
 import 'summary_grid.dart';
 import 'quick_ops.dart';
+import '../../l10n/l10n.dart';
 
 /// Agent dashboard. The float balance hero + daily summary are the operator's
 /// most-watched numbers; quick actions jump into the core cash journeys.
@@ -49,7 +50,7 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Agent Lipa',
+                        l10n.homeAgentLipa,
                         style: AppText.ui(size: 13, color: AppColors.inkMid),
                       ),
                       const SizedBox(height: 2),
@@ -99,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 8),
             child: Text(
-              "Aujourd'hui",
+              l10n.homeAujourdHui,
               style: AppText.ui(size: 15, weight: FontWeight.w700),
             ),
           ),
@@ -112,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 10),
             child: Text(
-              'Opérations rapides',
+              l10n.homeOperationsRapides,
               style: AppText.ui(size: 15, weight: FontWeight.w700),
             ),
           ),
@@ -128,7 +129,7 @@ class HomeScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 8),
             child: Text(
-              'Activité récente',
+              l10n.homeActiviteRecente,
               style: AppText.ui(size: 15, weight: FontWeight.w700),
             ),
           ),
@@ -136,14 +137,13 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: activity.when(
               loading: () => const ActivitySkeleton(),
-              error: (e, _) => const ErrorRetry(
-                message: 'Impossible de charger l’activité.',
-              ),
+              error: (e, _) =>
+                  ErrorRetry(message: l10n.commonImpossibleChargerActivite),
               data: (txs) => txs.isEmpty
                   ? LipaCard(
                       padding: const EdgeInsets.all(20),
                       child: Text(
-                        'Aucune opération pour le moment.',
+                        l10n.homeAucuneOperationMoment,
                         style: AppText.ui(size: 13, color: AppColors.inkMid),
                       ),
                     )

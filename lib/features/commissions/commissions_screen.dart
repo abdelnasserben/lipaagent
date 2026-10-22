@@ -9,6 +9,7 @@ import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Commission payout history (spec §5.7).
 class CommissionsScreen extends ConsumerWidget {
@@ -24,8 +25,8 @@ class CommissionsScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Commissions',
-              subtitle: 'Vos versements',
+              title: l10n.commonCommissions,
+              subtitle: l10n.commissionsVersements,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -39,11 +40,11 @@ class CommissionsScreen extends ConsumerWidget {
                     child: CircularProgressIndicator(color: AppColors.brand),
                   ),
                   error: (_, _) => ListView(
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16),
                         child: ErrorRetry(
-                          message: 'Commissions indisponibles.',
+                          message: l10n.commissionsCommissionsIndisponibles,
                         ),
                       ),
                     ],
@@ -51,12 +52,12 @@ class CommissionsScreen extends ConsumerWidget {
                   data: (items) {
                     if (items.isEmpty) {
                       return ListView(
-                        children: const [
+                        children: [
                           EmptyState(
                             icon: Icons.savings_outlined,
-                            title: 'Aucune commission',
+                            title: l10n.commissionsAucuneCommission,
                             message:
-                                'Vos commissions sur dépôts, retraits et ventes apparaîtront ici.',
+                                l10n.commissionsCommissionsDepotsRetraitsVentes,
                           ),
                         ],
                       );
@@ -101,7 +102,7 @@ class _TotalCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'TOTAL VERSÉ',
+              l10n.commissionsTotalVerse,
               style: AppText.ui(
                 size: 12,
                 weight: FontWeight.w600,
@@ -169,12 +170,12 @@ class _CommissionRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sur ${fmtKmf(c.basisAmount ?? 0)}',
+                    l10n.commissionsSur(fmtKmf(c.basisAmount ?? 0)),
                     style: AppText.ui(size: 13.5, weight: FontWeight.w600),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${SettlementMode.parse(c.settlementMode).frLabel}${c.createdAt != null ? ' · ${fmtDateFr(c.createdAt!)}' : ''}',
+                    '${SettlementMode.parse(c.settlementMode).label}${c.createdAt != null ? ' · ${fmtDateFr(c.createdAt!)}' : ''}',
                     style: AppText.ui(size: 12, color: AppColors.inkLow),
                   ),
                 ],

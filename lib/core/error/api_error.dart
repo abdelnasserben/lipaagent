@@ -1,3 +1,5 @@
+import '../../l10n/l10n.dart';
+
 /// An error answer of the backend (`{ "error": { code, message, details,
 /// correlationId } }`), or a network failure. Error bodies are not in the
 /// contract. Branch on [code], never on [message] (technical English).
@@ -90,137 +92,137 @@ class ApiError implements Exception {
   String toString() => 'ApiError($statusCode $code: ${message ?? ''})';
 }
 
-/// Maps backend error codes to user-facing French copy, aligned with the Agent
-/// spec. Falls back to a generic message for unknown codes — never leaks raw
-/// codes to the operator.
-String frenchMessageForError(ApiError e) {
+/// The text of a backend error code (texts in lib/l10n/app_fr.arb, keys
+/// `error…`). Unknown codes get a generic text with the correlation id: the
+/// technical message and the raw code are never shown.
+String apiErrorMessage(ApiError e) {
   switch (e.code) {
     // ── Session / auth ─────────────────────────────────────────────────────
     case 'INVALID_CREDENTIALS':
-      return 'Numéro ou PIN incorrect.';
+      return l10n.errorNumeroPinIncorrect;
     case 'AUTH_PIN_INVALID':
-      return 'PIN incorrect. Réessayez.';
+      return l10n.errorPinIncorrectReessayez;
     case 'AUTH_PIN_LOCKED':
-      return 'PIN bloqué. Réessayez dans 15 minutes.';
+      return l10n.errorPinBloqueReessayezDans;
     case 'AUTH_PIN_FORMAT':
-      return 'Le PIN doit comporter 4 à 8 chiffres.';
+      return l10n.errorPinDoitComporter4;
     case 'AUTH_PIN_ALREADY_SET':
-      return 'Un PIN est déjà défini pour ce compte.';
+      return l10n.errorPinDejaDefiniCompte;
     case 'AUTH_PIN_NOT_SET':
-      return 'Aucun PIN n’est défini pour ce compte.';
+      return l10n.errorAucunPinNDefini;
     case 'AUTH_PIN_RESET_TOTP_REQUIRED':
-      return 'Activez le TOTP ou contactez le back-office pour réinitialiser votre PIN.';
+      return l10n.errorActivezTotpContactezBack;
     case 'AUTH_INVALID_TOKEN':
-      return 'Lien expiré. Recommencez la connexion.';
+      return l10n.errorLienExpireRecommencezConnexion;
     case 'AUTH_MFA_INVALID':
     case 'MFA_INVALID':
-      return 'Code de vérification invalide.';
+      return l10n.errorCodeVerificationInvalide;
     case 'REFRESH_TOKEN_INVALID':
     case 'UNAUTHORIZED':
     case 'INVALID_TOKEN':
     case 'TOKEN_EXPIRED':
     case 'TOKEN_REVOKED':
-      return 'Votre session a expiré. Reconnectez-vous.';
+      return l10n.errorSessionExpireReconnectezVous;
     case 'RATE_LIMITED':
-      return 'Trop de tentatives. Réessayez dans un instant.';
+      return l10n.errorTropTentativesReessayezDans;
     case 'ACTOR_PENDING_KYC':
-      return 'Votre compte agent est en cours de vérification.';
+      return l10n.errorCompteAgentCoursVerification;
     case 'ACTOR_SUSPENDED':
     case 'ACTOR_FROZEN':
     case 'ACTOR_CLOSED':
-      return 'Compte indisponible. Contactez le back-office.';
+      return l10n.errorCompteIndisponibleContactezBack;
     case 'ACTOR_KYC_INSUFFICIENT':
-      return 'Niveau de vérification (KYC) insuffisant pour cette opération.';
+      return l10n.errorNiveauVerificationKycInsuffisant;
 
     // ── Financial / business ───────────────────────────────────────────────
     case 'INSUFFICIENT_BALANCE':
     case 'ACCOUNT_INSUFFICIENT_FUNDS':
-      return 'Solde insuffisant pour cette opération.';
+      return l10n.errorSoldeInsuffisantOperation;
     case 'TRANSACTION_AMOUNT_TOO_LOW':
-      return 'Montant inférieur au minimum autorisé.';
+      return l10n.errorMontantInferieurMinimumAutorise;
     case 'TRANSACTION_AMOUNT_TOO_HIGH':
-      return 'Montant supérieur au maximum autorisé.';
+      return l10n.errorMontantSuperieurMaximumAutorise;
     case 'TRANSACTION_ZERO_AMOUNT':
-      return 'Le montant doit être supérieur à zéro.';
+      return l10n.errorMontantDoitEtreSuperieur;
     case 'DAILY_LIMIT_EXCEEDED':
-      return 'Plafond journalier atteint. Consultez vos plafonds.';
+      return l10n.errorPlafondJournalierAtteintConsultez;
     case 'WEEKLY_LIMIT_EXCEEDED':
-      return 'Plafond hebdomadaire atteint. Consultez vos plafonds.';
+      return l10n.errorPlafondHebdomadaireAtteintConsultez;
     case 'MONTHLY_LIMIT_EXCEEDED':
-      return 'Plafond mensuel atteint. Consultez vos plafonds.';
+      return l10n.errorPlafondMensuelAtteintConsultez;
     case 'TRANSACTION_COUNT_LIMIT_EXCEEDED':
-      return 'Nombre maximal d’opérations atteint. Consultez vos plafonds.';
+      return l10n.errorNombreMaximalOperationsAtteint;
     case 'ACCOUNT_FROZEN':
     case 'ACCOUNT_SUSPENDED':
     case 'ACCOUNT_CLOSED':
-      return 'Compte indisponible. Contactez le back-office.';
+      return l10n.errorCompteIndisponibleContactezBack;
     case 'CONFIG_LIMIT_PROFILE_NOT_FOUND':
     case 'CONFIG_RULE_INACTIVE':
-      return 'Service temporairement indisponible. Réessayez plus tard.';
+      return l10n.errorServiceTemporairementIndisponibleReessayez;
     case 'APPROVAL_REQUIRED':
-      return 'Montant soumis à approbation du back-office.';
+      return l10n.errorMontantSoumisApprobationBack;
     case 'CASH_IN_NOT_ALLOWED':
-      return 'Vous n’êtes pas autorisé à faire des dépôts.';
+      return l10n.errorVousNEtesPas;
     case 'CASH_OUT_NOT_ALLOWED':
-      return 'Retrait marchand non autorisé.';
+      return l10n.errorRetraitMarchandNonAutorise;
     case 'CARD_SALE_NOT_ALLOWED':
-      return 'Vous n’êtes pas autorisé à vendre ou remplacer des cartes.';
+      return l10n.errorVousNEtesPas2;
     case 'DUPLICATE_IDEMPOTENCY_KEY':
-      return 'Opération déjà en cours de traitement. Réessayez dans un instant.';
+      return l10n.errorOperationDejaCoursTraitement;
     case 'CONCURRENT_MODIFICATION':
-      return 'Les données ont changé entre-temps. Réessayez.';
+      return l10n.errorDonneesOntChangeEntre;
 
     // ── Lookup / not found ─────────────────────────────────────────────────
     case 'CUSTOMER_NOT_FOUND':
-      return 'Ce numéro ne correspond à aucun client Lipa.';
+      return l10n.errorNumeroNeCorrespondAucun;
     case 'MERCHANT_NOT_FOUND':
-      return 'Ce numéro ne correspond à aucun marchand Lipa.';
+      return l10n.errorNumeroNeCorrespondAucun2;
     case 'CARD_NOT_FOUND':
-      return 'Carte introuvable pour cet UID.';
+      return l10n.errorCarteIntrouvableCetUid;
     case 'TRANSACTION_NOT_FOUND':
-      return 'Transaction introuvable.';
+      return l10n.commonTransactionIntrouvable;
     case 'ACTOR_NOT_FOUND':
     case 'ACCOUNT_NOT_FOUND':
     case 'NOT_FOUND':
-      return 'Introuvable.';
+      return l10n.errorIntrouvable;
 
     // ── Enrollment / KYC ───────────────────────────────────────────────────
     case 'PHONE_ALREADY_IN_USE':
-      return 'Ce numéro de téléphone est déjà utilisé.';
+      return l10n.errorNumeroTelephoneDejaUtilise;
     case 'NATIONAL_ID_ALREADY_IN_USE':
-      return 'Ce numéro de pièce d’identité est déjà utilisé.';
+      return l10n.errorNumeroPieceIdentiteDeja;
 
     // ── Cards / stock ──────────────────────────────────────────────────────
     case 'CARD_STOCK_NOT_FOUND':
-      return 'Stock de cartes introuvable.';
+      return l10n.errorStockCartesIntrouvable;
     case 'CARD_STOCK_WRONG_STATUS':
-      return 'Cette carte n’est pas disponible à la vente.';
+      return l10n.errorCarteNPasDisponible;
     case 'CARD_STOCK_NOT_ASSIGNED_TO_AGENT':
-      return 'Cette carte ne vous est pas attribuée.';
+      return l10n.errorCarteNeVousPas;
     case 'CARD_NOT_ACTIVE':
-      return 'La carte à remplacer n’est pas active.';
+      return l10n.errorCarteRemplacerNPas;
     case 'CARD_INVALID_TRANSITION':
-      return 'Cette opération n’est pas possible sur cette carte.';
+      return l10n.errorOperationNPasPossible;
 
     // ── Validation / transport ─────────────────────────────────────────────
     case 'VALIDATION_FIELD_REQUIRED':
     case 'VALIDATION_ERROR':
     case 'VALIDATION_INVALID_FORMAT':
-      return 'Données invalides. Vérifiez les champs.';
+      return l10n.errorDonneesInvalidesVerifiezChamps;
     case 'NETWORK_ERROR':
-      return e.message ?? 'Connexion impossible. Vérifiez votre réseau.';
+      return e.message ?? l10n.errorConnexionImpossibleVerifiezReseau;
     default:
       // Backend messages are technical English: never shown. The correlation
       // id helps support find the request.
       final ref = e.correlationId;
       return ref == null
-          ? 'Une erreur est survenue. Réessayez.'
-          : 'Une erreur est survenue. Réessayez. (Réf. $ref)';
+          ? l10n.errorErreurSurvenueReessayez
+          : l10n.errorErreurSurvenueReessayezRef(ref);
   }
 }
 
-/// French text for any failure caught by a controller: the translated code of
+/// The text of any failure caught by a controller: the translated code of
 /// an [ApiError] (with its correlation id for support), else a generic text.
 String errorMessage(Object error) => error is ApiError
-    ? frenchMessageForError(error)
-    : 'Une erreur est survenue. Réessayez.';
+    ? apiErrorMessage(error)
+    : l10n.errorErreurSurvenueReessayez;

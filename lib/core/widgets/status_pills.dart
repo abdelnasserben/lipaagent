@@ -2,8 +2,9 @@ import '../../api/enums.dart';
 import 'package:flutter/widgets.dart';
 
 import 'common.dart';
+import '../../l10n/l10n.dart';
 
-/// French status pill for transactions.
+/// Status pill for transactions.
 class TxStatusPill extends StatelessWidget {
   const TxStatusPill({super.key, required this.status});
   final TransactionStatus status;
@@ -11,11 +12,11 @@ class TxStatusPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (kind, label) = switch (status) {
-      TransactionStatus.completed => (PillKind.success, 'Effectué'),
-      TransactionStatus.pending => (PillKind.pending, 'En attente'),
-      TransactionStatus.authorized => (PillKind.info, 'Autorisé'),
-      TransactionStatus.declined => (PillKind.declined, 'Refusé'),
-      TransactionStatus.reversed => (PillKind.warn, 'Annulé'),
+      TransactionStatus.completed => (PillKind.success, l10n.commonEffectue),
+      TransactionStatus.pending => (PillKind.pending, l10n.commonAttente),
+      TransactionStatus.authorized => (PillKind.info, l10n.commonAutorise),
+      TransactionStatus.declined => (PillKind.declined, l10n.commonRefuse),
+      TransactionStatus.reversed => (PillKind.warn, l10n.commonAnnule),
       TransactionStatus.unknown => (PillKind.neutral, '—'),
     };
     return StatusPill(label: label, kind: kind);
@@ -37,7 +38,7 @@ class CardStatusPill extends StatelessWidget {
       CardStatus.expired || CardStatus.closed => PillKind.pending,
       CardStatus.unknown => PillKind.neutral,
     };
-    return StatusPill(label: status.frLabel, kind: kind);
+    return StatusPill(label: status.label, kind: kind);
   }
 }
 
@@ -56,7 +57,7 @@ class StockStatusPill extends StatelessWidget {
       CardStockStatus.inWarehouse => PillKind.pending,
       CardStockStatus.unknown => PillKind.neutral,
     };
-    return StatusPill(label: status.frLabel, kind: kind);
+    return StatusPill(label: status.label, kind: kind);
   }
 }
 
@@ -74,7 +75,7 @@ class PayoutStatusPill extends StatelessWidget {
       PayoutStatus.cancelled => PillKind.warn,
       PayoutStatus.unknown => PillKind.neutral,
     };
-    return StatusPill(label: status.frLabel, kind: kind);
+    return StatusPill(label: status.label, kind: kind);
   }
 }
 

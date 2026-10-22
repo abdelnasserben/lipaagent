@@ -8,6 +8,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import 'login_controller.dart';
 import 'boxed_input.dart';
+import '../../l10n/l10n.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key, required this.state});
@@ -39,21 +40,21 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (s.pinResetDone) ...[
-          const InfoBanner(
+          InfoBanner(
             icon: Icons.check_circle_outline,
             kind: PillKind.success,
-            text: 'PIN réinitialisé. Connectez-vous avec votre nouveau PIN.',
+            text: l10n.loginPinReinitialiseConnectezVous,
           ),
           const SizedBox(height: 18),
         ],
-        const FieldLabel('Numéro de téléphone'),
+        FieldLabel(l10n.commonNumeroTelephone),
         const SizedBox(height: 8),
         PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
         const SizedBox(height: 18),
         FieldLabel(
           'PIN',
           trailing: Text(
-            '4 à 8 chiffres',
+            l10n.login48Chiffres,
             style: AppText.ui(size: 12, color: AppColors.inkLow),
           ),
         ),
@@ -70,11 +71,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (_) => setState(() {}),
                   style: AppText.mono(size: 18, letterSpacing: 4),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     counterText: '',
                     border: InputBorder.none,
                     isDense: true,
-                    hintText: 'Saisissez votre PIN',
+                    hintText: l10n.loginSaisissezPin,
                   ),
                 ),
               ),
@@ -98,7 +99,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         ],
         const SizedBox(height: 18),
         LipaButton(
-          label: 'Se connecter',
+          label: l10n.loginSeConnecter,
           size: BtnSize.lg,
           full: true,
           loading: s.submitting,
@@ -116,7 +117,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 .read(loginControllerProvider.notifier)
                 .goToStep(AuthStep.forgotPin),
             child: Text(
-              'PIN oublié ?',
+              l10n.loginPinOublie,
               style: AppText.ui(
                 size: 13.5,
                 weight: FontWeight.w600,
@@ -147,16 +148,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     ),
                     children: [
                       TextSpan(
-                        text: 'Sécurité renforcée par Lipa. ',
+                        text: l10n.loginSecuriteRenforceeLipa,
                         style: AppText.ui(
                           size: 12.5,
                           weight: FontWeight.w600,
                           color: AppColors.inkHi,
                         ),
                       ),
-                      const TextSpan(
-                        text: 'Votre PIN reste confidentiel et protégé.',
-                      ),
+                      TextSpan(text: l10n.loginPinResteConfidentielProtege),
                     ],
                   ),
                 ),

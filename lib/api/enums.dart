@@ -1,3 +1,4 @@
+import '../l10n/l10n.dart';
 // Backend enums (OpenAPI contract, group `agent`). Each parses defensively from
 // its wire string and keeps an `unknown` fallback so future values never crash
 // the UI.
@@ -21,12 +22,12 @@ enum AgentStatus {
 
   bool get isActive => this == active;
 
-  String get frLabel => switch (this) {
-    pendingKyc => 'En vérification',
-    active => 'Actif',
-    suspended => 'Suspendu',
-    frozen => 'Gelé',
-    closed => 'Clôturé',
+  String get label => switch (this) {
+    pendingKyc => l10n.labelVerification,
+    active => l10n.labelActif,
+    suspended => l10n.labelSuspendu,
+    frozen => l10n.labelGele,
+    closed => l10n.labelCloture,
     unknown => '—',
   };
 }
@@ -48,12 +49,12 @@ enum CustomerStatus {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    pendingKyc => 'En vérification',
-    active => 'Actif',
-    suspended => 'Suspendu',
-    frozen => 'Gelé',
-    closed => 'Clôturé',
+  String get label => switch (this) {
+    pendingKyc => l10n.labelVerification,
+    active => l10n.labelActif,
+    suspended => l10n.labelSuspendu,
+    frozen => l10n.labelGele,
+    closed => l10n.labelCloture,
     unknown => '—',
   };
 }
@@ -75,12 +76,12 @@ enum MerchantStatus {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    pendingKyc => 'En vérification',
-    active => 'Actif',
-    suspended => 'Suspendu',
-    frozen => 'Gelé',
-    closed => 'Clôturé',
+  String get label => switch (this) {
+    pendingKyc => l10n.labelVerification,
+    active => l10n.labelActif,
+    suspended => l10n.labelSuspendu,
+    frozen => l10n.labelGele,
+    closed => l10n.labelCloture,
     unknown => '—',
   };
 }
@@ -100,11 +101,11 @@ enum KycLevel {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    none => 'Aucun',
-    basic => 'Basique',
-    verified => 'Vérifié',
-    enhanced => 'Renforcé',
+  String get label => switch (this) {
+    none => l10n.labelAucun,
+    basic => l10n.labelBasique,
+    verified => l10n.labelVerifie,
+    enhanced => l10n.labelRenforce,
     unknown => '—',
   };
 }
@@ -126,11 +127,11 @@ enum AccountStatus {
 
   bool get isActive => this == active;
 
-  String get frLabel => switch (this) {
-    active => 'Actif',
-    frozen => 'Gelé',
-    suspended => 'Suspendu',
-    closed => 'Clôturé',
+  String get label => switch (this) {
+    active => l10n.labelActif,
+    frozen => l10n.labelGele,
+    suspended => l10n.labelSuspendu,
+    closed => l10n.labelCloture,
     unknown => '—',
   };
 }
@@ -171,24 +172,24 @@ enum TransactionType {
     _ => unknown,
   };
 
-  /// Long-form French label. Pure-Dart so non-widget layers (e.g. statement
+  /// Long-form label (lib/l10n). Pure-Dart so non-widget layers (e.g. statement
   /// entries) can localize a raw wire token (cf. Lipa statement description).
-  String get frLabel => switch (this) {
-    cashIn => 'Dépôt (cash-in)',
-    merchantCashOut => 'Retrait marchand (cash-out)',
-    merchantPayment => 'Paiement marchand',
-    cardSale => 'Vente de carte',
-    cardReplacement => 'Remplacement de carte',
-    commissionPayout => 'Commission',
-    agentFloatTopUp => 'Approvisionnement float',
-    agentFloatWithdrawal => 'Retrait float',
-    standaloneFee => 'Frais',
-    reversal => 'Annulation',
-    merchantTransfer => 'Transfert marchand',
-    billPayment => 'Paiement de facture',
-    billerSettlement => 'Règlement facturier',
-    platformRevenueWithdrawal => 'Retrait plateforme',
-    unknown => 'Transaction',
+  String get label => switch (this) {
+    cashIn => l10n.labelDepotCashIn,
+    merchantCashOut => l10n.commonRetraitMarchandCashOut,
+    merchantPayment => l10n.labelPaiementMarchand,
+    cardSale => l10n.commonVenteCarte,
+    cardReplacement => l10n.commonRemplacementCarte,
+    commissionPayout => l10n.commonCommission,
+    agentFloatTopUp => l10n.labelApprovisionnementFloat,
+    agentFloatWithdrawal => l10n.labelRetraitFloat,
+    standaloneFee => l10n.commonFrais,
+    reversal => l10n.labelAnnulation,
+    merchantTransfer => l10n.labelTransfertMarchand,
+    billPayment => l10n.labelPaiementFacture,
+    billerSettlement => l10n.labelReglementFacturier,
+    platformRevenueWithdrawal => l10n.labelRetraitPlateforme,
+    unknown => l10n.labelTransaction,
   };
 }
 
@@ -226,10 +227,10 @@ enum CardType {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    standard => 'Standard',
-    premium => 'Premium',
-    corporate => 'Entreprise',
+  String get label => switch (this) {
+    standard => l10n.labelStandard,
+    premium => l10n.labelPremium,
+    corporate => l10n.labelEntreprise,
     unknown => '—',
   };
 }
@@ -257,14 +258,14 @@ enum CardStatus {
 
   bool get isActive => this == active;
 
-  String get frLabel => switch (this) {
-    issued => 'Émise',
-    active => 'Active',
-    blocked => 'Bloquée',
-    lost => 'Perdue',
-    stolen => 'Volée',
-    expired => 'Expirée',
-    closed => 'Clôturée',
+  String get label => switch (this) {
+    issued => l10n.labelEmise,
+    active => l10n.labelActive,
+    blocked => l10n.labelBloquee,
+    lost => l10n.commonPerdue,
+    stolen => l10n.commonVolee,
+    expired => l10n.labelExpiree,
+    closed => l10n.labelCloturee,
     unknown => '—',
   };
 }
@@ -296,12 +297,12 @@ enum CardStockStatus {
     unknown => 'ASSIGNED_TO_AGENT',
   };
 
-  String get frLabel => switch (this) {
-    inWarehouse => 'En entrepôt',
-    assignedToAgent => 'Attribuée',
-    sold => 'Vendue',
-    returned => 'Retournée',
-    spoiled => 'Abîmée',
+  String get label => switch (this) {
+    inWarehouse => l10n.labelEntrepot,
+    assignedToAgent => l10n.labelAttribuee,
+    sold => l10n.labelVendue,
+    returned => l10n.labelRetournee,
+    spoiled => l10n.labelAbimee,
     unknown => '—',
   };
 }
@@ -332,13 +333,13 @@ enum KycDocumentType {
     unknown => 'OTHER',
   };
 
-  String get frLabel => switch (this) {
-    nationalId => 'Carte nationale d’identité',
-    passport => 'Passeport',
-    proofOfAddress => 'Justificatif de domicile',
-    businessLicense => 'Licence commerciale',
-    other => 'Autre',
-    unknown => 'Document',
+  String get label => switch (this) {
+    nationalId => l10n.labelCarteNationaleIdentite,
+    passport => l10n.commonPasseport,
+    proofOfAddress => l10n.labelJustificatifDomicile,
+    businessLicense => l10n.labelLicenceCommerciale,
+    other => l10n.commonAutre,
+    unknown => l10n.labelDocument,
   };
 }
 
@@ -355,10 +356,10 @@ enum KycDocumentStatus {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    pendingReview => 'En revue',
-    accepted => 'Acceptée',
-    rejected => 'Rejetée',
+  String get label => switch (this) {
+    pendingReview => l10n.commonRevue,
+    accepted => l10n.commonAcceptee,
+    rejected => l10n.commonRejetee,
     unknown => '—',
   };
 }
@@ -376,10 +377,10 @@ enum SettlementMode {
     _ => unknown,
   };
 
-  String get frLabel => switch (this) {
-    immediate => 'Immédiat',
-    batchDaily => 'Quotidien',
-    batchWeekly => 'Hebdomadaire',
+  String get label => switch (this) {
+    immediate => l10n.labelImmediat,
+    batchDaily => l10n.labelQuotidien,
+    batchWeekly => l10n.labelHebdomadaire,
     unknown => '—',
   };
 }
@@ -408,11 +409,11 @@ enum PayoutStatus {
     unknown => 'PENDING',
   };
 
-  String get frLabel => switch (this) {
-    pending => 'En attente',
-    paid => 'Payée',
-    failed => 'Échec',
-    cancelled => 'Annulée',
+  String get label => switch (this) {
+    pending => l10n.commonAttente,
+    paid => l10n.labelPayee,
+    failed => l10n.labelEchec,
+    cancelled => l10n.labelAnnulee,
     unknown => '—',
   };
 }

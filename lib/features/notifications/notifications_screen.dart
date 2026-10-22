@@ -10,6 +10,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Shared notification inbox (spec §5.8). MVP reality: the agent inbox is empty
 /// today — the backend does not target agents as recipients yet. The screen is
@@ -29,7 +30,7 @@ class NotificationsScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Notifications',
+              title: l10n.notificationsNotifications,
               onBack: () => Navigator.of(context).pop(),
               action: TextButton(
                 onPressed: () async {
@@ -41,7 +42,7 @@ class NotificationsScreen extends ConsumerWidget {
                   }
                 },
                 child: Text(
-                  'Tout lire',
+                  l10n.notificationsToutLire,
                   style: AppText.ui(size: 13, color: AppColors.brand),
                 ),
               ),
@@ -58,11 +59,11 @@ class NotificationsScreen extends ConsumerWidget {
                     child: CircularProgressIndicator(color: AppColors.brand),
                   ),
                   error: (_, _) => ListView(
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16),
                         child: ErrorRetry(
-                          message: 'Notifications indisponibles.',
+                          message: l10n.notificationsNotificationsIndisponibles,
                         ),
                       ),
                     ],
@@ -70,12 +71,11 @@ class NotificationsScreen extends ConsumerWidget {
                   data: (items) {
                     if (items.isEmpty) {
                       return ListView(
-                        children: const [
+                        children: [
                           EmptyState(
                             icon: Icons.notifications_none_rounded,
-                            title: 'Aucune notification',
-                            message:
-                                'Vos alertes apparaîtront ici dès qu’elles seront disponibles.',
+                            title: l10n.notificationsAucuneNotification,
+                            message: l10n.notificationsAlertesApparaitrontIciQu,
                           ),
                         ],
                       );
@@ -111,10 +111,10 @@ class NotificationsScreen extends ConsumerWidget {
 
 /// The app owns the wording of each notification code.
 String _title(NotificationResponse n) => switch (n.code) {
-  NotificationResponseCode.cashInCredited => 'Dépôt crédité',
+  NotificationResponseCode.cashInCredited => l10n.notificationsDepotCredite,
   NotificationResponseCode.merchantCashOutCompleted =>
-    'Retrait marchand effectué',
-  _ => 'Notification',
+    l10n.notificationsRetraitMarchandEffectue,
+  _ => l10n.notificationsNotification,
 };
 
 void _showError(BuildContext context, Object failure) {

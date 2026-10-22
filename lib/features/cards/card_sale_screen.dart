@@ -16,6 +16,7 @@ import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import '../../core/widgets/result_screen.dart';
 import 'cards_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Card sale (spec §5.6): confirm the customer, scan the card from assigned
 /// stock, declare a price, sell. Always shows the price returned by the API
@@ -53,9 +54,11 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
     final customer = s.customer;
     if (result != null) {
       return ResultScreen(
-        title: 'Vente de carte',
-        headline: 'Carte vendue',
-        subtitle: 'Carte activée pour ${customer?.fullName ?? 'le client'}.',
+        title: l10n.commonVenteCarte,
+        headline: l10n.cardSaleCarteVendue,
+        subtitle: l10n.cardSaleCarteActivee(
+          customer?.fullName ?? l10n.cardSaleClient,
+        ),
         replayed: result.replayed ?? false,
         onDone: () => Navigator.of(context).pop(),
         detail: LipaCard(
@@ -63,19 +66,19 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
           child: Column(
             children: [
               DetailRow(
-                label: 'Prix facturé',
+                label: l10n.cardSalePrixFacture,
                 value: fmtKmf(result.cardPrice ?? 0),
                 mono: true,
                 valueColor: AppColors.brandDeep,
               ),
               if ((result.commissionAmount ?? 0) > 0)
                 DetailRow(
-                  label: 'Commission',
+                  label: l10n.commonCommission,
                   value: fmtKmf(result.commissionAmount ?? 0),
                   mono: true,
                 ),
               DetailRow(
-                label: 'Réf.',
+                label: l10n.commonRef,
                 value: shortId(result.transactionId ?? ''),
                 mono: true,
                 last: true,
@@ -94,8 +97,8 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Vendre une carte',
-              subtitle: 'Depuis votre stock',
+              title: l10n.commonVendreCarte,
+              subtitle: l10n.cardSaleDepuisStock,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -103,7 +106,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
                   // Step 1 — customer.
-                  const _StepLabel(n: 1, text: 'Client'),
+                  _StepLabel(n: 1, text: l10n.cardSaleClient2),
                   const SizedBox(height: 10),
                   if (customer == null) ...[
                     PhoneInput(
@@ -112,7 +115,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                     ),
                     const SizedBox(height: 10),
                     LipaButton(
-                      label: 'Rechercher le client',
+                      label: l10n.commonRechercherClient,
                       variant: BtnVariant.secondary,
                       full: true,
                       loading: s.busy,
@@ -126,7 +129,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                       subtitle: customer.phonePretty,
                       statusLabel: CustomerStatus.parse(
                         customer.status?.json,
-                      ).frLabel,
+                      ).label,
                       statusActive:
                           customer.status ==
                           CustomerLookupResponseStatus.active,
@@ -142,13 +145,13 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   const SizedBox(height: 22),
 
                   // Step 2 — card.
-                  const _StepLabel(n: 2, text: 'Carte (NFC)'),
+                  _StepLabel(n: 2, text: l10n.cardSaleCarteNfc),
                   const SizedBox(height: 10),
                   _CardSlot(uid: _nfcUid, onScan: _scan),
                   const SizedBox(height: 22),
 
                   // Step 3 — price.
-                  const _StepLabel(n: 3, text: 'Prix de la carte'),
+                  _StepLabel(n: 3, text: l10n.cardSalePrixCarte),
                   const SizedBox(height: 14),
                   AmountInput(
                     autofocus: false,
@@ -166,8 +169,8 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   const SizedBox(height: 24),
                   LipaButton(
                     label: _price > 0
-                        ? 'Vendre pour ${fmtKmf(_price)}'
-                        : 'Vendre la carte',
+                        ? l10n.cardSaleVendre(fmtKmf(_price))
+                        : l10n.cardSaleVendreCarte,
                     size: BtnSize.lg,
                     full: true,
                     loading: s.busy && customer != null,
@@ -178,7 +181,7 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Le prix final peut être ajusté par configuration.',
+                    l10n.cardSalePrixFinalPeutEtre,
                     textAlign: TextAlign.center,
                     style: AppText.ui(size: 12, color: AppColors.inkLow),
                   ),
@@ -233,7 +236,7 @@ class _CardSlot extends StatelessWidget {
   Widget build(BuildContext context) {
     if (uid == null) {
       return LipaButton(
-        label: 'Scanner la carte',
+        label: l10n.commonScannerCarte,
         icon: const Icon(Icons.nfc_rounded),
         variant: BtnVariant.secondary,
         size: BtnSize.lg,
@@ -252,7 +255,7 @@ class _CardSlot extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Carte sélectionnée',
+                  l10n.cardSaleCarteSelectionnee,
                   style: AppText.ui(size: 12.5, color: AppColors.inkMid),
                 ),
                 Text(
@@ -262,7 +265,7 @@ class _CardSlot extends StatelessWidget {
               ],
             ),
           ),
-          TextButton(onPressed: onScan, child: const Text('Changer')),
+          TextButton(onPressed: onScan, child: Text(l10n.cardSaleChanger)),
         ],
       ),
     );

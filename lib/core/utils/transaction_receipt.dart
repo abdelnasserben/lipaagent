@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import 'formatters.dart';
+import '../../l10n/l10n.dart';
 
 /// Builds the share/PDF artefacts for an agent transaction receipt and the
 /// account statement. Pure presentation logic so the activity detail and the
@@ -24,13 +25,13 @@ Future<pw.ThemeData> _pdfTheme() async => pw.ThemeData.withFont(
   bold: pw.Font.ttf(await rootBundle.load('assets/fonts/OpenSans-Bold.ttf')),
 );
 
-/// French status label, matching `TxStatusPill`.
+/// Status label, matching `TxStatusPill`.
 String _statusLabelFr(TransactionStatus s) => switch (s) {
-  TransactionStatus.completed => 'Effectué',
-  TransactionStatus.pending => 'En attente',
-  TransactionStatus.authorized => 'Autorisé',
-  TransactionStatus.declined => 'Refusé',
-  TransactionStatus.reversed => 'Annulé',
+  TransactionStatus.completed => l10n.commonEffectue,
+  TransactionStatus.pending => l10n.commonAttente,
+  TransactionStatus.authorized => l10n.commonAutorise,
+  TransactionStatus.declined => l10n.commonRefuse,
+  TransactionStatus.reversed => l10n.commonAnnule,
   TransactionStatus.unknown => '—',
 };
 
@@ -42,15 +43,23 @@ String receiptShareText(AgentTransactionResponse t) {
   final lines = <String>[
     'Reçu Lipa',
     '',
-    'Opération : ${t.kind.frLabel}',
-    'Montant : $sign${fmtKmfNoUnit(t.requestedAmount ?? 0)} KMF',
-    'Statut : ${_statusLabelFr(t.state)}',
-    if (at != null) 'Date : ${fmtDateTimeFr(at)}',
-    if ((t.feeAmount ?? 0) > 0) 'Frais : ${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF',
+    l10n.transactionReceiptOperation(t.kind.label),
+    l10n.transactionReceiptMontantKmf(
+      sign,
+      fmtKmfNoUnit(t.requestedAmount ?? 0),
+    ),
+    l10n.transactionReceiptStatut(_statusLabelFr(t.state)),
+    if (at != null) l10n.transactionReceiptDate(fmtDateTimeFr(at)),
+    if ((t.feeAmount ?? 0) > 0)
+      l10n.transactionReceiptFraisKmf(fmtKmfNoUnit(t.feeAmount ?? 0)),
     if ((t.commissionAmount ?? 0) > 0)
-      'Commission : ${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF',
-    'Montant net : ${fmtKmfNoUnit(t.netAmountToDestination ?? 0)} KMF',
-    'Référence : ${t.id ?? ''}',
+      l10n.transactionReceiptCommissionKmf(
+        fmtKmfNoUnit(t.commissionAmount ?? 0),
+      ),
+    l10n.transactionReceiptMontantNetKmf(
+      fmtKmfNoUnit(t.netAmountToDestination ?? 0),
+    ),
+    l10n.transactionReceiptReference(t.id ?? ''),
   ];
   return lines.join('\n');
 }
@@ -104,7 +113,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransactionResponse t) async {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            'Lipa',
+            l10n.commonLipa,
             style: pw.TextStyle(
               color: brand,
               fontSize: 22,
@@ -113,12 +122,12 @@ Future<Uint8List> receiptPdfBytes(AgentTransactionResponse t) async {
           ),
           pw.SizedBox(height: 2),
           pw.Text(
-            'Reçu de transaction',
+            l10n.transactionReceiptRecuTransaction,
             style: const pw.TextStyle(color: inkLow, fontSize: 12),
           ),
           pw.SizedBox(height: 28),
           pw.Text(
-            t.kind.frLabel,
+            t.kind.label,
             style: pw.TextStyle(
               color: ink,
               fontSize: 16,
@@ -135,21 +144,24 @@ Future<Uint8List> receiptPdfBytes(AgentTransactionResponse t) async {
             ),
           ),
           pw.SizedBox(height: 28),
-          row('Statut', _statusLabelFr(t.state)),
-          if (at != null) row('Date', fmtDateTimeFr(at)),
-          row('Type', t.kind.frLabel),
+          row(l10n.commonStatut2, _statusLabelFr(t.state)),
+          if (at != null) row(l10n.transactionReceiptDate2, fmtDateTimeFr(at)),
+          row(l10n.commonType, t.kind.label),
           if ((t.feeAmount ?? 0) > 0)
-            row('Frais', '${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF'),
+            row(l10n.commonFrais, '${fmtKmfNoUnit(t.feeAmount ?? 0)} KMF'),
           if ((t.commissionAmount ?? 0) > 0)
-            row('Commission', '${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF'),
+            row(
+              l10n.commonCommission,
+              '${fmtKmfNoUnit(t.commissionAmount ?? 0)} KMF',
+            ),
           row(
-            'Montant net',
+            l10n.transactionReceiptMontantNet,
             '${fmtKmfNoUnit(t.netAmountToDestination ?? 0)} KMF',
           ),
-          row('Référence', t.id ?? '', last: true),
+          row(l10n.transactionReceiptReference2, t.id ?? '', last: true),
           pw.Spacer(),
           pw.Text(
-            'Ce reçu est généré par l’application Lipa à titre informatif.',
+            l10n.transactionReceiptRecuGenereApplicationLipa,
             style: const pw.TextStyle(color: inkLow, fontSize: 9),
           ),
         ],
@@ -178,7 +190,7 @@ Future<Uint8List> statementPdfBytes(
   const headerBg = PdfColor.fromInt(0xFFF1EFE8);
 
   final period = (from == null && to == null)
-      ? 'Toute la période'
+      ? l10n.commonToutePeriode
       : '${from != null ? fmtDateTimeFr(from) : '…'} → '
             '${to != null ? fmtDateTimeFr(to) : '…'}';
 
@@ -202,16 +214,20 @@ Future<Uint8List> statementPdfBytes(
     children: [
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
-        child: cell('Date', bold: true, color: inkMid),
-      ),
-      pw.Padding(
-        padding: const pw.EdgeInsets.all(6),
-        child: cell('Description', bold: true, color: inkMid),
+        child: cell(l10n.transactionReceiptDate2, bold: true, color: inkMid),
       ),
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
         child: cell(
-          'Montant',
+          l10n.transactionReceiptDescription,
+          bold: true,
+          color: inkMid,
+        ),
+      ),
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(6),
+        child: cell(
+          l10n.commonMontant,
           align: pw.TextAlign.right,
           bold: true,
           color: inkMid,
@@ -220,7 +236,7 @@ Future<Uint8List> statementPdfBytes(
       pw.Padding(
         padding: const pw.EdgeInsets.all(6),
         child: cell(
-          'Solde',
+          l10n.transactionReceiptSolde,
           align: pw.TextAlign.right,
           bold: true,
           color: inkMid,
@@ -245,7 +261,7 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
-          child: cell(e.kind.frLabel),
+          child: cell(e.kind.label),
         ),
         pw.Padding(
           padding: const pw.EdgeInsets.all(6),
@@ -277,20 +293,20 @@ Future<Uint8List> statementPdfBytes(
               alignment: pw.Alignment.centerRight,
               margin: const pw.EdgeInsets.only(bottom: 8),
               child: pw.Text(
-                'Relevé Lipa',
+                l10n.transactionReceiptReleveLipa,
                 style: const pw.TextStyle(color: inkLow, fontSize: 9),
               ),
             ),
       footer: (context) => pw.Container(
         alignment: pw.Alignment.centerRight,
         child: pw.Text(
-          'Page ${context.pageNumber}/${context.pagesCount}',
+          l10n.transactionReceiptPage(context.pageNumber, context.pagesCount),
           style: const pw.TextStyle(color: inkLow, fontSize: 9),
         ),
       ),
       build: (context) => [
         pw.Text(
-          'Lipa',
+          l10n.commonLipa,
           style: pw.TextStyle(
             color: brand,
             fontSize: 22,
@@ -299,18 +315,18 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.SizedBox(height: 2),
         pw.Text(
-          'Relevé du compte',
+          l10n.transactionReceiptReleveCompte,
           style: const pw.TextStyle(color: inkLow, fontSize: 12),
         ),
         pw.SizedBox(height: 4),
         pw.Text(
-          'Période : $period',
+          l10n.transactionReceiptPeriode(period),
           style: const pw.TextStyle(color: inkMid, fontSize: 10),
         ),
         pw.SizedBox(height: 16),
         if (entries.isEmpty)
           pw.Text(
-            'Aucune écriture sur cette période.',
+            l10n.transactionReceiptAucuneEcriturePeriode,
             style: const pw.TextStyle(color: inkLow, fontSize: 11),
           )
         else

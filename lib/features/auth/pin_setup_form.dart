@@ -6,6 +6,7 @@ import '../../core/utils/validators.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import 'login_controller.dart';
+import '../../l10n/l10n.dart';
 
 class PinSetupForm extends ConsumerStatefulWidget {
   const PinSetupForm({super.key, required this.state});
@@ -34,16 +35,16 @@ class _PinSetupFormState extends ConsumerState<PinSetupForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const InfoBanner(
+        InfoBanner(
           icon: Icons.lock_outline,
-          text: 'Configuration unique. Choisissez un PIN de 4 à 8 chiffres.',
+          text: l10n.pinSetupConfigurationUniqueChoisissezPin,
         ),
         const SizedBox(height: 18),
-        const FieldLabel('Nouveau PIN'),
+        FieldLabel(l10n.commonNouveauPin),
         const SizedBox(height: 8),
         PinDigitsInput(controller: _pin, onChanged: (_) => setState(() {})),
         const SizedBox(height: 18),
-        const FieldLabel('Confirmer le PIN'),
+        FieldLabel(l10n.commonConfirmerPin),
         const SizedBox(height: 8),
         PinDigitsInput(controller: _confirm, onChanged: (_) => setState(() {})),
         if (s.errorMessage != null) ...[
@@ -55,7 +56,7 @@ class _PinSetupFormState extends ConsumerState<PinSetupForm> {
         ],
         const SizedBox(height: 22),
         LipaButton(
-          label: 'Enregistrer le PIN',
+          label: l10n.pinSetupEnregistrerPin,
           size: BtnSize.lg,
           full: true,
           loading: s.submitting,
@@ -71,7 +72,7 @@ class _PinSetupFormState extends ConsumerState<PinSetupForm> {
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
           child: Text(
-            '← Retour à la connexion',
+            l10n.commonRetourConnexion,
             style: AppText.ui(size: 13.5, color: AppColors.inkMid),
           ),
         ),

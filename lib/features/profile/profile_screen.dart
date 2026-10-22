@@ -14,6 +14,7 @@ import '../auth/session_controller.dart';
 import '../commissions/commissions_screen.dart';
 import '../security/security_screen.dart';
 import 'limits_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Profile tab: agent identity, capabilities, and entry points to commissions,
 /// limits, and security (PIN / TOTP). Logout lives here.
@@ -26,15 +27,15 @@ class ProfileScreen extends ConsumerWidget {
 
     return Column(
       children: [
-        const ScreenHeader(title: 'Profil'),
+        ScreenHeader(title: l10n.commonProfil),
         Expanded(
           child: profile.when(
             loading: () => const Center(
               child: CircularProgressIndicator(color: AppColors.brand),
             ),
-            error: (_, _) => const Padding(
+            error: (_, _) => Padding(
               padding: EdgeInsets.all(16),
-              child: ErrorRetry(message: 'Profil indisponible.'),
+              child: ErrorRetry(message: l10n.commonProfilIndisponible),
             ),
             data: (p) => _Body(profile: p),
           ),
@@ -91,7 +92,7 @@ class _Body extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     GenericStatusPill(
-                      label: AgentStatus.parse(profile.status).frLabel,
+                      label: AgentStatus.parse(profile.status).label,
                       active: AgentStatus.parse(profile.status).isActive,
                     ),
                   ],
@@ -108,19 +109,22 @@ class _Body extends ConsumerWidget {
           child: Column(
             children: [
               DetailRow(
-                label: 'Référence agent',
+                label: l10n.profileReferenceAgent,
                 value: profile.externalRef ?? '',
               ),
               if (profile.zone != null && profile.zone!.isNotEmpty)
-                DetailRow(label: 'Zone', value: profile.zone!),
+                DetailRow(label: l10n.profileZone, value: profile.zone!),
               DetailRow(
-                label: 'Niveau KYC',
-                value: KycLevel.parse(profile.kycLevel).frLabel,
+                label: l10n.profileNiveauKyc,
+                value: KycLevel.parse(profile.kycLevel).label,
               ),
               if (profile.contractRef != null)
-                DetailRow(label: 'Contrat', value: profile.contractRef!),
+                DetailRow(
+                  label: l10n.profileContrat,
+                  value: profile.contractRef!,
+                ),
               DetailRow(
-                label: 'Seuil d’alerte float',
+                label: l10n.profileSeuilAlerteFloat,
                 value: fmtKmf(profile.floatAlertThreshold ?? 0),
                 mono: true,
                 last: true,
@@ -132,7 +136,7 @@ class _Body extends ConsumerWidget {
 
         // Capabilities (spec §10.3 gating flags).
         Text(
-          'Autorisations',
+          l10n.profileAutorisations,
           style: AppText.ui(size: 13, weight: FontWeight.w700),
         ),
         const SizedBox(height: 10),
@@ -140,9 +144,15 @@ class _Body extends ConsumerWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            _Cap(label: 'Dépôts', on: profile.canDoCashIn ?? false),
-            _Cap(label: 'Retraits', on: profile.canDoCashOut ?? false),
-            _Cap(label: 'Vente de cartes', on: profile.canSellCards ?? false),
+            _Cap(label: l10n.profileDepots, on: profile.canDoCashIn ?? false),
+            _Cap(
+              label: l10n.profileRetraits,
+              on: profile.canDoCashOut ?? false,
+            ),
+            _Cap(
+              label: l10n.profileVenteCartes,
+              on: profile.canSellCards ?? false,
+            ),
           ],
         ),
         const SizedBox(height: 20),
@@ -152,17 +162,17 @@ class _Body extends ConsumerWidget {
           children: [
             _NavRow(
               icon: Icons.savings_outlined,
-              label: 'Commissions',
+              label: l10n.commonCommissions,
               onTap: () => _push(context, const CommissionsScreen()),
             ),
             _NavRow(
               icon: Icons.speed_rounded,
-              label: 'Plafonds',
+              label: l10n.commonPlafonds,
               onTap: () => _push(context, const LimitsScreen()),
             ),
             _NavRow(
               icon: Icons.shield_outlined,
-              label: 'Sécurité (PIN, TOTP)',
+              label: l10n.profileSecuritePinTotp,
               onTap: () => _push(context, const SecurityScreen()),
               last: true,
             ),
@@ -171,7 +181,7 @@ class _Body extends ConsumerWidget {
         const SizedBox(height: 20),
 
         LipaButton(
-          label: 'Se déconnecter',
+          label: l10n.profileSeDeconnecter,
           variant: BtnVariant.dangerOutline,
           size: BtnSize.lg,
           full: true,
@@ -191,25 +201,25 @@ class _Body extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         title: Text(
-          'Se déconnecter',
+          l10n.profileSeDeconnecter,
           style: AppText.ui(size: 17, weight: FontWeight.w700),
         ),
         content: Text(
-          'Voulez-vous vraiment vous déconnecter ?',
+          l10n.profileVoulezVousVraimentVous,
           style: AppText.ui(size: 14, color: AppColors.inkMid),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              'Annuler',
+              l10n.commonAnnuler,
               style: AppText.ui(size: 14, color: AppColors.inkMid),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
-              'Déconnexion',
+              l10n.profileDeconnexion,
               style: AppText.ui(
                 size: 14,
                 weight: FontWeight.w700,

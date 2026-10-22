@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/lipa_brand.dart';
+import '../../l10n/l10n.dart';
 
 class FloatCard extends StatefulWidget {
   const FloatCard({
@@ -54,7 +55,7 @@ class _FloatCardState extends State<FloatCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'FLOAT DISPONIBLE',
+                      l10n.floatCardFloatDisponible,
                       style: AppText.ui(
                         size: 12.5,
                         weight: FontWeight.w600,
@@ -115,12 +116,13 @@ class _FloatCardState extends State<FloatCard> {
                       style: AppText.ui(size: 12.5, color: Colors.white54),
                       children: [
                         TextSpan(
-                          text:
-                              '${fmtKmfNoUnit(b.heldBalance ?? 0)} KMF réservés · Compte ',
+                          text: l10n.floatCardKmfReservesCompte(
+                            fmtKmfNoUnit(b.heldBalance ?? 0),
+                          ),
                         ),
                         TextSpan(
                           text:
-                              '● ${AccountStatus.parse(b.accountStatus).frLabel}',
+                              '● ${AccountStatus.parse(b.accountStatus).label}',
                           style: TextStyle(
                             color: AccountStatus.parse(b.accountStatus).isActive
                                 ? const Color(0xFF8FD1A8)
@@ -154,7 +156,9 @@ class _FloatCardState extends State<FloatCard> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Float sous le seuil d’alerte (${fmtKmf(threshold)}). Pensez à réapprovisionner.',
+                            l10n.floatCardFloatSousSeuilAlerte(
+                              fmtKmf(threshold),
+                            ),
                             style: AppText.ui(
                               size: 12,
                               color: const Color(0xFFE6C998),
@@ -173,19 +177,19 @@ class _FloatCardState extends State<FloatCard> {
                   children: [
                     _HeroAction(
                       icon: Icons.south_west_rounded,
-                      label: 'Dépôt',
+                      label: l10n.commonDepot,
                       onTap: widget.onCashIn,
                     ),
                     const SizedBox(width: 8),
                     _HeroAction(
                       icon: Icons.north_east_rounded,
-                      label: 'Retrait',
+                      label: l10n.commonRetrait,
                       onTap: widget.onCashOut,
                     ),
                     const SizedBox(width: 8),
                     _HeroAction(
                       icon: Icons.description_outlined,
-                      label: 'Relevé',
+                      label: l10n.commonReleve,
                       onTap: widget.onStatement,
                     ),
                   ],

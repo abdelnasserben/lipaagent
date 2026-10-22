@@ -13,6 +13,7 @@ import '../../core/utils/transaction_receipt.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/status_pills.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Full transaction detail (spec §5.3). Fetched fresh by id so the screen is
 /// linkable from anywhere (dashboard, activity, receipts).
@@ -30,7 +31,7 @@ class TransactionDetailScreen extends ConsumerWidget {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Détail de l’opération',
+              title: l10n.transactionDetailDetailOperation,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -38,9 +39,9 @@ class TransactionDetailScreen extends ConsumerWidget {
                 loading: () => const Center(
                   child: CircularProgressIndicator(color: AppColors.brand),
                 ),
-                error: (_, _) => const Padding(
+                error: (_, _) => Padding(
                   padding: EdgeInsets.all(16),
-                  child: ErrorRetry(message: 'Transaction introuvable.'),
+                  child: ErrorRetry(message: l10n.commonTransactionIntrouvable),
                 ),
                 data: (t) => _Body(tx: t),
               ),
@@ -85,7 +86,7 @@ class _Body extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                tx.kind.frLabel,
+                tx.kind.label,
                 style: AppText.ui(size: 13.5, color: AppColors.inkMid),
               ),
             ],
@@ -96,56 +97,62 @@ class _Body extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: Column(
             children: [
-              DetailRow(label: 'Type', value: tx.kind.frLabel),
+              DetailRow(label: l10n.commonType, value: tx.kind.label),
               if (tx.completedAt != null)
                 DetailRow(
-                  label: 'Effectué le',
+                  label: l10n.transactionDetailEffectue,
                   value: fmtDateTimeFr(tx.completedAt!),
                 ),
               if (tx.declinedAt != null)
                 DetailRow(
-                  label: 'Refusé le',
+                  label: l10n.transactionDetailRefuse,
                   value: fmtDateTimeFr(tx.declinedAt!),
                 ),
               if (tx.createdAt != null)
                 DetailRow(
-                  label: 'Créé le',
+                  label: l10n.transactionDetailCree,
                   value: fmtDateTimeFr(tx.createdAt!),
                 ),
               DetailRow(
-                label: 'Montant',
+                label: l10n.commonMontant,
                 value: fmtKmf(tx.requestedAmount ?? 0),
                 mono: true,
               ),
               if ((tx.feeAmount ?? 0) > 0)
                 DetailRow(
-                  label: 'Frais',
+                  label: l10n.commonFrais,
                   value: fmtKmf(tx.feeAmount ?? 0),
                   mono: true,
                 ),
               if ((tx.commissionAmount ?? 0) > 0)
                 DetailRow(
-                  label: 'Commission',
+                  label: l10n.commonCommission,
                   value: fmtKmf(tx.commissionAmount ?? 0),
                   mono: true,
                   valueColor: AppColors.brandDeep,
                 ),
               DetailRow(
-                label: 'Net destinataire',
+                label: l10n.transactionDetailNetDestinataire,
                 value: fmtKmf(tx.netAmountToDestination ?? 0),
                 mono: true,
               ),
               if (tx.declineReason != null)
                 DetailRow(
-                  label: 'Motif du refus',
+                  label: l10n.transactionDetailMotifRefus,
                   value: tx.declineReason!,
                   valueColor: AppColors.danger,
                 ),
-              DetailRow(label: 'Initiateur', value: tx.initiatorType ?? ''),
-              _CopyRow(label: 'Réf. transaction', value: tx.id ?? ''),
+              DetailRow(
+                label: l10n.transactionDetailInitiateur,
+                value: tx.initiatorType ?? '',
+              ),
+              _CopyRow(
+                label: l10n.transactionDetailRefTransaction,
+                value: tx.id ?? '',
+              ),
               if (tx.correlationId != null)
                 _CopyRow(
-                  label: 'Corrélation',
+                  label: l10n.transactionDetailCorrelation,
                   value: tx.correlationId!,
                   last: true,
                 ),
@@ -157,7 +164,7 @@ class _Body extends StatelessWidget {
           children: [
             Expanded(
               child: LipaButton(
-                label: 'Reçu PDF',
+                label: l10n.transactionDetailRecuPdf,
                 variant: BtnVariant.secondary,
                 icon: const Icon(Icons.download),
                 onPressed: () => _openReceiptPdf(context, tx),
@@ -166,7 +173,7 @@ class _Body extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: LipaButton(
-                label: 'Partager',
+                label: l10n.transactionDetailPartager,
                 variant: BtnVariant.secondary,
                 icon: const Icon(Icons.share),
                 onPressed: () => _shareReceipt(context, tx),
@@ -192,7 +199,7 @@ class _Body extends StatelessWidget {
       );
     } catch (_) {
       messenger.showSnackBar(
-        const SnackBar(content: Text('Impossible de générer le reçu PDF.')),
+        SnackBar(content: Text(l10n.transactionDetailImpossibleGenererRecuPdf)),
       );
     }
   }
@@ -206,7 +213,7 @@ class _Body extends StatelessWidget {
     await SharePlus.instance.share(
       ShareParams(
         text: receiptShareText(t),
-        subject: 'Reçu Lipa',
+        subject: l10n.transactionDetailRecuLipa,
         sharePositionOrigin: box != null
             ? box.localToGlobal(Offset.zero) & box.size
             : null,
@@ -230,7 +237,7 @@ class _CopyRow extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '$label copié',
+              l10n.commonCopie(label),
               style: AppText.ui(color: Colors.white),
             ),
             backgroundColor: AppColors.nearBlack,

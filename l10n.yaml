@@ -1,0 +1,8 @@
+# Every user-visible text lives in lib/l10n/app_fr.arb (one file per language).
+# `flutter gen-l10n` (also run by `flutter run` / `flutter build`) generates
+# lib/l10n/generated/. Read the texts with `l10n.someKey` (lib/l10n/l10n.dart).
+arb-dir: lib/l10n
+template-arb-file: app_fr.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_localizations.dart
+nullable-getter: false

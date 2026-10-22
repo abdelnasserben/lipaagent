@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 enum CashInStep { lookup, amount, submitting, done, error }
 
@@ -72,15 +73,12 @@ class CashInController extends Notifier<CashInState> {
       );
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(
-        looking: false,
-        errorMessage: frenchMessageForError(e),
-      );
+      state = state.copyWith(looking: false, errorMessage: apiErrorMessage(e));
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -118,13 +116,13 @@ class CashInController extends Notifier<CashInState> {
       if (!ref.mounted) return;
       state = state.copyWith(
         step: CashInStep.amount,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         step: CashInStep.amount,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }

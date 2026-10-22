@@ -1,0 +1,625 @@
+{
+  "@@locale": "fr",
+  "labelVerification": "En vérification",
+  "labelActif": "Actif",
+  "labelSuspendu": "Suspendu",
+  "labelGele": "Gelé",
+  "labelCloture": "Clôturé",
+  "labelAucun": "Aucun",
+  "labelBasique": "Basique",
+  "labelVerifie": "Vérifié",
+  "labelRenforce": "Renforcé",
+  "labelDepotCashIn": "Dépôt (cash-in)",
+  "labelPaiementMarchand": "Paiement marchand",
+  "labelApprovisionnementFloat": "Approvisionnement float",
+  "labelRetraitFloat": "Retrait float",
+  "labelAnnulation": "Annulation",
+  "labelTransfertMarchand": "Transfert marchand",
+  "labelPaiementFacture": "Paiement de facture",
+  "labelReglementFacturier": "Règlement facturier",
+  "labelRetraitPlateforme": "Retrait plateforme",
+  "labelTransaction": "Transaction",
+  "labelStandard": "Standard",
+  "labelPremium": "Premium",
+  "labelEntreprise": "Entreprise",
+  "labelEmise": "Émise",
+  "labelActive": "Active",
+  "labelBloquee": "Bloquée",
+  "labelExpiree": "Expirée",
+  "labelCloturee": "Clôturée",
+  "labelEntrepot": "En entrepôt",
+  "labelAttribuee": "Attribuée",
+  "labelVendue": "Vendue",
+  "labelRetournee": "Retournée",
+  "labelAbimee": "Abîmée",
+  "labelCarteNationaleIdentite": "Carte nationale d’identité",
+  "labelJustificatifDomicile": "Justificatif de domicile",
+  "labelLicenceCommerciale": "Licence commerciale",
+  "labelDocument": "Document",
+  "labelImmediat": "Immédiat",
+  "labelQuotidien": "Quotidien",
+  "labelHebdomadaire": "Hebdomadaire",
+  "labelPayee": "Payée",
+  "labelEchec": "Échec",
+  "labelAnnulee": "Annulée",
+  "appLipaAgent": "Lipa Agent",
+  "errorNumeroPinIncorrect": "Numéro ou PIN incorrect.",
+  "errorPinIncorrectReessayez": "PIN incorrect. Réessayez.",
+  "errorPinBloqueReessayezDans": "PIN bloqué. Réessayez dans 15 minutes.",
+  "errorPinDoitComporter4": "Le PIN doit comporter 4 à 8 chiffres.",
+  "errorPinDejaDefiniCompte": "Un PIN est déjà défini pour ce compte.",
+  "errorAucunPinNDefini": "Aucun PIN n’est défini pour ce compte.",
+  "errorActivezTotpContactezBack": "Activez le TOTP ou contactez le back-office pour réinitialiser votre PIN.",
+  "errorLienExpireRecommencezConnexion": "Lien expiré. Recommencez la connexion.",
+  "errorCodeVerificationInvalide": "Code de vérification invalide.",
+  "errorSessionExpireReconnectezVous": "Votre session a expiré. Reconnectez-vous.",
+  "errorTropTentativesReessayezDans": "Trop de tentatives. Réessayez dans un instant.",
+  "errorCompteAgentCoursVerification": "Votre compte agent est en cours de vérification.",
+  "errorCompteIndisponibleContactezBack": "Compte indisponible. Contactez le back-office.",
+  "errorNiveauVerificationKycInsuffisant": "Niveau de vérification (KYC) insuffisant pour cette opération.",
+  "errorSoldeInsuffisantOperation": "Solde insuffisant pour cette opération.",
+  "errorMontantInferieurMinimumAutorise": "Montant inférieur au minimum autorisé.",
+  "errorMontantSuperieurMaximumAutorise": "Montant supérieur au maximum autorisé.",
+  "errorMontantDoitEtreSuperieur": "Le montant doit être supérieur à zéro.",
+  "errorPlafondJournalierAtteintConsultez": "Plafond journalier atteint. Consultez vos plafonds.",
+  "errorPlafondHebdomadaireAtteintConsultez": "Plafond hebdomadaire atteint. Consultez vos plafonds.",
+  "errorPlafondMensuelAtteintConsultez": "Plafond mensuel atteint. Consultez vos plafonds.",
+  "errorNombreMaximalOperationsAtteint": "Nombre maximal d’opérations atteint. Consultez vos plafonds.",
+  "errorServiceTemporairementIndisponibleReessayez": "Service temporairement indisponible. Réessayez plus tard.",
+  "errorMontantSoumisApprobationBack": "Montant soumis à approbation du back-office.",
+  "errorVousNEtesPas": "Vous n’êtes pas autorisé à faire des dépôts.",
+  "errorRetraitMarchandNonAutorise": "Retrait marchand non autorisé.",
+  "errorVousNEtesPas2": "Vous n’êtes pas autorisé à vendre ou remplacer des cartes.",
+  "errorOperationDejaCoursTraitement": "Opération déjà en cours de traitement. Réessayez dans un instant.",
+  "errorDonneesOntChangeEntre": "Les données ont changé entre-temps. Réessayez.",
+  "errorNumeroNeCorrespondAucun": "Ce numéro ne correspond à aucun client Lipa.",
+  "errorNumeroNeCorrespondAucun2": "Ce numéro ne correspond à aucun marchand Lipa.",
+  "errorCarteIntrouvableCetUid": "Carte introuvable pour cet UID.",
+  "errorIntrouvable": "Introuvable.",
+  "errorNumeroTelephoneDejaUtilise": "Ce numéro de téléphone est déjà utilisé.",
+  "errorNumeroPieceIdentiteDeja": "Ce numéro de pièce d’identité est déjà utilisé.",
+  "errorStockCartesIntrouvable": "Stock de cartes introuvable.",
+  "errorCarteNPasDisponible": "Cette carte n’est pas disponible à la vente.",
+  "errorCarteNeVousPas": "Cette carte ne vous est pas attribuée.",
+  "errorCarteRemplacerNPas": "La carte à remplacer n’est pas active.",
+  "errorOperationNPasPossible": "Cette opération n’est pas possible sur cette carte.",
+  "errorDonneesInvalidesVerifiezChamps": "Données invalides. Vérifiez les champs.",
+  "errorConnexionImpossibleVerifiezReseau": "Connexion impossible. Vérifiez votre réseau.",
+  "errorErreurSurvenueReessayez": "Une erreur est survenue. Réessayez.",
+  "errorErreurSurvenueReessayezRef": "Une erreur est survenue. Réessayez. (Réf. {ref})",
+  "@errorErreurSurvenueReessayezRef": {
+    "placeholders": {
+      "ref": {}
+    }
+  },
+  "scannerApprochezCarteTelephone": "Approchez la carte du téléphone",
+  "scannerCarteNonReconnueReessayez": "Carte non reconnue. Réessayez ou saisissez l’UID.",
+  "scannerLectureNfcInterrompueReessayez": "Lecture NFC interrompue. Réessayez.",
+  "scannerLecteurNfcIndisponible": "Le lecteur NFC est indisponible.",
+  "scannerApprochezCarteDosTelephone": "Approchez la carte du dos du téléphone pour la lire.",
+  "scannerSaisirUidManuellement": "Saisir l’UID manuellement",
+  "scannerSaisirUid": "Saisir l’UID",
+  "scannerSaisissezIdentifiantUidCarte": "Saisissez l’identifiant (UID) de la carte à 14 caractères hexadécimaux.",
+  "scannerUidInvalide14Caracteres": "UID invalide : 14 caractères hex attendus.",
+  "formattersInstant": "à l’instant",
+  "formattersIlYMin": "il y a {min} min",
+  "@formattersIlYMin": {
+    "placeholders": {
+      "min": {}
+    }
+  },
+  "formattersIlYH": "il y a {h} h",
+  "@formattersIlYH": {
+    "placeholders": {
+      "h": {}
+    }
+  },
+  "formattersIlYJ": "il y a {days} j",
+  "@formattersIlYJ": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "transactionReceiptOperation": "Opération : {kind}",
+  "@transactionReceiptOperation": {
+    "placeholders": {
+      "kind": {}
+    }
+  },
+  "transactionReceiptMontantKmf": "Montant : {sign}{amount} KMF",
+  "@transactionReceiptMontantKmf": {
+    "placeholders": {
+      "sign": {},
+      "amount": {}
+    }
+  },
+  "transactionReceiptStatut": "Statut : {state}",
+  "@transactionReceiptStatut": {
+    "placeholders": {
+      "state": {}
+    }
+  },
+  "transactionReceiptDate": "Date : {date}",
+  "@transactionReceiptDate": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "transactionReceiptFraisKmf": "Frais : {amount} KMF",
+  "@transactionReceiptFraisKmf": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "transactionReceiptCommissionKmf": "Commission : {amount} KMF",
+  "@transactionReceiptCommissionKmf": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "transactionReceiptMontantNetKmf": "Montant net : {amount} KMF",
+  "@transactionReceiptMontantNetKmf": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "transactionReceiptReference": "Référence : {id}",
+  "@transactionReceiptReference": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "transactionReceiptRecuTransaction": "Reçu de transaction",
+  "transactionReceiptDate2": "Date",
+  "transactionReceiptMontantNet": "Montant net",
+  "transactionReceiptReference2": "Référence",
+  "transactionReceiptRecuGenereApplicationLipa": "Ce reçu est généré par l’application Lipa à titre informatif.",
+  "transactionReceiptDescription": "Description",
+  "transactionReceiptSolde": "Solde",
+  "transactionReceiptReleveLipa": "Relevé Lipa",
+  "transactionReceiptPage": "Page {pageNumber}/{pagesCount}",
+  "@transactionReceiptPage": {
+    "placeholders": {
+      "pageNumber": {},
+      "pagesCount": {}
+    }
+  },
+  "transactionReceiptReleveCompte": "Relevé du compte",
+  "transactionReceiptPeriode": "Période : {period}",
+  "@transactionReceiptPeriode": {
+    "placeholders": {
+      "period": {}
+    }
+  },
+  "transactionReceiptAucuneEcriturePeriode": "Aucune écriture sur cette période.",
+  "validatorsNumeroDoitCommencer3": "Le numéro doit commencer par 3 ou 4.",
+  "validatorsNumeroDoitContenir7": "Le numéro doit contenir 7 chiffres.",
+  "commonReessayer": "Réessayer",
+  "lipaBrandAgent": "Agent",
+  "resultOperationDejaTraiteeResultat": "Opération déjà traitée — résultat précédent renvoyé (idempotent).",
+  "resultTermine": "Terminé",
+  "activityTransactions": "Vos transactions",
+  "activityToutes": "Toutes",
+  "activityEntrees": "Entrées",
+  "activitySorties": "Sorties",
+  "activityAucuneOperation": "Aucune opération",
+  "activityDepotsRetraitsVentesCartes": "Vos dépôts, retraits et ventes de cartes apparaîtront ici.",
+  "statementEcrituresCompte": "Écritures du compte",
+  "statementReleveIndisponible": "Relevé indisponible.",
+  "statementReleveVide": "Relevé vide",
+  "statementAucuneEcriturePeriode": "Aucune écriture pour cette période.",
+  "statementImpossibleGenererRelevePdf": "Impossible de générer le relevé PDF.",
+  "statementSolde": "Solde {amount}",
+  "@statementSolde": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "transactionDetailDetailOperation": "Détail de l’opération",
+  "transactionDetailEffectue": "Effectué le",
+  "transactionDetailRefuse": "Refusé le",
+  "transactionDetailCree": "Créé le",
+  "transactionDetailNetDestinataire": "Net destinataire",
+  "transactionDetailMotifRefus": "Motif du refus",
+  "transactionDetailInitiateur": "Initiateur",
+  "transactionDetailRefTransaction": "Réf. transaction",
+  "transactionDetailCorrelation": "Corrélation",
+  "transactionDetailRecuPdf": "Reçu PDF",
+  "transactionDetailPartager": "Partager",
+  "transactionDetailImpossibleGenererRecuPdf": "Impossible de générer le reçu PDF.",
+  "transactionDetailRecuLipa": "Reçu Lipa",
+  "txRowApprovisionnement": "Approvisionnement",
+  "agentShellAccueil": "Accueil",
+  "authNoticesVousAvezEteDeconnecte": "Vous avez été déconnecté",
+  "authNoticesReconnectezVousContinuerOperations": "Reconnectez-vous pour continuer vos opérations agent Lipa.",
+  "authNoticesSeReconnecter": "Se reconnecter",
+  "authNoticesSaisiePinBloquee": "Saisie du PIN bloquée",
+  "authNoticesPinIncorrectSaisi3": "PIN incorrect saisi 3 fois. Réessayez dans 15 minutes.",
+  "authNoticesReinitialiserMonPin": "Réinitialiser mon PIN",
+  "authEspaceAgent": "Espace agent",
+  "authConnectezVousGererOperations": "Connectez-vous pour gérer vos opérations cash et l’enrôlement client.",
+  "authVerifiezIdentite": "Vérifiez votre identité",
+  "authSaisissezCode6Chiffres": "Saisissez le code à 6 chiffres de votre application d’authentification.",
+  "authDefinirPin": "Définir votre PIN",
+  "authChoisissezPinProtegeraCompte": "Choisissez le PIN qui protégera votre compte agent et vos opérations.",
+  "authPinOublie": "PIN oublié",
+  "authReinitialisezPinAvecCode": "Réinitialisez votre PIN avec le code de votre application d’authentification.",
+  "authSessionExpiree": "Session expirée",
+  "authVousAvezEteDeconnecte": "Vous avez été déconnecté afin de protéger votre compte agent.",
+  "authPinBloque": "PIN bloqué",
+  "authTropTentativesIncorrectesReessayez": "Trop de tentatives incorrectes. Réessayez dans 15 minutes.",
+  "forgotPinReinitialisationPossibleUniquementSi": "Réinitialisation possible uniquement si le TOTP est activé. Sinon, contactez le back-office Lipa.",
+  "forgotPinCodeAuthentificationTotp": "Code d’authentification (TOTP)",
+  "forgotPinReinitialiserPin": "Réinitialiser le PIN",
+  "loginPinReinitialiseConnectezVous": "PIN réinitialisé. Connectez-vous avec votre nouveau PIN.",
+  "login48Chiffres": "4 à 8 chiffres",
+  "loginSaisissezPin": "Saisissez votre PIN",
+  "loginSeConnecter": "Se connecter",
+  "loginPinOublie": "PIN oublié ?",
+  "loginSecuriteRenforceeLipa": "Sécurité renforcée par Lipa. ",
+  "loginPinResteConfidentielProtege": "Votre PIN reste confidentiel et protégé.",
+  "mfaVerifierContinuer": "Vérifier et continuer",
+  "pinSetupConfigurationUniqueChoisissezPin": "Configuration unique. Choisissez un PIN de 4 à 8 chiffres.",
+  "pinSetupEnregistrerPin": "Enregistrer le PIN",
+  "cardsStockAttribue": "Stock attribué",
+  "cardsCartesDisponibles": "Cartes disponibles",
+  "cardsStockVide": "Stock vide",
+  "cardsAucuneCarteAttribueeContactez": "Aucune carte attribuée. Contactez le back-office pour un réapprovisionnement.",
+  "cardsAttribuee": "Attribuée le {date}",
+  "@cardsAttribuee": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "cardsLot": "Lot {batchRef}",
+  "@cardsLot": {
+    "placeholders": {
+      "batchRef": {}
+    }
+  },
+  "cardLookupDeclarerVolee": "Déclarer volée",
+  "cardLookupDeclarerPerdue": "Déclarer perdue",
+  "cardLookupConfirmerCarteVoleeElle": "Confirmer que cette carte est volée ? Elle sera bloquée immédiatement.",
+  "cardLookupConfirmerCartePerdueElle": "Confirmer que cette carte est perdue ? Elle sera bloquée immédiatement.",
+  "cardLookupCarteDeclareeVolee": "Carte déclarée volée",
+  "cardLookupCarteDeclareePerdue": "Carte déclarée perdue",
+  "cardLookupUidNfc": "Par UID NFC",
+  "cardLookupScannezCarteClientSaisissez": "Scannez la carte du client (ou saisissez son UID) pour la retrouver, puis déclarez-la perdue/volée ou remplacez-la.",
+  "cardLookupScannerAutreCarte": "Scanner une autre carte",
+  "cardLookupCarteNPasEncore": "Cette carte n’est pas encore liée à un client. Les actions perte/vol/remplacement ne s’appliquent qu’aux cartes vendues.",
+  "cardLookupCarte": "Carte",
+  "cardLookupUidNfc2": "UID NFC",
+  "cardLookupTitulaire": "Titulaire",
+  "cardLookupTelephone": "Téléphone",
+  "cardReplaceRemplacement": "Remplacement",
+  "cardReplaceCarteRemplacee": "Carte remplacée",
+  "cardReplaceNouvelleCarteActiveeClient": "Nouvelle carte activée pour le client.",
+  "cardReplaceFraisFactures": "Frais facturés",
+  "cardReplaceNouvelleCarte": "Nouvelle carte",
+  "cardReplaceAncienneCarte": "Ancienne carte",
+  "cardReplaceChoisissezCarteStockAttribue": "Choisissez une carte de votre stock attribué pour remplacer la carte du client.",
+  "cardReplaceCarteRemplacement": "Carte de remplacement",
+  "cardReplaceAucuneCarteDisponibleDans": "Aucune carte disponible dans votre stock attribué.",
+  "cardReplaceFraisRemplacement": "Frais de remplacement",
+  "cardReplaceRemplacer": "Remplacer pour {amount}",
+  "@cardReplaceRemplacer": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cardSaleCarteVendue": "Carte vendue",
+  "cardSaleClient": "le client",
+  "cardSaleCarteActivee": "Carte activée pour {client}.",
+  "@cardSaleCarteActivee": {
+    "placeholders": {
+      "client": {}
+    }
+  },
+  "cardSalePrixFacture": "Prix facturé",
+  "cardSaleDepuisStock": "Depuis votre stock",
+  "cardSaleClient2": "Client",
+  "cardSaleCarteNfc": "Carte (NFC)",
+  "cardSalePrixCarte": "Prix de la carte",
+  "cardSaleVendre": "Vendre pour {amount}",
+  "@cardSaleVendre": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cardSaleVendreCarte": "Vendre la carte",
+  "cardSalePrixFinalPeutEtre": "Le prix final peut être ajusté par configuration.",
+  "cardSaleCarteSelectionnee": "Carte sélectionnée",
+  "cardSaleChanger": "Changer",
+  "cashInSaisissezNumeroClientConfirmer": "Saisissez le numéro du client pour confirmer son identité avant le dépôt.",
+  "cashInChangerClient": "Changer de client",
+  "cashInMontantDeposer": "Montant à déposer",
+  "cashInDeposer": "Déposer {amount}",
+  "@cashInDeposer": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashInDeposer2": "Déposer",
+  "cashInFloatSeraDebiteMontant": "Votre float sera débité du montant déposé.",
+  "cashInDepotEffectue": "Dépôt effectué",
+  "cashInCredites": "{amount} crédités à {customerName}.",
+  "@cashInCredites": {
+    "placeholders": {
+      "amount": {},
+      "customerName": {}
+    }
+  },
+  "cashInCrediteClient": "Crédité au client",
+  "cashOutPinMarchand": "PIN du marchand",
+  "cashOutDemandezMarchandSaisirSon": "Demandez au marchand de saisir son PIN pour autoriser le retrait de {amount}.",
+  "@cashOutDemandezMarchandSaisirSon": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashOutSaisissezNumeroMarchandConfirmer": "Saisissez le numéro du marchand pour confirmer le bénéficiaire du retrait.",
+  "cashOutNumeroMarchand": "Numéro du marchand",
+  "cashOutRechercherMarchand": "Rechercher le marchand",
+  "cashOutRetraitBloque": "Retrait bloqué",
+  "cashOutMarchandNPasAutorise": "Ce marchand n’est pas autorisé à effectuer des retraits.",
+  "cashOutChangerMarchand": "Changer de marchand",
+  "cashOutMontantRetirer": "Montant à retirer",
+  "cashOutMontantSuperieurSeuilConfirmez": "Montant supérieur au seuil de {amount}. Confirmez pour poursuivre.",
+  "@cashOutMontantSuperieurSeuilConfirmez": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashOutConfirmerRetrait": "Confirmer le retrait",
+  "cashOutRetirer": "Retirer {amount}",
+  "@cashOutRetirer": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashOutRetirer2": "Retirer",
+  "cashOutMarchandDebiteFloatCredite": "Le marchand est débité, votre float est crédité.",
+  "cashOutApprobationRequise": "Approbation requise",
+  "cashOutRetraitDepasseSeuilEte": "Ce retrait de {amount} dépasse le seuil et a été transmis au back-office pour approbation. Aucun mouvement n’a encore eu lieu.",
+  "@cashOutRetraitDepasseSeuilEte": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashOutSeuil": "Seuil",
+  "cashOutRefApprobation": "Réf. approbation",
+  "cashOutRetraitEffectue": "Retrait effectué",
+  "cashOutRetires": "{amount} retirés pour {merchantName}.",
+  "@cashOutRetires": {
+    "placeholders": {
+      "amount": {},
+      "merchantName": {}
+    }
+  },
+  "commissionsVersements": "Vos versements",
+  "commissionsCommissionsIndisponibles": "Commissions indisponibles.",
+  "commissionsAucuneCommission": "Aucune commission",
+  "commissionsCommissionsDepotsRetraitsVentes": "Vos commissions sur dépôts, retraits et ventes apparaîtront ici.",
+  "commissionsTotalVerse": "TOTAL VERSÉ",
+  "commissionsSur": "Sur {amount}",
+  "@commissionsSur": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "enrollDateNaissance": "Date de naissance",
+  "enrollNouveauCompteKyc": "Nouveau compte + KYC",
+  "enrollNomComplet": "Nom complet",
+  "enrollPrenomNom": "Prénom et nom",
+  "enrollTypePiece": "Type de pièce",
+  "enrollNumeroPiece": "Numéro de pièce",
+  "enrollNPieceIdentite": "N° de la pièce d’identité",
+  "enrollAdresseFacultatif": "Adresse (facultatif)",
+  "enrollIle": "Île",
+  "enrollVille": "Ville",
+  "enrollQuartier": "Quartier",
+  "enrollCreerCompteClient": "Créer le compte client",
+  "enrollSelectionnerDate": "Sélectionner une date",
+  "enrollCarteNationale": "Carte nationale",
+  "enrollEnrolement": "Enrôlement",
+  "enrollClientEnrole": "Client enrôlé",
+  "enrollEteCreeAvecCompte": "{name} a été créé avec un compte actif. Ajoutez ses pièces KYC maintenant.",
+  "@enrollEteCreeAvecCompte": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "enrollAjouterDocumentsKyc": "Ajouter des documents KYC",
+  "enrollReferenceClient": "Référence client",
+  "enrollIdClient": "ID client",
+  "enrollCompte": "Compte",
+  "kycCustomerCompleterDossierClient": "Compléter le dossier d’un client",
+  "kycCustomerGererDocumentsKyc": "Gérer les documents KYC",
+  "kycCustomerDocumentsEnvoyesSontExamines": "Les documents envoyés sont examinés par le back-office, qui décide du rehaussement du niveau KYC.",
+  "kycCustomerNiveauVerifiePieceIdentite": "Pour le niveau Vérifié : pièce d’identité (CNI ou passeport) et justificatif de domicile.",
+  "kycCustomerNiveauRenforceJustificatifsComplementaires": "Pour le niveau Renforcé : justificatifs complémentaires demandés par le back-office.",
+  "kycCustomerNiveauKycActuel": "Niveau KYC actuel",
+  "kycCustomerNiveauMaximalAtteint": "Niveau maximal atteint.",
+  "kycDocumentsImageTropVolumineuse10": "Image trop volumineuse (10 Mo maximum).",
+  "kycDocumentsDocumentEnvoye": "Document envoyé",
+  "kycDocumentsPrendrePhoto": "Prendre une photo",
+  "kycDocumentsChoisirDansGalerie": "Choisir dans la galerie",
+  "kycDocumentsDocumentsKyc": "Documents KYC",
+  "kycDocumentsTypeDocumentEnvoyer": "Type de document à envoyer",
+  "kycDocumentsAjouterDocument": "Ajouter un document",
+  "kycDocumentsImage10MoMaximum": "Image, 10 Mo maximum.",
+  "kycDocumentsDocumentsDejaEnvoyes": "Documents déjà envoyés",
+  "kycDocumentsAucunDocument": "Aucun document",
+  "kycDocumentsAjoutezPieceIdentiteClient": "Ajoutez la pièce d’identité du client et tout justificatif requis.",
+  "kycDocumentsVerifiezDocument": "Vérifiez le document — {typeLabel}",
+  "@kycDocumentsVerifiezDocument": {
+    "placeholders": {
+      "typeLabel": {}
+    }
+  },
+  "kycDocumentsConfirmerEnvoi": "Confirmer l’envoi",
+  "kycDocumentsReprendre": "Reprendre",
+  "floatCardFloatDisponible": "FLOAT DISPONIBLE",
+  "floatCardKmfReservesCompte": "{amount} KMF réservés · Compte ",
+  "@floatCardKmfReservesCompte": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "floatCardFloatSousSeuilAlerte": "Float sous le seuil d’alerte ({amount}). Pensez à réapprovisionner.",
+  "@floatCardFloatSousSeuilAlerte": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "homeAgentLipa": "Agent Lipa",
+  "homeAujourdHui": "Aujourd'hui",
+  "homeOperationsRapides": "Opérations rapides",
+  "homeActiviteRecente": "Activité récente",
+  "homeAucuneOperationMoment": "Aucune opération pour le moment.",
+  "summaryGridResumeIndisponible": "Résumé indisponible.",
+  "summaryGridVolume": "Volume",
+  "summaryGridOperations": "Opérations",
+  "notificationsNotifications": "Notifications",
+  "notificationsToutLire": "Tout lire",
+  "notificationsNotificationsIndisponibles": "Notifications indisponibles.",
+  "notificationsAucuneNotification": "Aucune notification",
+  "notificationsAlertesApparaitrontIciQu": "Vos alertes apparaîtront ici dès qu’elles seront disponibles.",
+  "notificationsDepotCredite": "Dépôt crédité",
+  "notificationsRetraitMarchandEffectue": "Retrait marchand effectué",
+  "notificationsNotification": "Notification",
+  "operationsHubToutesOperations": "Toutes vos opérations",
+  "operationsHubEspeces": "Espèces",
+  "operationsHubDepotClientCashIn": "Dépôt client (cash-in)",
+  "operationsHubCrediterCompteClient": "Créditer le compte d’un client",
+  "operationsHubDecaisserMarchand": "Décaisser pour un marchand",
+  "operationsHubOperationsEspecesNeSont": "Les opérations espèces ne sont pas activées sur votre compte.",
+  "operationsHubClients": "Clients",
+  "operationsHubCreerCompteKyc": "Créer un compte + KYC",
+  "operationsHubCompleterDossierClientExistant": "Compléter le dossier d’un client existant",
+  "operationsHubUidNfcPerteVol": "Par UID NFC — perte, vol, remplacement",
+  "operationsHubDepuisStockAttribue": "Depuis votre stock attribué",
+  "limitsLimitesTransaction": "Limites de transaction",
+  "limitsPlafondsIndisponibles": "Plafonds indisponibles.",
+  "limitsAucunPlafondConfigure": "Aucun plafond configuré",
+  "limitsAucunProfilLimitesN": "Aucun profil de limites n’est attribué à votre compte.",
+  "limitsKycRequis": "KYC requis : {requiredKycLevel}",
+  "@limitsKycRequis": {
+    "placeholders": {
+      "requiredKycLevel": {}
+    }
+  },
+  "limitsTransaction": "Par transaction",
+  "limitsMinimum": "Minimum",
+  "limitsMaximum": "Maximum",
+  "limitsCumuls": "Cumuls",
+  "limitsPlafondJournalier": "Plafond journalier",
+  "limitsPlafondHebdomadaire": "Plafond hebdomadaire",
+  "limitsPlafondMensuel": "Plafond mensuel",
+  "limitsTransactionsJour": "Transactions / jour",
+  "limitsTransactionsMois": "Transactions / mois",
+  "limitsNonDefini": "Non défini",
+  "profileReferenceAgent": "Référence agent",
+  "profileZone": "Zone",
+  "profileNiveauKyc": "Niveau KYC",
+  "profileContrat": "Contrat",
+  "profileSeuilAlerteFloat": "Seuil d’alerte float",
+  "profileAutorisations": "Autorisations",
+  "profileDepots": "Dépôts",
+  "profileRetraits": "Retraits",
+  "profileVenteCartes": "Vente de cartes",
+  "profileSecuritePinTotp": "Sécurité (PIN, TOTP)",
+  "profileSeDeconnecter": "Se déconnecter",
+  "profileVoulezVousVraimentVous": "Voulez-vous vraiment vous déconnecter ?",
+  "profileDeconnexion": "Déconnexion",
+  "changePinPinMisJour": "PIN mis à jour",
+  "changePinPinActuel": "PIN actuel",
+  "changePinConfirmerNouveauPin": "Confirmer le nouveau PIN",
+  "changePinNouveauPinDoitEtre": "Le nouveau PIN doit être différent de l’actuel.",
+  "changePinDeuxPinNeCorrespondent": "Les deux PIN ne correspondent pas.",
+  "changePinEnregistrer": "Enregistrer",
+  "securitySecurite": "Sécurité",
+  "securityPinAuthentification": "PIN et authentification",
+  "securityProtegezCompteAgentPin": "Protégez votre compte agent : un PIN fort et le TOTP réduisent les risques de fraude au comptoir.",
+  "securityNecessitePinActuel": "Nécessite votre PIN actuel",
+  "securityDesactiverDoubleFacteurCode": "Désactiver le double facteur (code requis)",
+  "securityActiverDoubleFacteurAuthentification": "Activer le double facteur d’authentification",
+  "securityActive": "Activé",
+  "securityInactif": "Inactif",
+  "totpEnrollTotpActive": "TOTP activé",
+  "totpEnrollActivezDoubleFacteurTotp": "Activez le double facteur (TOTP) avec une application comme Google Authenticator. Il sera demandé à chaque connexion et permet de réinitialiser votre PIN vous-même.",
+  "totpEnrollCommencerActivation": "Commencer l’activation",
+  "totpEnrollCleSecrete": "Clé secrète",
+  "totpEnrollScannezQrSaisissezCle": "Scannez le QR code ou saisissez la clé dans votre application, puis entrez le code à 6 chiffres.",
+  "totpEnrollCodeVerification": "Code de vérification",
+  "totpEnrollActiverTotp": "Activer le TOTP",
+  "totpEnrollCleCopiee": "Clé copiée",
+  "totpRevokeTotpRevoque": "TOTP révoqué",
+  "totpRevokeDesactiverTotpReduitSecurite": "Désactiver le TOTP réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.",
+  "totpRevokeSaisissezCodeTotpActuel": "Saisissez un code TOTP actuel pour confirmer",
+  "commonRetraitMarchandCashOut": "Retrait marchand (cash-out)",
+  "commonVenteCarte": "Vente de carte",
+  "commonRemplacementCarte": "Remplacement de carte",
+  "commonCommission": "Commission",
+  "commonFrais": "Frais",
+  "commonPerdue": "Perdue",
+  "commonVolee": "Volée",
+  "commonPasseport": "Passeport",
+  "commonAutre": "Autre",
+  "commonRevue": "En revue",
+  "commonAcceptee": "Acceptée",
+  "commonRejetee": "Rejetée",
+  "commonAttente": "En attente",
+  "commonTransactionIntrouvable": "Transaction introuvable.",
+  "commonScannerCarte": "Scanner la carte",
+  "commonConfirmer": "Confirmer",
+  "commonEffectue": "Effectué",
+  "commonAutorise": "Autorisé",
+  "commonRefuse": "Refusé",
+  "commonAnnule": "Annulé",
+  "commonLipa": "Lipa",
+  "commonStatut2": "Statut",
+  "commonType": "Type",
+  "commonToutePeriode": "Toute la période",
+  "commonMontant": "Montant",
+  "commonActivite": "Activité",
+  "commonImpossibleChargerActivite": "Impossible de charger l’activité.",
+  "commonReleve": "Relevé",
+  "commonCopie": "{label} copié",
+  "@commonCopie": {
+    "placeholders": {
+      "label": {}
+    }
+  },
+  "commonDepotClient": "Dépôt client",
+  "commonRetraitMarchand": "Retrait marchand",
+  "commonOperer": "Opérer",
+  "commonCartes": "Cartes",
+  "commonProfil": "Profil",
+  "commonNumeroTelephone": "Numéro de téléphone",
+  "commonNouveauPin": "Nouveau PIN",
+  "commonConfirmerPin": "Confirmer le PIN",
+  "commonRetourConnexion": "← Retour à la connexion",
+  "commonReponseInattendueServeur": "Réponse inattendue du serveur.",
+  "commonErreurSurvenue": "Une erreur est survenue.",
+  "commonStockIndisponible": "Stock indisponible.",
+  "commonVendreCarte": "Vendre une carte",
+  "commonAnnuler": "Annuler",
+  "commonRechercherCarte": "Rechercher une carte",
+  "commonRemplacerCarte": "Remplacer la carte",
+  "commonRef": "Réf.",
+  "commonRechercherClient": "Rechercher le client",
+  "commonCashIn": "Cash-in",
+  "commonNumeroClient": "Numéro du client",
+  "commonDepot": "Dépôt",
+  "commonCashOut": "Cash-out",
+  "commonRetrait": "Retrait",
+  "commonCommissions": "Commissions",
+  "commonEnrolerClient": "Enrôler un client",
+  "commonKycClient": "KYC client",
+  "commonProfilIndisponible": "Profil indisponible.",
+  "commonPlafonds": "Plafonds",
+  "commonChangerMonPin": "Changer mon PIN",
+  "commonRevoquerTotp": "Révoquer le TOTP",
+  "commonConfigurerTotp": "Configurer le TOTP"
+}

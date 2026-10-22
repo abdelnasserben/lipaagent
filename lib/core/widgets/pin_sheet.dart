@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
 import 'common.dart';
+import '../../l10n/l10n.dart';
 
 /// A bottom-sheet PIN entry pad (Lipa design: SendStepPin / Keypad).
 ///
@@ -126,7 +127,7 @@ class _PinSheetState extends State<PinSheet> {
           _Keypad(onPress: _press),
           const SizedBox(height: 8),
           LipaButton(
-            label: 'Confirmer',
+            label: l10n.commonConfirmer,
             size: BtnSize.lg,
             full: true,
             loading: widget.submitting,

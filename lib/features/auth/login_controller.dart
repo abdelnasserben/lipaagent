@@ -8,6 +8,7 @@ import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
 import '../security/security_controller.dart';
 import 'session_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Which auth step the UI is currently showing.
 enum AuthStep { login, mfa, pinSetup, forgotPin, sessionExpired, locked }
@@ -105,7 +106,7 @@ class LoginController extends Notifier<LoginState> {
         case LoginBranch.unknown:
           state = state.copyWith(
             submitting: false,
-            errorMessage: 'Réponse inattendue du serveur.',
+            errorMessage: l10n.commonReponseInattendueServeur,
           );
       }
     } on ApiError catch (e) {
@@ -115,14 +116,14 @@ class LoginController extends Notifier<LoginState> {
       } else {
         state = state.copyWith(
           submitting: false,
-          errorMessage: frenchMessageForError(e),
+          errorMessage: apiErrorMessage(e),
         );
       }
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -147,13 +148,13 @@ class LoginController extends Notifier<LoginState> {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -179,13 +180,13 @@ class LoginController extends Notifier<LoginState> {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -226,13 +227,13 @@ class LoginController extends Notifier<LoginState> {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: frenchMessageForError(e),
+        errorMessage: apiErrorMessage(e),
       );
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         submitting: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }

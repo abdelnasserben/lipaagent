@@ -9,6 +9,7 @@ import '../../core/widgets/common.dart';
 import '../agent/agent_providers.dart';
 import 'card_lookup_screen.dart';
 import 'card_sale_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Cards tab: the agent's assigned card stock + entry points to sell / look up.
 class CardsScreen extends ConsumerWidget {
@@ -26,8 +27,8 @@ class CardsScreen extends ConsumerWidget {
     return Column(
       children: [
         ScreenHeader(
-          title: 'Cartes',
-          subtitle: 'Stock attribué',
+          title: l10n.commonCartes,
+          subtitle: l10n.cardsStockAttribue,
           action: CircleButton(
             onTap: () => Navigator.of(
               context,
@@ -46,10 +47,10 @@ class CardsScreen extends ConsumerWidget {
                 child: CircularProgressIndicator(color: AppColors.brand),
               ),
               error: (_, _) => ListView(
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.all(16),
-                    child: ErrorRetry(message: 'Stock indisponible.'),
+                    child: ErrorRetry(message: l10n.commonStockIndisponible),
                   ),
                 ],
               ),
@@ -58,7 +59,7 @@ class CardsScreen extends ConsumerWidget {
                 children: [
                   if (canSell) ...[
                     LipaButton(
-                      label: 'Vendre une carte',
+                      label: l10n.commonVendreCarte,
                       icon: const Icon(Icons.add_card_rounded),
                       size: BtnSize.lg,
                       full: true,
@@ -74,7 +75,7 @@ class CardsScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Cartes disponibles',
+                        l10n.cardsCartesDisponibles,
                         style: AppText.ui(size: 14.5, weight: FontWeight.w700),
                       ),
                       Text(
@@ -89,11 +90,10 @@ class CardsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   if (items.isEmpty)
-                    const EmptyState(
+                    EmptyState(
                       icon: Icons.inventory_2_outlined,
-                      title: 'Stock vide',
-                      message:
-                          'Aucune carte attribuée. Contactez le back-office pour un réapprovisionnement.',
+                      title: l10n.cardsStockVide,
+                      message: l10n.cardsAucuneCarteAttribueeContactez,
                     )
                   else
                     for (final c in items) _StockRow(item: c),
@@ -170,7 +170,7 @@ class _StockRow extends StatelessWidget {
             if (item.assignedAt != null) ...[
               const SizedBox(height: 2),
               Text(
-                'Attribuée le ${fmtDateFr(item.assignedAt!)}',
+                l10n.cardsAttribuee(fmtDateFr(item.assignedAt!)),
                 style: AppText.ui(size: 11.5, color: AppColors.inkLow),
               ),
             ],
@@ -199,7 +199,7 @@ class _BatchChip extends StatelessWidget {
         border: Border.all(color: AppColors.border),
       ),
       child: Text(
-        'Lot $batchRef',
+        l10n.cardsLot(batchRef),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: AppText.ui(

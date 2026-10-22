@@ -5,6 +5,7 @@ import '../../core/theme/app_tokens.dart';
 import '../cashin/cash_in_screen.dart';
 import '../cashout/cash_out_screen.dart';
 import '../enroll/enroll_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Capability-gated quick-op chips (spec §11.3): hidden when the agent can't.
 class QuickOps extends StatelessWidget {
@@ -17,20 +18,20 @@ class QuickOps extends StatelessWidget {
       if (profile.canDoCashIn ?? false)
         _OpTile(
           icon: Icons.south_west_rounded,
-          label: 'Dépôt client',
-          sub: 'Cash-in',
+          label: l10n.commonDepotClient,
+          sub: l10n.commonCashIn,
           onTap: () => _push(context, const CashInScreen()),
         ),
       if (profile.canDoCashOut ?? false)
         _OpTile(
           icon: Icons.north_east_rounded,
-          label: 'Retrait marchand',
-          sub: 'Cash-out',
+          label: l10n.commonRetraitMarchand,
+          sub: l10n.commonCashOut,
           onTap: () => _push(context, const CashOutScreen()),
         ),
       _OpTile(
         icon: Icons.person_add_alt_1_rounded,
-        label: 'Enrôler un client',
+        label: l10n.commonEnrolerClient,
         sub: 'KYC',
         onTap: () => _push(context, const EnrollScreen()),
       ),

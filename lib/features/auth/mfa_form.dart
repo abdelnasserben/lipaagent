@@ -5,6 +5,7 @@ import '../../core/theme/app_tokens.dart';
 import '../../core/widgets/code_field.dart';
 import '../../core/widgets/common.dart';
 import 'login_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// MFA: a single hidden field backing 6 display cells.
 class MfaForm extends ConsumerStatefulWidget {
@@ -33,7 +34,7 @@ class _MfaFormState extends ConsumerState<MfaForm> {
         ],
         const SizedBox(height: 18),
         LipaButton(
-          label: 'Vérifier et continuer',
+          label: l10n.mfaVerifierContinuer,
           size: BtnSize.lg,
           full: true,
           loading: s.submitting,
@@ -48,7 +49,7 @@ class _MfaFormState extends ConsumerState<MfaForm> {
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
           child: Text(
-            '← Retour à la connexion',
+            l10n.commonRetourConnexion,
             style: AppText.ui(size: 13.5, color: AppColors.inkMid),
           ),
         ),

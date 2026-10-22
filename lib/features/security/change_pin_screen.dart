@@ -7,6 +7,7 @@ import '../../core/utils/validators.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import 'security_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Change PIN (spec §3.6): current PIN + new PIN (4–8 digits) + confirm.
 class ChangePinScreen extends ConsumerStatefulWidget {
@@ -54,7 +55,7 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'PIN mis à jour',
+              l10n.changePinPinMisJour,
               style: AppText.ui(color: Colors.white),
             ),
             backgroundColor: AppColors.brandDeep,
@@ -70,28 +71,28 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Changer mon PIN',
+              title: l10n.commonChangerMonPin,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const FieldLabel('PIN actuel'),
+                  FieldLabel(l10n.changePinPinActuel),
                   const SizedBox(height: 8),
                   PinDigitsInput(
                     controller: _current,
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 18),
-                  const FieldLabel('Nouveau PIN'),
+                  FieldLabel(l10n.commonNouveauPin),
                   const SizedBox(height: 8),
                   PinDigitsInput(
                     controller: _newPin,
                     onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 18),
-                  const FieldLabel('Confirmer le nouveau PIN'),
+                  FieldLabel(l10n.changePinConfirmerNouveauPin),
                   const SizedBox(height: 8),
                   PinDigitsInput(
                     controller: _confirm,
@@ -100,13 +101,13 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
                   if (_sameAsCurrent) ...[
                     const SizedBox(height: 10),
                     Text(
-                      'Le nouveau PIN doit être différent de l’actuel.',
+                      l10n.changePinNouveauPinDoitEtre,
                       style: AppText.ui(size: 13, color: AppColors.danger),
                     ),
                   ] else if (_confirmMismatch) ...[
                     const SizedBox(height: 10),
                     Text(
-                      'Les deux PIN ne correspondent pas.',
+                      l10n.changePinDeuxPinNeCorrespondent,
                       style: AppText.ui(size: 13, color: AppColors.danger),
                     ),
                   ],
@@ -119,7 +120,7 @@ class _ChangePinScreenState extends ConsumerState<ChangePinScreen> {
                   ],
                   const SizedBox(height: 24),
                   LipaButton(
-                    label: 'Enregistrer',
+                    label: l10n.changePinEnregistrer,
                     size: BtnSize.lg,
                     full: true,
                     loading: state.loading,

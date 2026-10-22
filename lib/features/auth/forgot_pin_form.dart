@@ -7,6 +7,7 @@ import '../../core/widgets/code_field.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import 'login_controller.dart';
+import '../../l10n/l10n.dart';
 
 /// Forgotten-PIN reset (spec §3.6): phone + current TOTP code + new PIN.
 class ForgotPinForm extends ConsumerStatefulWidget {
@@ -44,25 +45,24 @@ class _ForgotPinFormState extends ConsumerState<ForgotPinForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const InfoBanner(
+        InfoBanner(
           icon: Icons.shield_outlined,
-          text:
-              'Réinitialisation possible uniquement si le TOTP est activé. Sinon, contactez le back-office Lipa.',
+          text: l10n.forgotPinReinitialisationPossibleUniquementSi,
         ),
         const SizedBox(height: 18),
-        const FieldLabel('Numéro de téléphone'),
+        FieldLabel(l10n.commonNumeroTelephone),
         const SizedBox(height: 8),
         PhoneInput(controller: _phone, onChanged: (_) => setState(() {})),
         const SizedBox(height: 18),
-        const FieldLabel('Nouveau PIN'),
+        FieldLabel(l10n.commonNouveauPin),
         const SizedBox(height: 8),
         PinDigitsInput(controller: _newPin, onChanged: (_) => setState(() {})),
         const SizedBox(height: 18),
-        const FieldLabel('Confirmer le PIN'),
+        FieldLabel(l10n.commonConfirmerPin),
         const SizedBox(height: 8),
         PinDigitsInput(controller: _confirm, onChanged: (_) => setState(() {})),
         const SizedBox(height: 18),
-        const FieldLabel('Code d’authentification (TOTP)'),
+        FieldLabel(l10n.forgotPinCodeAuthentificationTotp),
         const SizedBox(height: 8),
         CodeField(onChanged: (v) => setState(() => _code = v)),
         if (s.errorMessage != null) ...[
@@ -74,7 +74,7 @@ class _ForgotPinFormState extends ConsumerState<ForgotPinForm> {
         ],
         const SizedBox(height: 22),
         LipaButton(
-          label: 'Réinitialiser le PIN',
+          label: l10n.forgotPinReinitialiserPin,
           size: BtnSize.lg,
           full: true,
           loading: s.submitting,
@@ -94,7 +94,7 @@ class _ForgotPinFormState extends ConsumerState<ForgotPinForm> {
               .read(loginControllerProvider.notifier)
               .goToStep(AuthStep.login),
           child: Text(
-            '← Retour à la connexion',
+            l10n.commonRetourConnexion,
             style: AppText.ui(size: 13.5, color: AppColors.inkMid),
           ),
         ),

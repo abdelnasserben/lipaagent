@@ -12,6 +12,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/common.dart';
+import '../../l10n/l10n.dart';
 
 /// KYC documents for a customer (spec §5.5): list + capture/pick + upload.
 /// The capture goes through `image_picker` (camera or gallery), the only
@@ -61,7 +62,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
     final bytes = await picked.readAsBytes();
     if (!mounted) return;
     if (bytes.length > _kMaxFileBytes) {
-      _snack('Image trop volumineuse (10 Mo maximum).', error: true);
+      _snack(l10n.kycDocumentsImageTropVolumineuse10, error: true);
       return;
     }
     setState(() {
@@ -97,7 +98,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Document envoyé',
+          l10n.kycDocumentsDocumentEnvoye,
           style: AppText.ui(color: Colors.white),
         ),
         backgroundColor: AppColors.brandDeep,
@@ -133,7 +134,10 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                 Icons.photo_camera_outlined,
                 color: AppColors.inkHi,
               ),
-              title: Text('Prendre une photo', style: AppText.ui(size: 15)),
+              title: Text(
+                l10n.kycDocumentsPrendrePhoto,
+                style: AppText.ui(size: 15),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _pick(ImageSource.camera);
@@ -145,7 +149,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                 color: AppColors.inkHi,
               ),
               title: Text(
-                'Choisir dans la galerie',
+                l10n.kycDocumentsChoisirDansGalerie,
                 style: AppText.ui(size: 15),
               ),
               onTap: () {
@@ -169,7 +173,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'Documents KYC',
+              title: l10n.kycDocumentsDocumentsKyc,
               subtitle: widget.customerName,
               onBack: () => Navigator.of(context).pop(),
             ),
@@ -177,7 +181,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const FieldHint('Type de document à envoyer'),
+                  FieldHint(l10n.kycDocumentsTypeDocumentEnvoyer),
                   const SizedBox(height: 10),
                   _TypePicker(
                     value: _selectedType,
@@ -186,7 +190,7 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                   const SizedBox(height: 14),
                   if (_pendingBytes == null) ...[
                     LipaButton(
-                      label: 'Ajouter un document',
+                      label: l10n.kycDocumentsAjouterDocument,
                       icon: const Icon(Icons.upload_file_rounded),
                       size: BtnSize.lg,
                       full: true,
@@ -194,21 +198,21 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Image, 10 Mo maximum.',
+                      l10n.kycDocumentsImage10MoMaximum,
                       textAlign: TextAlign.center,
                       style: AppText.ui(size: 12, color: AppColors.inkLow),
                     ),
                   ] else
                     _PendingPreview(
                       bytes: _pendingBytes!,
-                      typeLabel: _selectedType.frLabel,
+                      typeLabel: _selectedType.label,
                       uploading: uploading,
                       onConfirm: _confirmUpload,
                       onDiscard: uploading ? null : _discardPending,
                     ),
                   const SizedBox(height: 24),
                   Text(
-                    'Documents déjà envoyés',
+                    l10n.kycDocumentsDocumentsDejaEnvoyes,
                     style: AppText.ui(size: 15, weight: FontWeight.w700),
                   ),
                   const SizedBox(height: 12),
@@ -231,11 +235,11 @@ class _KycDocumentsScreenState extends ConsumerState<KycDocumentsScreen> {
                         ),
                         data: (docs) {
                           if (docs.isEmpty) {
-                            return const EmptyState(
+                            return EmptyState(
                               icon: Icons.folder_open_rounded,
-                              title: 'Aucun document',
+                              title: l10n.kycDocumentsAucunDocument,
                               message:
-                                  'Ajoutez la pièce d’identité du client et tout justificatif requis.',
+                                  l10n.kycDocumentsAjoutezPieceIdentiteClient,
                             );
                           }
                           return Column(
@@ -286,7 +290,7 @@ class _PendingPreview extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Vérifiez le document — $typeLabel',
+            l10n.kycDocumentsVerifiezDocument(typeLabel),
             style: AppText.ui(size: 13, weight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
@@ -303,7 +307,7 @@ class _PendingPreview extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           LipaButton(
-            label: 'Confirmer l’envoi',
+            label: l10n.kycDocumentsConfirmerEnvoi,
             icon: const Icon(Icons.cloud_upload_outlined),
             size: BtnSize.lg,
             full: true,
@@ -312,7 +316,7 @@ class _PendingPreview extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           LipaButton(
-            label: 'Reprendre',
+            label: l10n.kycDocumentsReprendre,
             variant: BtnVariant.ghost,
             full: true,
             onPressed: onDiscard,
@@ -343,7 +347,7 @@ class _TypePicker extends StatelessWidget {
       children: [
         for (final t in _types)
           ChoiceChip(
-            label: Text(t.frLabel),
+            label: Text(t.label),
             selected: value == t,
             onSelected: (_) => onChanged(t),
             labelStyle: AppText.ui(
@@ -372,9 +376,15 @@ class _DocRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (pillKind, pillLabel) = switch (doc.status) {
-      KycDocumentResponseStatus.accepted => (PillKind.success, 'Acceptée'),
-      KycDocumentResponseStatus.rejected => (PillKind.declined, 'Rejetée'),
-      _ => (PillKind.pending, 'En revue'),
+      KycDocumentResponseStatus.accepted => (
+        PillKind.success,
+        l10n.commonAcceptee,
+      ),
+      KycDocumentResponseStatus.rejected => (
+        PillKind.declined,
+        l10n.commonRejetee,
+      ),
+      _ => (PillKind.pending, l10n.commonRevue),
     };
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -403,7 +413,7 @@ class _DocRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    KycDocumentType.parse(doc.documentType?.json).frLabel,
+                    KycDocumentType.parse(doc.documentType?.json).label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppText.ui(size: 14, weight: FontWeight.w600),

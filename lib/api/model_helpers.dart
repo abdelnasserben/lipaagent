@@ -44,6 +44,7 @@ extension StatementEntryHelpers on AgentStatementEntryResponse {
     final m = RegExp(r'^([A-Z][A-Z0-9_]*)\b').firstMatch(raw);
     final parsed = TransactionType.parse(m?.group(1));
     if (parsed != TransactionType.unknown) return parsed;
+    // Backend ledger text (English, never shown), not a UI text.
     if (raw.startsWith('Commission')) return TransactionType.commissionPayout;
     return TransactionType.unknown;
   }

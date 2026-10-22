@@ -13,6 +13,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/form_fields.dart';
 import '../../core/widgets/party_card.dart';
 import 'kyc_documents_screen.dart';
+import '../../l10n/l10n.dart';
 
 /// Reopen an *existing* customer's KYC file (spec §5.5).
 ///
@@ -60,15 +61,15 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: 'KYC client',
-              subtitle: 'Compléter le dossier d’un client',
+              title: l10n.commonKycClient,
+              subtitle: l10n.kycCustomerCompleterDossierClient,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
-                  const FieldHint('Numéro du client'),
+                  FieldHint(l10n.commonNumeroClient),
                   const SizedBox(height: 10),
                   if (customer == null) ...[
                     PhoneInput(
@@ -77,7 +78,7 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                     ),
                     const SizedBox(height: 12),
                     LipaButton(
-                      label: 'Rechercher le client',
+                      label: l10n.commonRechercherClient,
                       variant: BtnVariant.secondary,
                       full: true,
                       loading: s.busy,
@@ -93,7 +94,7 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                       subtitle: customer.phonePretty,
                       statusLabel: CustomerStatus.parse(
                         customer.status?.json,
-                      ).frLabel,
+                      ).label,
                       statusActive:
                           customer.status ==
                           CustomerLookupResponseStatus.active,
@@ -114,7 +115,7 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                     ),
                     const SizedBox(height: 16),
                     LipaButton(
-                      label: 'Gérer les documents KYC',
+                      label: l10n.kycCustomerGererDocumentsKyc,
                       icon: const Icon(Icons.folder_open_rounded),
                       size: BtnSize.lg,
                       full: true,
@@ -122,8 +123,7 @@ class _KycCustomerScreenState extends ConsumerState<KycCustomerScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Les documents envoyés sont examinés par le back-office, '
-                      'qui décide du rehaussement du niveau KYC.',
+                      l10n.kycCustomerDocumentsEnvoyesSontExamines,
                       textAlign: TextAlign.center,
                       style: AppText.ui(size: 12, color: AppColors.inkLow),
                     ),
@@ -154,12 +154,10 @@ class _KycLevelCard extends StatelessWidget {
 
   /// Plain-language hint about the documents the next tier usually needs.
   String? get _nextStepHint => switch (level) {
-    KycLevel.none || KycLevel.basic =>
-      'Pour le niveau Vérifié : pièce d’identité (CNI ou passeport) '
-          'et justificatif de domicile.',
+    KycLevel.none ||
+    KycLevel.basic => l10n.kycCustomerNiveauVerifiePieceIdentite,
     KycLevel.verified =>
-      'Pour le niveau Renforcé : justificatifs complémentaires '
-          'demandés par le back-office.',
+      l10n.kycCustomerNiveauRenforceJustificatifsComplementaires,
     KycLevel.enhanced => null, // already at the top tier
     KycLevel.unknown => null,
   };
@@ -181,11 +179,11 @@ class _KycLevelCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Niveau KYC actuel',
+                l10n.kycCustomerNiveauKycActuel,
                 style: AppText.ui(size: 13, color: AppColors.inkMid),
               ),
               const Spacer(),
-              StatusPill(label: level.frLabel, kind: pillKind),
+              StatusPill(label: level.label, kind: pillKind),
             ],
           ),
           if (hint != null) ...[
@@ -197,7 +195,7 @@ class _KycLevelCard extends StatelessWidget {
           ] else if (level == KycLevel.enhanced) ...[
             const SizedBox(height: 12),
             Text(
-              'Niveau maximal atteint.',
+              l10n.kycCustomerNiveauMaximalAtteint,
               style: AppText.ui(size: 13, color: AppColors.inkHi),
             ),
           ],

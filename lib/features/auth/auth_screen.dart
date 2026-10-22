@@ -10,6 +10,7 @@ import 'mfa_form.dart';
 import 'pin_setup_form.dart';
 import 'forgot_pin_form.dart';
 import 'auth_notices.dart';
+import '../../l10n/l10n.dart';
 
 /// The full agent auth surface (login → MFA → PIN setup → expired → locked).
 /// Reuses the Lipa dark-hero auth layout, adapted to agent copy.
@@ -43,28 +44,28 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     final (heroTitle, heroSubtitle) = switch (step) {
       AuthStep.login => (
-        'Espace agent',
-        'Connectez-vous pour gérer vos opérations cash et l’enrôlement client.',
+        l10n.authEspaceAgent,
+        l10n.authConnectezVousGererOperations,
       ),
       AuthStep.mfa => (
-        'Vérifiez votre identité',
-        'Saisissez le code à 6 chiffres de votre application d’authentification.',
+        l10n.authVerifiezIdentite,
+        l10n.authSaisissezCode6Chiffres,
       ),
       AuthStep.pinSetup => (
-        'Définir votre PIN',
-        'Choisissez le PIN qui protégera votre compte agent et vos opérations.',
+        l10n.authDefinirPin,
+        l10n.authChoisissezPinProtegeraCompte,
       ),
       AuthStep.forgotPin => (
-        'PIN oublié',
-        'Réinitialisez votre PIN avec le code de votre application d’authentification.',
+        l10n.authPinOublie,
+        l10n.authReinitialisezPinAvecCode,
       ),
       AuthStep.sessionExpired => (
-        'Session expirée',
-        'Vous avez été déconnecté afin de protéger votre compte agent.',
+        l10n.authSessionExpiree,
+        l10n.authVousAvezEteDeconnecte,
       ),
       AuthStep.locked => (
-        'PIN bloqué',
-        'Trop de tentatives incorrectes. Réessayez dans 15 minutes.',
+        l10n.authPinBloque,
+        l10n.authTropTentativesIncorrectesReessayez,
       ),
     };
 

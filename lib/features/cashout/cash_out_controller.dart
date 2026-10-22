@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/error/api_error.dart';
 import '../../core/providers.dart';
 import '../agent/agent_providers.dart';
+import '../../l10n/l10n.dart';
 
 /// Where the cash-out flow currently is.
 enum CashOutStep {
@@ -107,15 +108,12 @@ class CashOutController extends Notifier<CashOutState> {
       );
     } on ApiError catch (e) {
       if (!ref.mounted) return;
-      state = state.copyWith(
-        looking: false,
-        errorMessage: frenchMessageForError(e),
-      );
+      state = state.copyWith(looking: false, errorMessage: apiErrorMessage(e));
     } catch (_) {
       if (!ref.mounted) return;
       state = state.copyWith(
         looking: false,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
@@ -200,7 +198,7 @@ class CashOutController extends Notifier<CashOutState> {
         state = state.copyWith(
           submitting: false,
           step: CashOutStep.amount,
-          errorMessage: 'Réponse inattendue du serveur.',
+          errorMessage: l10n.commonReponseInattendueServeur,
         );
       }
     } on ApiError catch (e) {
@@ -209,15 +207,12 @@ class CashOutController extends Notifier<CashOutState> {
       // agent stays on the PIN step and can retry (spec §8).
       if (state.step == CashOutStep.needsPin &&
           (e.code == 'AUTH_PIN_INVALID' || e.code == 'AUTH_PIN_LOCKED')) {
-        state = state.copyWith(
-          submitting: false,
-          pinError: frenchMessageForError(e),
-        );
+        state = state.copyWith(submitting: false, pinError: apiErrorMessage(e));
       } else {
         state = state.copyWith(
           submitting: false,
           step: CashOutStep.amount,
-          errorMessage: frenchMessageForError(e),
+          errorMessage: apiErrorMessage(e),
         );
       }
     } catch (_) {
@@ -225,7 +220,7 @@ class CashOutController extends Notifier<CashOutState> {
       state = state.copyWith(
         submitting: false,
         step: CashOutStep.amount,
-        errorMessage: 'Une erreur est survenue.',
+        errorMessage: l10n.commonErreurSurvenue,
       );
     }
   }
