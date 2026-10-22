@@ -58,7 +58,7 @@ class _Body extends StatelessWidget {
               _OpRow(
                 icon: Icons.south_west_rounded,
                 title: 'Dépôt client (cash-in)',
-                subtitle: 'Créditer le portefeuille d’un client',
+                subtitle: 'Créditer le compte d’un client',
                 onTap: () => _push(context, const CashInScreen()),
               ),
             if (profile.canDoCashOut)

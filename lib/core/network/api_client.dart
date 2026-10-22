@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 
 import '../auth/token_store.dart';
 import '../config/app_environment.dart';
@@ -50,6 +51,8 @@ class ApiClient {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // One id per request, echoed by the backend in errors and logs (support).
+    options.headers['X-Correlation-Id'] ??= const Uuid().v4();
     final skipAuth = options.extra['skipAuth'] == true;
     if (!skipAuth && options.headers['Authorization'] == null) {
       final token = await _validAccessToken();
@@ -201,8 +204,13 @@ class ApiClient {
     final status = res.statusCode ?? 0;
     if (status >= 200 && status < 300) return res;
 
-    // Reactive refresh-on-401 (once), then bail to re-login.
-    if (status == 401 && !didRetry) {
+    final error = ApiError.fromResponse(status, res.data);
+
+    // Reactive refresh (once) when the session token itself was refused, then
+    // bail to re-login. Other 401s (a wrong PIN: AUTH_PIN_INVALID, wrong login:
+    // INVALID_CREDENTIALS) are answers to the request: resending would count a
+    // second wrong PIN, so they are returned as they are.
+    if (status == 401 && _sessionCodes.contains(error.code) && !didRetry) {
       final tokens = _tokenStore.current ?? await _tokenStore.load();
       if (tokens != null) {
         final refreshed = await _refresh(tokens.refreshToken);
@@ -213,6 +221,15 @@ class ApiClient {
       onSessionExpired?.call();
     }
 
-    throw ApiError.fromResponse(status, res.data);
+    throw error;
   }
+
+  /// 401 codes meaning the access token is missing, expired or revoked.
+  static const _sessionCodes = {
+    'UNAUTHORIZED',
+    'INVALID_TOKEN',
+    'TOKEN_EXPIRED',
+    'TOKEN_REVOKED',
+    'AUTH_INVALID_TOKEN',
+  };
 }

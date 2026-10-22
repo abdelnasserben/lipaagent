@@ -71,9 +71,21 @@ class CashOutController extends StateNotifier<CashOutState> {
 
   final Ref _ref;
   static const _countryCode = '269';
-  final String _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
+  String? _lastKey;
 
   bool _confirmationAcknowledged = false;
+
+  /// Key of the current cash-out. A changed merchant or amount is a new
+  /// operation: new key, and the confirmation must be given again.
+  String _intentKey(String merchantId) {
+    final key = _operationKey.forIntent('$merchantId|${state.amount}');
+    if (key != _lastKey) {
+      _lastKey = key;
+      _confirmationAcknowledged = false;
+    }
+    return key;
+  }
 
   AgentRepository get _repo => _ref.read(agentRepositoryProvider);
 
@@ -137,7 +149,7 @@ class CashOutController extends StateNotifier<CashOutState> {
     );
     try {
       final res = await _repo.cashOut(
-        idempotencyKey: _idempotencyKey,
+        idempotencyKey: _intentKey(merchant.merchantId),
         merchantId: merchant.merchantId,
         amount: state.amount,
         merchantPin: pin,

@@ -70,9 +70,8 @@ class SessionController extends StateNotifier<SessionState> {
 
   /// Tears down per-user state that would otherwise leak across accounts.
   ///
-  /// [agentRepositoryProvider] is a long-lived singleton that caches the
-  /// signed-in agent's `walletId` (used to derive transaction direction); we
-  /// rebuild it so the next agent starts clean. The `autoDispose` data
+  /// [agentRepositoryProvider] is a long-lived singleton; we rebuild it so the
+  /// next agent starts clean. The `autoDispose` data
   /// providers unmount with the shell at logout and start fresh on re-login.
   /// (Cf. the Lipa customer app's user-scoped state reset.)
   void _resetUserScopedState() {

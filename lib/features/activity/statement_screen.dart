@@ -36,7 +36,7 @@ class _StatementScreenState extends ConsumerState<StatementScreen> {
           children: [
             ScreenHeader(
               title: 'Relevé',
-              subtitle: 'Écritures du portefeuille',
+              subtitle: 'Écritures du compte',
               onBack: () => Navigator.of(context).pop(),
               action: CircleButton(
                 onTap: (loaded == null || loaded.isEmpty)
@@ -181,7 +181,7 @@ class _EntryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final credit = entry.entryType.isCredit;
+    final credit = entry.side.isCredit;
     return LipaCard(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(

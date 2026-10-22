@@ -6,18 +6,18 @@ class EnrollCustomerResult {
   const EnrollCustomerResult({
     required this.customerId,
     required this.externalRef,
-    required this.walletId,
+    required this.accountId,
   });
 
   final String customerId;
   final String externalRef;
-  final String walletId;
+  final String accountId;
 
   factory EnrollCustomerResult.fromJson(Map<String, dynamic> json) =>
       EnrollCustomerResult(
         customerId: (json['customerId'] ?? '') as String,
         externalRef: (json['externalRef'] ?? '') as String,
-        walletId: (json['walletId'] ?? '') as String,
+        accountId: (json['accountId'] ?? '') as String,
       );
 }
 

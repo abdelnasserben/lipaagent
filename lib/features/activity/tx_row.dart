@@ -7,7 +7,7 @@ import '../../data/models/enums.dart';
 import '../../data/models/transaction.dart';
 
 /// A single transaction row (icon, type+time, signed amount + status dot).
-/// Direction is derived from the agent wallet (incoming = credited).
+/// Direction comes from the backend's balanceChange (incoming = credited).
 class TxRow extends StatelessWidget {
   const TxRow({super.key, required this.tx, this.divider = false, this.onTap});
 
@@ -90,7 +90,10 @@ class TxRow extends StatelessWidget {
   (IconData, String) _present(TransactionType type, bool incoming) {
     return switch (type) {
       TransactionType.cashIn => (Icons.south_west_rounded, 'Dépôt client'),
-      TransactionType.cashOut => (Icons.north_east_rounded, 'Retrait marchand'),
+      TransactionType.merchantCashOut => (
+        Icons.north_east_rounded,
+        'Retrait marchand',
+      ),
       TransactionType.cardSale => (Icons.credit_card_rounded, 'Vente de carte'),
       TransactionType.cardReplacement => (
         Icons.sync_rounded,
@@ -100,7 +103,7 @@ class TxRow extends StatelessWidget {
         Icons.savings_outlined,
         'Commission',
       ),
-      TransactionType.agentFundIn => (
+      TransactionType.agentFloatTopUp => (
         Icons.account_balance_wallet_outlined,
         'Approvisionnement',
       ),
@@ -120,7 +123,6 @@ class _StatusDot extends StatelessWidget {
       TransactionStatus.pending => (AppColors.pending, 'En attente'),
       TransactionStatus.authorized => (AppColors.info, 'Autorisé'),
       TransactionStatus.declined => (AppColors.danger, 'Refusé'),
-      TransactionStatus.expired => (AppColors.inkLow, 'Expiré'),
       TransactionStatus.reversed => (AppColors.warn, 'Annulé'),
       TransactionStatus.unknown => (AppColors.inkLow, '—'),
     };

@@ -20,7 +20,7 @@ class AgentProfile {
     required this.canDoCashOut,
     required this.floatAlertThreshold,
     this.zone,
-    this.walletId,
+    this.accountId,
     this.limitProfileId,
     this.contractRef,
     this.createdAt,
@@ -38,7 +38,7 @@ class AgentProfile {
   final bool canDoCashOut;
   final int floatAlertThreshold;
   final String? zone;
-  final String? walletId;
+  final String? accountId;
   final String? limitProfileId;
   final String? contractRef;
   final DateTime? createdAt;
@@ -61,7 +61,7 @@ class AgentProfile {
     canDoCashOut: json['canDoCashOut'] == true,
     floatAlertThreshold: _int(json['floatAlertThreshold']),
     zone: json['zone'] as String?,
-    walletId: json['walletId'] as String?,
+    accountId: json['accountId'] as String?,
     limitProfileId: json['limitProfileId'] as String?,
     contractRef: json['contractRef'] as String?,
     createdAt: tryParseInstant(json['createdAt']),
@@ -71,24 +71,24 @@ class AgentProfile {
 /// `AgentBalanceResponse` (spec §7.2).
 class AgentBalance {
   const AgentBalance({
-    required this.walletId,
+    required this.accountId,
     required this.availableBalance,
-    required this.frozenBalance,
-    required this.walletStatus,
+    required this.heldBalance,
+    required this.accountStatus,
     this.updatedAt,
   });
 
-  final String walletId;
+  final String accountId;
   final int availableBalance;
-  final int frozenBalance;
-  final WalletStatus walletStatus;
+  final int heldBalance;
+  final AccountStatus accountStatus;
   final DateTime? updatedAt;
 
   factory AgentBalance.fromJson(Map<String, dynamic> json) => AgentBalance(
-    walletId: (json['walletId'] ?? '') as String,
+    accountId: (json['accountId'] ?? '') as String,
     availableBalance: _int(json['availableBalance']),
-    frozenBalance: _int(json['frozenBalance']),
-    walletStatus: WalletStatus.parse(json['walletStatus'] as String?),
+    heldBalance: _int(json['heldBalance']),
+    accountStatus: AccountStatus.parse(json['accountStatus'] as String?),
     updatedAt: tryParseInstant(json['updatedAt']),
   );
 }

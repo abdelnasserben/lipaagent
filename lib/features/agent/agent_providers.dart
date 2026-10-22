@@ -32,7 +32,7 @@ final dailySummaryProvider = FutureProvider.autoDispose<AgentDailySummary>((
   return ref.watch(agentRepositoryProvider).getDailySummary();
 });
 
-/// Recent wallet-scoped transactions (dashboard + activity tab).
+/// Recent transactions of the agent's account (dashboard + activity tab).
 final transactionsProvider = FutureProvider.autoDispose<List<AgentTransaction>>(
   (ref) async {
     final page = await ref.watch(agentRepositoryProvider).getTransactions();

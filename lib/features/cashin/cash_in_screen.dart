@@ -15,7 +15,7 @@ import '../../data/models/enums.dart';
 import 'cash_in_controller.dart';
 
 /// Cash-in (deposit) flow: confirm the customer, then the amount. The agent
-/// wallet is debited; the customer wallet is credited (spec §5.4 / §11.1).
+/// float is debited; the customer account is credited (spec §5.4 / §11.1).
 class CashInScreen extends ConsumerWidget {
   const CashInScreen({super.key});
 

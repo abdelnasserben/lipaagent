@@ -15,7 +15,6 @@ class TxStatusPill extends StatelessWidget {
       TransactionStatus.pending => (PillKind.pending, 'En attente'),
       TransactionStatus.authorized => (PillKind.info, 'Autorisé'),
       TransactionStatus.declined => (PillKind.declined, 'Refusé'),
-      TransactionStatus.expired => (PillKind.pending, 'Expiré'),
       TransactionStatus.reversed => (PillKind.warn, 'Annulé'),
       TransactionStatus.unknown => (PillKind.neutral, '—'),
     };

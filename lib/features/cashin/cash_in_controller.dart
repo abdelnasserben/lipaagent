@@ -51,7 +51,7 @@ class CashInController extends StateNotifier<CashInState> {
 
   final Ref _ref;
   static const _countryCode = '269';
-  final String _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
 
   AgentRepository get _repo => _ref.read(agentRepositoryProvider);
 
@@ -91,7 +91,9 @@ class CashInController extends StateNotifier<CashInState> {
     state = state.copyWith(step: CashInStep.submitting, clearError: true);
     try {
       final res = await _repo.cashIn(
-        idempotencyKey: _idempotencyKey,
+        idempotencyKey: _operationKey.forIntent(
+          '${customer.customerId}|${state.amount}',
+        ),
         customerId: customer.customerId,
         amount: state.amount,
       );

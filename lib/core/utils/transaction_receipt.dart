@@ -9,9 +9,9 @@ import '../../data/models/transaction.dart';
 import 'formatters.dart';
 
 /// Builds the share/PDF artefacts for an agent transaction receipt and the
-/// wallet statement. Pure presentation logic so the activity detail and the
+/// account statement. Pure presentation logic so the activity detail and the
 /// statement screen reuse the exact same rendering. Mirrors the Lipa customer
-/// app's `transaction_receipt.dart`, adapted to the agent's wallet-scoped
+/// app's `transaction_receipt.dart`, adapted to the agent's account-scoped
 /// [AgentTransaction] / [StatementEntry] models.
 
 /// PDF theme backed by a real TrueType font. The default PDF font (Helvetica)
@@ -29,7 +29,6 @@ String _statusLabelFr(TransactionStatus s) => switch (s) {
   TransactionStatus.pending => 'En attente',
   TransactionStatus.authorized => 'Autorisé',
   TransactionStatus.declined => 'Refusé',
-  TransactionStatus.expired => 'Expiré',
   TransactionStatus.reversed => 'Annulé',
   TransactionStatus.unknown => '—',
 };
@@ -156,7 +155,7 @@ Future<Uint8List> receiptPdfBytes(AgentTransaction t) async {
   return doc.save();
 }
 
-/// Renders a wallet statement (a date window's entries with running balance)
+/// Renders a account statement (a date window's entries with running balance)
 /// as a printable/shareable PDF. [from]/[to] are the chosen window, null = all.
 Future<Uint8List> statementPdfBytes(
   List<StatementEntry> entries, {
@@ -226,7 +225,7 @@ Future<Uint8List> statementPdfBytes(
   );
 
   pw.TableRow entryRow(StatementEntry e) {
-    final isCredit = e.entryType.isCredit;
+    final isCredit = e.side.isCredit;
     return pw.TableRow(
       decoration: const pw.BoxDecoration(
         border: pw.Border(top: pw.BorderSide(color: line, width: 0.6)),
@@ -295,7 +294,7 @@ Future<Uint8List> statementPdfBytes(
         ),
         pw.SizedBox(height: 2),
         pw.Text(
-          'Relevé du portefeuille',
+          'Relevé du compte',
           style: const pw.TextStyle(color: inkLow, fontSize: 12),
         ),
         pw.SizedBox(height: 4),

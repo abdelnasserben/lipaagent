@@ -30,7 +30,7 @@ class CardSaleScreen extends ConsumerStatefulWidget {
 
 class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
   final _phone = TextEditingController();
-  final _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
 
   CustomerLookup? _customer;
   String? _nfcUid;
@@ -82,7 +82,9 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
       final res = await ref
           .read(agentRepositoryProvider)
           .sellCard(
-            idempotencyKey: _idempotencyKey,
+            idempotencyKey: _operationKey.forIntent(
+              '${customer.customerId}|$uid|$_price',
+            ),
             customerId: customer.customerId,
             nfcUid: uid,
             cardPrice: _price,

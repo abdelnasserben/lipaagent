@@ -281,12 +281,12 @@ class _FloatCardState extends State<_FloatCard> {
                       children: [
                         TextSpan(
                           text:
-                              '${fmtKmfNoUnit(b.frozenBalance)} KMF gelés · Portefeuille ',
+                              '${fmtKmfNoUnit(b.heldBalance)} KMF réservés · Compte ',
                         ),
                         TextSpan(
-                          text: '● ${b.walletStatus.frLabel}',
+                          text: '● ${b.accountStatus.frLabel}',
                           style: TextStyle(
-                            color: b.walletStatus.isActive
+                            color: b.accountStatus.isActive
                                 ? const Color(0xFF8FD1A8)
                                 : const Color(0xFFE0A24A),
                           ),

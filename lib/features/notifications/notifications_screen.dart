@@ -139,15 +139,17 @@ class _NotifRow extends StatelessWidget {
                           : FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    notif.body,
-                    style: AppText.ui(
-                      size: 13,
-                      color: AppColors.inkMid,
-                      height: 1.45,
+                  if (notif.body.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      notif.body,
+                      style: AppText.ui(
+                        size: 13,
+                        color: AppColors.inkMid,
+                        height: 1.45,
+                      ),
                     ),
-                  ),
+                  ],
                   if (notif.createdAt != null) ...[
                     const SizedBox(height: 6),
                     Text(

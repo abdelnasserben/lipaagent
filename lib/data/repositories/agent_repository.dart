@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/error/api_error.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_envelopes.dart';
 import '../models/agent_profile.dart';
@@ -13,8 +14,25 @@ import '../models/lookup.dart';
 import '../models/notification.dart';
 import '../models/transaction.dart';
 
-/// Generates a fresh idempotency key per new financial intent (spec §11.2).
+/// Generates a fresh idempotency key per new financial intent.
 String newIdempotencyKey() => const Uuid().v4();
+
+/// The `Idempotency-Key` of one money-moving operation: the same key while
+/// the agent retries the same operation (network error, PIN or confirmation
+/// step), a new one as soon as what is sent changes (person, amount, card).
+class OperationKey {
+  String? _intent;
+  String _key = newIdempotencyKey();
+
+  /// [intent] describes what is sent, e.g. `'$customerId|$amount'`.
+  String forIntent(String intent) {
+    if (intent != _intent) {
+      _intent = intent;
+      _key = newIdempotencyKey();
+    }
+    return _key;
+  }
+}
 
 /// A picked KYC file ready for multipart upload. Kept transport-agnostic so the
 /// upload path doesn't import `dart:io` directly (the picker yields the bytes).
@@ -136,29 +154,22 @@ class ApiAgentRepository implements AgentRepository {
   static const _base = '/api/v1/agent';
   static const _notif = '/api/v1/notifications';
 
-  // Cached for transaction-direction derivation (which wallet side moved).
-  String? _walletId;
-
   @override
   Future<AgentProfile> getProfile() async {
     final res = await _api.get('$_base/me');
-    final profile = unwrapData(
+    return unwrapData(
       res.data,
       (d) => AgentProfile.fromJson(d as Map<String, dynamic>),
     );
-    _walletId = profile.walletId;
-    return profile;
   }
 
   @override
   Future<AgentBalance> getBalance() async {
     final res = await _api.get('$_base/balance');
-    final b = unwrapData(
+    return unwrapData(
       res.data,
       (d) => AgentBalance.fromJson(d as Map<String, dynamic>),
     );
-    _walletId ??= b.walletId;
-    return b;
   }
 
   @override
@@ -169,9 +180,10 @@ class ApiAgentRepository implements AgentRepository {
         res.data,
         (d) => AgentLimits.fromJson(d as Map<String, dynamic>),
       );
-    } catch (_) {
-      // 404 → no profile assigned (spec §5.2): treat as "not configured".
-      return null;
+    } on ApiError catch (e) {
+      // 404 → no limit profile assigned: shown as "not configured".
+      if (e.isNotFound) return null;
+      rethrow;
     }
   }
 
@@ -202,10 +214,7 @@ class ApiAgentRepository implements AgentRepository {
         if (to != null) 'to': to,
       },
     );
-    return PagedResponse.fromBody(
-      res.data,
-      (m) => AgentTransaction.fromJson(m, walletId: _walletId),
-    );
+    return PagedResponse.fromBody(res.data, AgentTransaction.fromJson);
   }
 
   @override
@@ -213,10 +222,7 @@ class ApiAgentRepository implements AgentRepository {
     final res = await _api.get('$_base/transactions/$id');
     return unwrapData(
       res.data,
-      (d) => AgentTransaction.fromJson(
-        d as Map<String, dynamic>,
-        walletId: _walletId,
-      ),
+      (d) => AgentTransaction.fromJson(d as Map<String, dynamic>),
     );
   }
 
@@ -375,7 +381,7 @@ class ApiAgentRepository implements AgentRepository {
     required int cardPrice,
   }) async {
     final res = await _api.post(
-      '$_base/card-sell',
+      '$_base/card-sales',
       headers: {'Idempotency-Key': idempotencyKey},
       body: {
         'customerId': customerId,

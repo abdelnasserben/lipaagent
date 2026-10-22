@@ -25,7 +25,7 @@ class CardReplaceScreen extends ConsumerStatefulWidget {
 }
 
 class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
-  final _idempotencyKey = newIdempotencyKey();
+  final _operationKey = OperationKey();
   CardStockItem? _stock;
   int _fee = 0;
   bool _busy = false;
@@ -43,7 +43,7 @@ class _CardReplaceScreenState extends ConsumerState<CardReplaceScreen> {
       final res = await ref
           .read(agentRepositoryProvider)
           .replaceCard(
-            idempotencyKey: _idempotencyKey,
+            idempotencyKey: _operationKey.forIntent('${stock.id}|$_fee'),
             customerId: widget.card.customerId!,
             cardId: widget.card.cardId,
             stockId: stock.id,

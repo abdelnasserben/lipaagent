@@ -1,10 +1,12 @@
-// Backend enums (spec §9). Each parses defensively from its wire string and
-// keeps an `unknown` fallback so future values never crash the UI.
+// Backend enums (OpenAPI contract, group `agent`). Each parses defensively from
+// its wire string and keeps an `unknown` fallback so future values never crash
+// the UI.
 
 enum AgentStatus {
   pendingKyc,
   active,
   suspended,
+  frozen,
   closed,
   unknown;
 
@@ -12,6 +14,7 @@ enum AgentStatus {
     'PENDING_KYC' => pendingKyc,
     'ACTIVE' => active,
     'SUSPENDED' => suspended,
+    'FROZEN' => frozen,
     'CLOSED' => closed,
     _ => unknown,
   };
@@ -22,6 +25,7 @@ enum AgentStatus {
     pendingKyc => 'En vérification',
     active => 'Actif',
     suspended => 'Suspendu',
+    frozen => 'Gelé',
     closed => 'Clôturé',
     unknown => '—',
   };
@@ -58,6 +62,7 @@ enum MerchantStatus {
   pendingKyc,
   active,
   suspended,
+  frozen,
   closed,
   unknown;
 
@@ -65,6 +70,7 @@ enum MerchantStatus {
     'PENDING_KYC' => pendingKyc,
     'ACTIVE' => active,
     'SUSPENDED' => suspended,
+    'FROZEN' => frozen,
     'CLOSED' => closed,
     _ => unknown,
   };
@@ -73,6 +79,7 @@ enum MerchantStatus {
     pendingKyc => 'En vérification',
     active => 'Actif',
     suspended => 'Suspendu',
+    frozen => 'Gelé',
     closed => 'Clôturé',
     unknown => '—',
   };
@@ -102,14 +109,14 @@ enum KycLevel {
   };
 }
 
-enum WalletStatus {
+enum AccountStatus {
   active,
   frozen,
   suspended,
   closed,
   unknown;
 
-  static WalletStatus parse(String? s) => switch (s) {
+  static AccountStatus parse(String? s) => switch (s) {
     'ACTIVE' => active,
     'FROZEN' => frozen,
     'SUSPENDED' => suspended,
@@ -128,42 +135,39 @@ enum WalletStatus {
   };
 }
 
+/// Backend `TransactionType`. Only some of them touch an agent's account.
 enum TransactionType {
   cashIn,
-  payment,
-  cashOut,
+  merchantPayment,
+  merchantCashOut,
   cardSale,
-  agentFundIn,
-  agentFundOut,
-  feeCollection,
+  agentFloatTopUp,
+  agentFloatWithdrawal,
+  standaloneFee,
   commissionPayout,
   reversal,
-  p2pTransfer,
-  merchantToMerchant,
-  servicePayment,
+  merchantTransfer,
+  billPayment,
   cardReplacement,
-  billProviderSettlement,
+  billerSettlement,
   platformRevenueWithdrawal,
-  platformLiquidityTopUp,
   unknown;
 
   static TransactionType parse(String? s) => switch (s) {
     'CASH_IN' => cashIn,
-    'PAYMENT' => payment,
-    'CASH_OUT' => cashOut,
+    'MERCHANT_PAYMENT' => merchantPayment,
+    'MERCHANT_CASH_OUT' => merchantCashOut,
     'CARD_SALE' => cardSale,
-    'AGENT_FUND_IN' => agentFundIn,
-    'AGENT_FUND_OUT' => agentFundOut,
-    'FEE_COLLECTION' => feeCollection,
+    'AGENT_FLOAT_TOP_UP' => agentFloatTopUp,
+    'AGENT_FLOAT_WITHDRAWAL' => agentFloatWithdrawal,
+    'STANDALONE_FEE' => standaloneFee,
     'COMMISSION_PAYOUT' => commissionPayout,
     'REVERSAL' => reversal,
-    'P2P_TRANSFER' => p2pTransfer,
-    'MERCHANT_TO_MERCHANT' => merchantToMerchant,
-    'SERVICE_PAYMENT' => servicePayment,
+    'MERCHANT_TRANSFER' => merchantTransfer,
+    'BILL_PAYMENT' => billPayment,
     'CARD_REPLACEMENT' => cardReplacement,
-    'BILL_PROVIDER_SETTLEMENT' => billProviderSettlement,
+    'BILLER_SETTLEMENT' => billerSettlement,
     'PLATFORM_REVENUE_WITHDRAWAL' => platformRevenueWithdrawal,
-    'PLATFORM_LIQUIDITY_TOP_UP' => platformLiquidityTopUp,
     _ => unknown,
   };
 
@@ -171,21 +175,19 @@ enum TransactionType {
   /// entries) can localize a raw wire token (cf. Lipa statement description).
   String get frLabel => switch (this) {
     cashIn => 'Dépôt (cash-in)',
-    cashOut => 'Retrait (cash-out)',
-    payment => 'Paiement',
+    merchantCashOut => 'Retrait marchand (cash-out)',
+    merchantPayment => 'Paiement marchand',
     cardSale => 'Vente de carte',
     cardReplacement => 'Remplacement de carte',
     commissionPayout => 'Commission',
-    agentFundIn => 'Approvisionnement float',
-    agentFundOut => 'Retrait float',
-    feeCollection => 'Frais',
+    agentFloatTopUp => 'Approvisionnement float',
+    agentFloatWithdrawal => 'Retrait float',
+    standaloneFee => 'Frais',
     reversal => 'Annulation',
-    p2pTransfer => 'Transfert P2P',
-    merchantToMerchant => 'Transfert marchand',
-    servicePayment => 'Paiement de service',
-    billProviderSettlement => 'Règlement fournisseur',
+    merchantTransfer => 'Transfert marchand',
+    billPayment => 'Paiement de facture',
+    billerSettlement => 'Règlement facturier',
     platformRevenueWithdrawal => 'Retrait plateforme',
-    platformLiquidityTopUp => 'Apport de liquidité',
     unknown => 'Transaction',
   };
 }
@@ -195,7 +197,6 @@ enum TransactionStatus {
   authorized,
   completed,
   declined,
-  expired,
   reversed,
   unknown;
 
@@ -204,7 +205,6 @@ enum TransactionStatus {
     'AUTHORIZED' => authorized,
     'COMPLETED' => completed,
     'DECLINED' => declined,
-    'EXPIRED' => expired,
     'REVERSED' => reversed,
     _ => unknown,
   };
@@ -417,12 +417,12 @@ enum PayoutStatus {
   };
 }
 
-enum EntryType {
+enum EntrySide {
   debit,
   credit,
   unknown;
 
-  static EntryType parse(String? s) => switch (s) {
+  static EntrySide parse(String? s) => switch (s) {
     'DEBIT' => debit,
     'CREDIT' => credit,
     _ => unknown,

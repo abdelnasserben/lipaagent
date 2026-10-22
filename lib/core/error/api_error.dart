@@ -53,7 +53,7 @@ class ApiError implements Exception {
       case 404:
         return 'NOT_FOUND';
       case 429:
-        return 'TERMINAL_RATE_LIMIT';
+        return 'RATE_LIMITED';
       default:
         return 'UNKNOWN_ERROR';
     }
@@ -64,16 +64,17 @@ class ApiError implements Exception {
   bool get isNotFound => statusCode == 404;
   bool get isConflict => statusCode == 409;
 
-  /// True for the 422 codes that mean the actor's account/wallet is unusable
-  /// and not self-recoverable (spec §3.1 / §5.4).
+  /// True for the codes that mean the agent or its account is unusable and
+  /// not self-recoverable.
   bool get isAccountBlocked => const {
     'ACTOR_PENDING_KYC',
     'ACTOR_SUSPENDED',
+    'ACTOR_FROZEN',
     'ACTOR_CLOSED',
     'AGENT_NOT_FOUND',
-    'WALLET_FROZEN',
-    'WALLET_SUSPENDED',
-    'WALLET_CLOSED',
+    'ACCOUNT_FROZEN',
+    'ACCOUNT_SUSPENDED',
+    'ACCOUNT_CLOSED',
   }.contains(code);
 
   /// A network/transport failure with no HTTP response (timeout, no route).
@@ -113,33 +114,59 @@ String frenchMessageForError(ApiError e) {
     case 'MFA_INVALID':
       return 'Code de vérification invalide.';
     case 'REFRESH_TOKEN_INVALID':
+    case 'UNAUTHORIZED':
+    case 'INVALID_TOKEN':
+    case 'TOKEN_EXPIRED':
+    case 'TOKEN_REVOKED':
       return 'Votre session a expiré. Reconnectez-vous.';
-    case 'TERMINAL_RATE_LIMIT':
+    case 'RATE_LIMITED':
       return 'Trop de tentatives. Réessayez dans un instant.';
     case 'ACTOR_PENDING_KYC':
       return 'Votre compte agent est en cours de vérification.';
     case 'ACTOR_SUSPENDED':
+    case 'ACTOR_FROZEN':
     case 'ACTOR_CLOSED':
-      return 'Compte agent indisponible. Contactez le back-office.';
+      return 'Compte indisponible. Contactez le back-office.';
+    case 'ACTOR_KYC_INSUFFICIENT':
+      return 'Niveau de vérification (KYC) insuffisant pour cette opération.';
 
     // ── Financial / business ───────────────────────────────────────────────
     case 'INSUFFICIENT_BALANCE':
-      return 'Float insuffisant pour cette opération.';
-    case 'LIMIT_EXCEEDED':
-      return 'Plafond dépassé. Consultez vos plafonds.';
-    case 'WALLET_FROZEN':
-    case 'WALLET_SUSPENDED':
-    case 'WALLET_CLOSED':
-      return 'Portefeuille indisponible. Contactez le back-office.';
+    case 'ACCOUNT_INSUFFICIENT_FUNDS':
+      return 'Solde insuffisant pour cette opération.';
+    case 'TRANSACTION_AMOUNT_TOO_LOW':
+      return 'Montant inférieur au minimum autorisé.';
+    case 'TRANSACTION_AMOUNT_TOO_HIGH':
+      return 'Montant supérieur au maximum autorisé.';
+    case 'TRANSACTION_ZERO_AMOUNT':
+      return 'Le montant doit être supérieur à zéro.';
+    case 'DAILY_LIMIT_EXCEEDED':
+      return 'Plafond journalier atteint. Consultez vos plafonds.';
+    case 'WEEKLY_LIMIT_EXCEEDED':
+      return 'Plafond hebdomadaire atteint. Consultez vos plafonds.';
+    case 'MONTHLY_LIMIT_EXCEEDED':
+      return 'Plafond mensuel atteint. Consultez vos plafonds.';
+    case 'TRANSACTION_COUNT_LIMIT_EXCEEDED':
+      return 'Nombre maximal d’opérations atteint. Consultez vos plafonds.';
+    case 'ACCOUNT_FROZEN':
+    case 'ACCOUNT_SUSPENDED':
+    case 'ACCOUNT_CLOSED':
+      return 'Compte indisponible. Contactez le back-office.';
     case 'CONFIG_LIMIT_PROFILE_NOT_FOUND':
     case 'CONFIG_RULE_INACTIVE':
       return 'Service temporairement indisponible. Réessayez plus tard.';
     case 'APPROVAL_REQUIRED':
       return 'Montant soumis à approbation du back-office.';
+    case 'CASH_IN_NOT_ALLOWED':
+      return 'Vous n’êtes pas autorisé à faire des dépôts.';
     case 'CASH_OUT_NOT_ALLOWED':
-      return 'Ce marchand ne peut pas effectuer de retrait.';
+      return 'Retrait marchand non autorisé.';
+    case 'CARD_SALE_NOT_ALLOWED':
+      return 'Vous n’êtes pas autorisé à vendre ou remplacer des cartes.';
     case 'DUPLICATE_IDEMPOTENCY_KEY':
-      return 'Opération déjà en cours de traitement.';
+      return 'Opération déjà en cours de traitement. Réessayez dans un instant.';
+    case 'CONCURRENT_MODIFICATION':
+      return 'Les données ont changé entre-temps. Réessayez.';
 
     // ── Lookup / not found ─────────────────────────────────────────────────
     case 'CUSTOMER_NOT_FOUND':
@@ -151,7 +178,8 @@ String frenchMessageForError(ApiError e) {
     case 'TRANSACTION_NOT_FOUND':
       return 'Transaction introuvable.';
     case 'ACTOR_NOT_FOUND':
-    case 'WALLET_NOT_FOUND':
+    case 'ACCOUNT_NOT_FOUND':
+    case 'NOT_FOUND':
       return 'Introuvable.';
 
     // ── Enrollment / KYC ───────────────────────────────────────────────────
@@ -169,6 +197,8 @@ String frenchMessageForError(ApiError e) {
       return 'Cette carte ne vous est pas attribuée.';
     case 'CARD_NOT_ACTIVE':
       return 'La carte à remplacer n’est pas active.';
+    case 'CARD_INVALID_TRANSITION':
+      return 'Cette opération n’est pas possible sur cette carte.';
 
     // ── Validation / transport ─────────────────────────────────────────────
     case 'VALIDATION_FIELD_REQUIRED':
@@ -178,6 +208,11 @@ String frenchMessageForError(ApiError e) {
     case 'NETWORK_ERROR':
       return e.message ?? 'Connexion impossible. Vérifiez votre réseau.';
     default:
-      return e.message ?? 'Une erreur est survenue. Réessayez.';
+      // Backend messages are technical English: never shown. The correlation
+      // id helps support find the request.
+      final ref = e.correlationId;
+      return ref == null
+          ? 'Une erreur est survenue. Réessayez.'
+          : 'Une erreur est survenue. Réessayez. (Réf. $ref)';
   }
 }

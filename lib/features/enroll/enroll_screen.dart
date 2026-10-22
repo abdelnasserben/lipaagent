@@ -12,7 +12,7 @@ import '../../data/models/enrollment.dart';
 import 'enroll_controller.dart';
 import 'kyc_documents_screen.dart';
 
-/// Customer enrollment (spec §5.5): create the customer + wallet, then offer to
+/// Customer enrollment (spec §5.5): create the customer + account, then offer to
 /// upload KYC documents. National-ID type is a small fixed picker matching the
 /// `KycDocumentType` family the back-office reviews.
 class EnrollScreen extends ConsumerStatefulWidget {
@@ -314,7 +314,7 @@ class _DoneScreen extends StatelessWidget {
       title: 'Enrôlement',
       headline: 'Client enrôlé',
       subtitle:
-          '$name a été créé avec un portefeuille actif. Ajoutez ses pièces KYC maintenant.',
+          '$name a été créé avec un compte actif. Ajoutez ses pièces KYC maintenant.',
       onDone: () => Navigator.of(context).pop(),
       secondaryLabel: 'Ajouter des documents KYC',
       onSecondary: () => Navigator.of(context).pushReplacement(
@@ -331,7 +331,7 @@ class _DoneScreen extends StatelessWidget {
           children: [
             _CopyRow(label: 'Référence client', value: result.externalRef),
             _CopyRow(label: 'ID client', value: result.customerId),
-            _CopyRow(label: 'Portefeuille', value: result.walletId, last: true),
+            _CopyRow(label: 'Compte', value: result.accountId, last: true),
           ],
         ),
       ),
