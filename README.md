@@ -15,55 +15,41 @@ est périmé : ne plus s'y référer. Voir aussi `CLAUDE.md`.
 
 ## Stack
 
-- **Flutter / Dart 3.12**
-- **Riverpod** (`flutter_riverpod`) — état + injection de dépendances
-- **Dio** — client HTTP (Bearer, refresh de token, `Idempotency-Key`,
-  `X-Correlation-Id`, mapping d'erreurs)
-- **flutter_secure_storage** — tokens dans le Keystore/Keychain
-- **google_fonts** — Bricolage Grotesque (UI) + DM Mono (chiffres/codes)
-- **nfc_manager** — lecture réelle de la puce NFC pour scanner les cartes ; repli en
-  saisie manuelle de l'UID sur les téléphones sans NFC (abstrait derrière `core/scan`)
+- **Flutter / Dart 3.12**, **Riverpod 3** — état (un contrôleur `Notifier` par parcours)
+- **Client API généré** depuis le contrat OpenAPI du backend (`swagger_parser`,
+  Retrofit + Dio, `json_serializable`) : `dart run tool/api_generate.dart`
+- **flutter gen-l10n** — tous les textes dans `lib/l10n/app_fr.arb`
+- **flutter_secure_storage** — tokens dans le Keystore Android
+- Polices du design system Lipa embarquées (`assets/fonts`) : Bricolage Grotesque + DM Mono,
+  Open Sans pour les reçus PDF — rien n'est téléchargé à l'exécution
+- **nfc_manager** — lecture réelle de la puce NFC ; repli en saisie manuelle de l'UID
 - **image_picker** — capture/sélection des pièces KYC (caméra + galerie)
-- **pdf** / **printing** / **share_plus** — reçus & relevés (PDF généré localement,
-  ouverture de la feuille d'impression/partage système)
-- **intl**, **uuid**
+- **pdf** / **printing** / **share_plus** — reçus & relevés
+- **qr_flutter** — QR code d'activation du TOTP
 
-## Architecture en couches
+## Organisation
 
 ```
 lib/
-  core/            socle transverse
-    config/        AppEnvironment / AppConfig (local|prod)
-    auth/          TokenStore (stockage sécurisé)
-    network/       ApiClient (Dio), enveloppes ApiResponse/PagedResponse
-    error/         ApiError typée
-    scan/          Scanner (seam NFC : puce réelle ↔ saisie manuelle de l'UID)
-    theme/         tokens (couleurs, radius, ombres) + typographie
-    utils/         formatters (KMF, téléphone, dates FR), reçu de transaction
-    widgets/       widgets partagés (marque, champs, pills, PinSheet, écran résultat…)
-    providers.dart DI : câble les repositories API
-  data/
-    models/        DTOs alignés sur la spec §7 + enums §9
-    repositories/  AuthRepository + AgentRepository (interfaces + implémentations Dio)
-  features/        présentation, par domaine
-    auth/          login phone+PIN, MFA, session
-    agent/         shell à 5 onglets (Accueil · Activité · Opérer · Cartes · Profil)
-    home/          accueil : solde, résumé du jour, raccourcis
+  api/generated/   client généré depuis le contrat — ne jamais modifier
+  api/             api_client (send + requireData), helpers, libellés, OperationKey
+  core/            erreurs, tokens, thème, widgets partagés, formatage, scan NFC
+  l10n/            app_fr.arb (textes) + l10n.dart (accès `l10n.cle`)
+  features/        écrans + contrôleurs, par domaine
+    auth/          connexion téléphone + PIN, MFA, PIN oublié, session
+    agent/         shell à onglets + données serveur lues par les écrans
+    home/          accueil : float, résumé du jour, raccourcis
     operations/    hub « Opérer »
-    cashin/ cashout/   dépôt / retrait d'espèces
-    enroll/        enrôlement client + écran pièces KYC
-    cards/         vente, recherche, remplacement, signalement perte/vol
-    commissions/   suivi des commissions
-    activity/      historique + détail transaction + relevé
-    notifications/ inbox partagée (pull-only)
-    profile/       profil + plafonds
-    security/      enrôlement/révocation TOTP, changement de PIN
-  app.dart         racine : bascule auth ↔ shell agent selon la session
+    cashin/ cashout/   dépôt / retrait marchand
+    enroll/        enrôlement client + pièces KYC
+    cards/         vente, recherche, remplacement, perte/vol
+    commissions/ activity/ notifications/ profile/ security/
+  app.dart         racine : bascule connexion ↔ shell agent
   main.dart        point d'entrée
 ```
 
-Les écrans ne contiennent **aucune donnée brute** : ils lisent des providers Riverpod
-qui appellent les *repositories* (implémentations API sur Dio, dans `data/repositories/`).
+Les écrans n'appellent jamais l'API : ils lisent des providers Riverpod et des contrôleurs
+qui passent par le client généré (`ref.read(apiClientProvider).send(...)`).
 Le `app.dart` n'a pas d'arbre d'URL (pas de GoRouter) : c'est un shell mono-acteur avec
 navigation par onglet ; le seul branchement de haut niveau est auth vs. authentifié.
 
