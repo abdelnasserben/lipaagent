@@ -7,8 +7,8 @@ and replacements, and to follow their float, history and commissions.
 It is a pure client of the Lipa backend, a separate repository:
 `C:\Users\ahama\OneDrive\Documenten\javaprojects\LipaBackend` (written `<backend>` below).
 **The backend is the source of truth**; this app holds no business rule the server does not enforce.
-The old `../Agent_Frontend_Specification.md` (May 2026, "KomoPay") is obsolete: never use it.
-It follows the same rules as the back-office web app (`../../../LipaBackoffice`).
+The old `androidproject/Lipa/Agent_Frontend_Specification.md` (May 2026, "KomoPay") is obsolete: never use it.
+It follows the same rules as the back-office web app (`../LipaBackoffice`).
 
 The owner does not write the code: they rely on AI. Keep the project **boring and predictable**:
 one way to do each thing (below), no new package without asking, no clever abstraction.

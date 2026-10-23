@@ -3,7 +3,7 @@
 Application Flutter du **portail agent Lipa** : dépôts/retraits d'espèces (cash-in /
 cash-out), enrôlement de clients + KYC, vente et remplacement de cartes NFC,
 commissions et relevés. L'UI reprend le design system du client Lipa (mêmes polices,
-mêmes tokens) et consomme l'API du backend Lipa (`../../../javaprojects/LipaBackend`).
+mêmes tokens) et consomme l'API du backend Lipa (`../javaprojects/LipaBackend`).
 
 **Le backend fait foi** : le contrat OpenAPI du groupe `agent`
 (`http://localhost:8080/v3/api-docs/agent`) et les guides `docs/api/README.md` et
