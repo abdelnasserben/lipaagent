@@ -91,10 +91,7 @@ class TxRow extends StatelessWidget {
 
   (IconData, String) _present(TransactionType type, bool incoming) {
     return switch (type) {
-      TransactionType.cashIn => (
-        Icons.south_west_rounded,
-        l10n.commonDepotClient,
-      ),
+      TransactionType.cashIn => (Icons.south_west_rounded, l10n.commonDepot),
       TransactionType.merchantCashOut => (
         Icons.north_east_rounded,
         l10n.commonRetraitMarchand,
@@ -109,11 +106,11 @@ class TxRow extends StatelessWidget {
       ),
       TransactionType.commissionPayout => (
         Icons.savings_outlined,
-        l10n.commonCommission,
+        l10n.labelVersementCommission,
       ),
       TransactionType.agentFloatTopUp => (
         Icons.account_balance_wallet_outlined,
-        l10n.txRowApprovisionnement,
+        l10n.labelApprovisionnementFloat,
       ),
       _ => (Icons.swap_horiz_rounded, type.label),
     };

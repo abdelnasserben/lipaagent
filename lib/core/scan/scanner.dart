@@ -8,6 +8,7 @@ import 'package:nfc_manager/nfc_manager_ios.dart';
 import '../theme/app_theme.dart';
 import '../theme/app_tokens.dart';
 import '../widgets/common.dart';
+import 'scan_pulse.dart';
 import '../../l10n/l10n.dart';
 
 /// Hardware-scan seam.
@@ -131,6 +132,7 @@ class _NfcScanSheet extends StatefulWidget {
 class _NfcScanSheetState extends State<_NfcScanSheet> {
   String? _error;
   bool _done = false;
+  bool _unavailable = false;
 
   @override
   void initState() {
@@ -169,7 +171,10 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
       );
     } catch (_) {
       if (mounted) {
-        setState(() => _error = l10n.scannerLecteurNfcIndisponible);
+        setState(() {
+          _unavailable = true;
+          _error = l10n.scannerLecteurNfcIndisponible;
+        });
       }
     }
   }
@@ -233,23 +238,9 @@ class _NfcScanSheetState extends State<_NfcScanSheet> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Center(
-            child: Container(
-              width: 96,
-              height: 96,
-              decoration: BoxDecoration(
-                color: AppColors.brandSoft,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.nfc_rounded,
-                size: 44,
-                color: AppColors.brandDeep,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          Center(child: ScanPulse(active: !_unavailable)),
+          const SizedBox(height: 12),
           Text(
             l10n.scannerApprochezCarteDosTelephone,
             textAlign: TextAlign.center,

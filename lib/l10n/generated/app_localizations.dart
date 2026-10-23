@@ -148,12 +148,6 @@ abstract class AppLocalizations {
   /// **'Renforcé'**
   String get labelRenforce;
 
-  /// No description provided for @labelDepotCashIn.
-  ///
-  /// In fr, this message translates to:
-  /// **'Dépôt (cash-in)'**
-  String get labelDepotCashIn;
-
   /// No description provided for @labelPaiementMarchand.
   ///
   /// In fr, this message translates to:
@@ -163,13 +157,13 @@ abstract class AppLocalizations {
   /// No description provided for @labelApprovisionnementFloat.
   ///
   /// In fr, this message translates to:
-  /// **'Approvisionnement float'**
+  /// **'Approvisionnement du float'**
   String get labelApprovisionnementFloat;
 
   /// No description provided for @labelRetraitFloat.
   ///
   /// In fr, this message translates to:
-  /// **'Retrait float'**
+  /// **'Retrait du float'**
   String get labelRetraitFloat;
 
   /// No description provided for @labelAnnulation.
@@ -181,7 +175,7 @@ abstract class AppLocalizations {
   /// No description provided for @labelTransfertMarchand.
   ///
   /// In fr, this message translates to:
-  /// **'Transfert marchand'**
+  /// **'Virement entre marchands'**
   String get labelTransfertMarchand;
 
   /// No description provided for @labelPaiementFacture.
@@ -193,14 +187,20 @@ abstract class AppLocalizations {
   /// No description provided for @labelReglementFacturier.
   ///
   /// In fr, this message translates to:
-  /// **'Règlement facturier'**
+  /// **'Règlement des facturiers'**
   String get labelReglementFacturier;
 
   /// No description provided for @labelRetraitPlateforme.
   ///
   /// In fr, this message translates to:
-  /// **'Retrait plateforme'**
+  /// **'Retrait des revenus'**
   String get labelRetraitPlateforme;
+
+  /// No description provided for @labelVersementCommission.
+  ///
+  /// In fr, this message translates to:
+  /// **'Versement de commission'**
+  String get labelVersementCommission;
 
   /// No description provided for @labelTransaction.
   ///
@@ -391,7 +391,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorActivezTotpContactezBack.
   ///
   /// In fr, this message translates to:
-  /// **'Activez le TOTP ou contactez le back-office pour réinitialiser votre PIN.'**
+  /// **'Activez la vérification en deux étapes ou contactez le back-office pour réinitialiser votre PIN.'**
   String get errorActivezTotpContactezBack;
 
   /// No description provided for @errorLienExpireRecommencezConnexion.
@@ -541,7 +541,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorCarteIntrouvableCetUid.
   ///
   /// In fr, this message translates to:
-  /// **'Carte introuvable pour cet UID.'**
+  /// **'Aucune carte ne correspond à cet identifiant.'**
   String get errorCarteIntrouvableCetUid;
 
   /// No description provided for @errorIntrouvable.
@@ -625,7 +625,7 @@ abstract class AppLocalizations {
   /// No description provided for @scannerCarteNonReconnueReessayez.
   ///
   /// In fr, this message translates to:
-  /// **'Carte non reconnue. Réessayez ou saisissez l’UID.'**
+  /// **'Carte non reconnue. Réessayez ou saisissez son identifiant.'**
   String get scannerCarteNonReconnueReessayez;
 
   /// No description provided for @scannerLectureNfcInterrompueReessayez.
@@ -649,25 +649,25 @@ abstract class AppLocalizations {
   /// No description provided for @scannerSaisirUidManuellement.
   ///
   /// In fr, this message translates to:
-  /// **'Saisir l’UID manuellement'**
+  /// **'Saisir l’identifiant de la carte'**
   String get scannerSaisirUidManuellement;
 
   /// No description provided for @scannerSaisirUid.
   ///
   /// In fr, this message translates to:
-  /// **'Saisir l’UID'**
+  /// **'Identifiant de la carte'**
   String get scannerSaisirUid;
 
   /// No description provided for @scannerSaisissezIdentifiantUidCarte.
   ///
   /// In fr, this message translates to:
-  /// **'Saisissez l’identifiant (UID) de la carte à 14 caractères hexadécimaux.'**
+  /// **'Saisissez l’identifiant (UID) de la carte : 14 caractères, chiffres 0–9 et lettres A–F.'**
   String get scannerSaisissezIdentifiantUidCarte;
 
   /// No description provided for @scannerUidInvalide14Caracteres.
   ///
   /// In fr, this message translates to:
-  /// **'UID invalide : 14 caractères hex attendus.'**
+  /// **'Identifiant invalide : 14 caractères attendus (0–9, A–F).'**
   String get scannerUidInvalide14Caracteres;
 
   /// No description provided for @formattersInstant.
@@ -811,7 +811,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionReceiptAucuneEcriturePeriode.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune écriture sur cette période.'**
+  /// **'Aucun mouvement sur cette période.'**
   String get transactionReceiptAucuneEcriturePeriode;
 
   /// No description provided for @validatorsNumeroDoitCommencer3.
@@ -841,7 +841,7 @@ abstract class AppLocalizations {
   /// No description provided for @resultOperationDejaTraiteeResultat.
   ///
   /// In fr, this message translates to:
-  /// **'Opération déjà traitée — résultat précédent renvoyé (idempotent).'**
+  /// **'Cette opération avait déjà été enregistrée : voici son résultat.'**
   String get resultOperationDejaTraiteeResultat;
 
   /// No description provided for @resultTermine.
@@ -889,7 +889,7 @@ abstract class AppLocalizations {
   /// No description provided for @statementEcrituresCompte.
   ///
   /// In fr, this message translates to:
-  /// **'Écritures du compte'**
+  /// **'Mouvements du compte'**
   String get statementEcrituresCompte;
 
   /// No description provided for @statementReleveIndisponible.
@@ -907,7 +907,7 @@ abstract class AppLocalizations {
   /// No description provided for @statementAucuneEcriturePeriode.
   ///
   /// In fr, this message translates to:
-  /// **'Aucune écriture pour cette période.'**
+  /// **'Aucun mouvement sur cette période.'**
   String get statementAucuneEcriturePeriode;
 
   /// No description provided for @statementImpossibleGenererRelevePdf.
@@ -949,7 +949,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionDetailNetDestinataire.
   ///
   /// In fr, this message translates to:
-  /// **'Net destinataire'**
+  /// **'Montant reçu'**
   String get transactionDetailNetDestinataire;
 
   /// No description provided for @transactionDetailMotifRefus.
@@ -957,12 +957,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Motif du refus'**
   String get transactionDetailMotifRefus;
-
-  /// No description provided for @transactionDetailInitiateur.
-  ///
-  /// In fr, this message translates to:
-  /// **'Initiateur'**
-  String get transactionDetailInitiateur;
 
   /// No description provided for @transactionDetailRefTransaction.
   ///
@@ -973,7 +967,7 @@ abstract class AppLocalizations {
   /// No description provided for @transactionDetailCorrelation.
   ///
   /// In fr, this message translates to:
-  /// **'Corrélation'**
+  /// **'Référence support'**
   String get transactionDetailCorrelation;
 
   /// No description provided for @transactionDetailRecuPdf.
@@ -999,12 +993,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Reçu Lipa'**
   String get transactionDetailRecuLipa;
-
-  /// No description provided for @txRowApprovisionnement.
-  ///
-  /// In fr, this message translates to:
-  /// **'Approvisionnement'**
-  String get txRowApprovisionnement;
 
   /// No description provided for @agentShellAccueil.
   ///
@@ -1123,13 +1111,13 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPinReinitialisationPossibleUniquementSi.
   ///
   /// In fr, this message translates to:
-  /// **'Réinitialisation possible uniquement si le TOTP est activé. Sinon, contactez le back-office Lipa.'**
+  /// **'Réinitialisation possible uniquement si la vérification en deux étapes est activée. Sinon, contactez le back-office Lipa.'**
   String get forgotPinReinitialisationPossibleUniquementSi;
 
   /// No description provided for @forgotPinCodeAuthentificationTotp.
   ///
   /// In fr, this message translates to:
-  /// **'Code d’authentification (TOTP)'**
+  /// **'Code de l’application d’authentification'**
   String get forgotPinCodeAuthentificationTotp;
 
   /// No description provided for @forgotPinReinitialiserPin.
@@ -1168,17 +1156,17 @@ abstract class AppLocalizations {
   /// **'PIN oublié ?'**
   String get loginPinOublie;
 
-  /// No description provided for @loginSecuriteRenforceeLipa.
+  /// No description provided for @loginPinPersonnel.
   ///
   /// In fr, this message translates to:
-  /// **'Sécurité renforcée par Lipa. '**
-  String get loginSecuriteRenforceeLipa;
+  /// **'Votre PIN est personnel. '**
+  String get loginPinPersonnel;
 
-  /// No description provided for @loginPinResteConfidentielProtege.
+  /// No description provided for @loginNeCommuniquezJamaisPin.
   ///
   /// In fr, this message translates to:
-  /// **'Votre PIN reste confidentiel et protégé.'**
-  String get loginPinResteConfidentielProtege;
+  /// **'Ne le communiquez jamais, même au back-office Lipa.'**
+  String get loginNeCommuniquezJamaisPin;
 
   /// No description provided for @mfaVerifierContinuer.
   ///
@@ -1273,13 +1261,13 @@ abstract class AppLocalizations {
   /// No description provided for @cardLookupUidNfc.
   ///
   /// In fr, this message translates to:
-  /// **'Par UID NFC'**
+  /// **'Carte perdue, volée ou à remplacer'**
   String get cardLookupUidNfc;
 
   /// No description provided for @cardLookupScannezCarteClientSaisissez.
   ///
   /// In fr, this message translates to:
-  /// **'Scannez la carte du client (ou saisissez son UID) pour la retrouver, puis déclarez-la perdue/volée ou remplacez-la.'**
+  /// **'Scannez la carte du client (ou saisissez son identifiant) pour la retrouver, puis déclarez-la perdue ou volée, ou remplacez-la.'**
   String get cardLookupScannezCarteClientSaisissez;
 
   /// No description provided for @cardLookupScannerAutreCarte.
@@ -1291,7 +1279,7 @@ abstract class AppLocalizations {
   /// No description provided for @cardLookupCarteNPasEncore.
   ///
   /// In fr, this message translates to:
-  /// **'Cette carte n’est pas encore liée à un client. Les actions perte/vol/remplacement ne s’appliquent qu’aux cartes vendues.'**
+  /// **'Cette carte n’est pas encore liée à un client. Perte, vol et remplacement ne concernent que les cartes vendues.'**
   String get cardLookupCarteNPasEncore;
 
   /// No description provided for @cardLookupCarte.
@@ -1303,7 +1291,7 @@ abstract class AppLocalizations {
   /// No description provided for @cardLookupUidNfc2.
   ///
   /// In fr, this message translates to:
-  /// **'UID NFC'**
+  /// **'Identifiant (UID)'**
   String get cardLookupUidNfc2;
 
   /// No description provided for @cardLookupTitulaire.
@@ -1423,7 +1411,7 @@ abstract class AppLocalizations {
   /// No description provided for @cardSaleCarteNfc.
   ///
   /// In fr, this message translates to:
-  /// **'Carte (NFC)'**
+  /// **'Carte'**
   String get cardSaleCarteNfc;
 
   /// No description provided for @cardSalePrixCarte.
@@ -1443,12 +1431,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Vendre la carte'**
   String get cardSaleVendreCarte;
-
-  /// No description provided for @cardSalePrixFinalPeutEtre.
-  ///
-  /// In fr, this message translates to:
-  /// **'Le prix final peut être ajusté par configuration.'**
-  String get cardSalePrixFinalPeutEtre;
 
   /// No description provided for @cardSaleCarteSelectionnee.
   ///
@@ -1663,7 +1645,7 @@ abstract class AppLocalizations {
   /// No description provided for @commissionsTotalVerse.
   ///
   /// In fr, this message translates to:
-  /// **'TOTAL VERSÉ'**
+  /// **'Total versé'**
   String get commissionsTotalVerse;
 
   /// No description provided for @commissionsSur.
@@ -1681,7 +1663,7 @@ abstract class AppLocalizations {
   /// No description provided for @enrollNouveauCompteKyc.
   ///
   /// In fr, this message translates to:
-  /// **'Nouveau compte + KYC'**
+  /// **'Compte et pièces KYC'**
   String get enrollNouveauCompteKyc;
 
   /// No description provided for @enrollNomComplet.
@@ -1927,7 +1909,7 @@ abstract class AppLocalizations {
   /// No description provided for @floatCardFloatDisponible.
   ///
   /// In fr, this message translates to:
-  /// **'FLOAT DISPONIBLE'**
+  /// **'Float disponible'**
   String get floatCardFloatDisponible;
 
   /// No description provided for @floatCardKmfReservesCompte.
@@ -1945,7 +1927,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeAgentLipa.
   ///
   /// In fr, this message translates to:
-  /// **'Agent Lipa'**
+  /// **'Lipa Agent'**
   String get homeAgentLipa;
 
   /// No description provided for @homeAujourdHui.
@@ -2038,23 +2020,11 @@ abstract class AppLocalizations {
   /// **'Notification'**
   String get notificationsNotification;
 
-  /// No description provided for @operationsHubToutesOperations.
-  ///
-  /// In fr, this message translates to:
-  /// **'Toutes vos opérations'**
-  String get operationsHubToutesOperations;
-
   /// No description provided for @operationsHubEspeces.
   ///
   /// In fr, this message translates to:
   /// **'Espèces'**
   String get operationsHubEspeces;
-
-  /// No description provided for @operationsHubDepotClientCashIn.
-  ///
-  /// In fr, this message translates to:
-  /// **'Dépôt client (cash-in)'**
-  String get operationsHubDepotClientCashIn;
 
   /// No description provided for @operationsHubCrediterCompteClient.
   ///
@@ -2062,10 +2032,28 @@ abstract class AppLocalizations {
   /// **'Créditer le compte d’un client'**
   String get operationsHubCrediterCompteClient;
 
+  /// No description provided for @quickOpsCrediterClient.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créditer un client'**
+  String get quickOpsCrediterClient;
+
+  /// No description provided for @quickOpsRemettreEspeces.
+  ///
+  /// In fr, this message translates to:
+  /// **'Remettre des espèces'**
+  String get quickOpsRemettreEspeces;
+
+  /// No description provided for @quickOpsCompteKyc.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte et KYC'**
+  String get quickOpsCompteKyc;
+
   /// No description provided for @operationsHubDecaisserMarchand.
   ///
   /// In fr, this message translates to:
-  /// **'Décaisser pour un marchand'**
+  /// **'Remettre des espèces à un marchand'**
   String get operationsHubDecaisserMarchand;
 
   /// No description provided for @operationsHubOperationsEspecesNeSont.
@@ -2083,7 +2071,7 @@ abstract class AppLocalizations {
   /// No description provided for @operationsHubCreerCompteKyc.
   ///
   /// In fr, this message translates to:
-  /// **'Créer un compte + KYC'**
+  /// **'Créer son compte et ajouter ses pièces KYC'**
   String get operationsHubCreerCompteKyc;
 
   /// No description provided for @operationsHubCompleterDossierClientExistant.
@@ -2095,7 +2083,7 @@ abstract class AppLocalizations {
   /// No description provided for @operationsHubUidNfcPerteVol.
   ///
   /// In fr, this message translates to:
-  /// **'Par UID NFC — perte, vol, remplacement'**
+  /// **'Carte perdue, volée ou à remplacer'**
   String get operationsHubUidNfcPerteVol;
 
   /// No description provided for @operationsHubDepuisStockAttribue.
@@ -2251,7 +2239,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileSecuritePinTotp.
   ///
   /// In fr, this message translates to:
-  /// **'Sécurité (PIN, TOTP)'**
+  /// **'Sécurité'**
   String get profileSecuritePinTotp;
 
   /// No description provided for @profileSeDeconnecter.
@@ -2317,13 +2305,13 @@ abstract class AppLocalizations {
   /// No description provided for @securityPinAuthentification.
   ///
   /// In fr, this message translates to:
-  /// **'PIN et authentification'**
+  /// **'PIN et vérification en deux étapes'**
   String get securityPinAuthentification;
 
   /// No description provided for @securityProtegezCompteAgentPin.
   ///
   /// In fr, this message translates to:
-  /// **'Protégez votre compte agent : un PIN fort et le TOTP réduisent les risques de fraude au comptoir.'**
+  /// **'Protégez votre compte agent : un PIN fort et la vérification en deux étapes réduisent les risques de fraude au comptoir.'**
   String get securityProtegezCompteAgentPin;
 
   /// No description provided for @securityNecessitePinActuel.
@@ -2335,13 +2323,13 @@ abstract class AppLocalizations {
   /// No description provided for @securityDesactiverDoubleFacteurCode.
   ///
   /// In fr, this message translates to:
-  /// **'Désactiver le double facteur (code requis)'**
+  /// **'Un code de votre application est demandé'**
   String get securityDesactiverDoubleFacteurCode;
 
   /// No description provided for @securityActiverDoubleFacteurAuthentification.
   ///
   /// In fr, this message translates to:
-  /// **'Activer le double facteur d’authentification'**
+  /// **'Un code à 6 chiffres en plus du PIN à chaque connexion'**
   String get securityActiverDoubleFacteurAuthentification;
 
   /// No description provided for @securityActive.
@@ -2359,13 +2347,13 @@ abstract class AppLocalizations {
   /// No description provided for @totpEnrollTotpActive.
   ///
   /// In fr, this message translates to:
-  /// **'TOTP activé'**
+  /// **'Vérification en deux étapes activée'**
   String get totpEnrollTotpActive;
 
   /// No description provided for @totpEnrollActivezDoubleFacteurTotp.
   ///
   /// In fr, this message translates to:
-  /// **'Activez le double facteur (TOTP) avec une application comme Google Authenticator. Il sera demandé à chaque connexion et permet de réinitialiser votre PIN vous-même.'**
+  /// **'Activez la vérification en deux étapes avec une application comme Google Authenticator. Un code vous sera demandé à chaque connexion, et vous pourrez réinitialiser votre PIN vous-même.'**
   String get totpEnrollActivezDoubleFacteurTotp;
 
   /// No description provided for @totpEnrollCommencerActivation.
@@ -2395,7 +2383,7 @@ abstract class AppLocalizations {
   /// No description provided for @totpEnrollActiverTotp.
   ///
   /// In fr, this message translates to:
-  /// **'Activer le TOTP'**
+  /// **'Activer'**
   String get totpEnrollActiverTotp;
 
   /// No description provided for @totpEnrollCleCopiee.
@@ -2407,26 +2395,20 @@ abstract class AppLocalizations {
   /// No description provided for @totpRevokeTotpRevoque.
   ///
   /// In fr, this message translates to:
-  /// **'TOTP révoqué'**
+  /// **'Vérification en deux étapes désactivée'**
   String get totpRevokeTotpRevoque;
 
   /// No description provided for @totpRevokeDesactiverTotpReduitSecurite.
   ///
   /// In fr, this message translates to:
-  /// **'Désactiver le TOTP réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.'**
+  /// **'Désactiver la vérification en deux étapes réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.'**
   String get totpRevokeDesactiverTotpReduitSecurite;
 
   /// No description provided for @totpRevokeSaisissezCodeTotpActuel.
   ///
   /// In fr, this message translates to:
-  /// **'Saisissez un code TOTP actuel pour confirmer'**
+  /// **'Saisissez le code affiché dans votre application pour confirmer'**
   String get totpRevokeSaisissezCodeTotpActuel;
-
-  /// No description provided for @commonRetraitMarchandCashOut.
-  ///
-  /// In fr, this message translates to:
-  /// **'Retrait marchand (cash-out)'**
-  String get commonRetraitMarchandCashOut;
 
   /// No description provided for @commonVenteCarte.
   ///
@@ -2704,12 +2686,6 @@ abstract class AppLocalizations {
   /// **'Rechercher le client'**
   String get commonRechercherClient;
 
-  /// No description provided for @commonCashIn.
-  ///
-  /// In fr, this message translates to:
-  /// **'Cash-in'**
-  String get commonCashIn;
-
   /// No description provided for @commonNumeroClient.
   ///
   /// In fr, this message translates to:
@@ -2721,12 +2697,6 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Dépôt'**
   String get commonDepot;
-
-  /// No description provided for @commonCashOut.
-  ///
-  /// In fr, this message translates to:
-  /// **'Cash-out'**
-  String get commonCashOut;
 
   /// No description provided for @commonRetrait.
   ///
@@ -2770,17 +2740,17 @@ abstract class AppLocalizations {
   /// **'Changer mon PIN'**
   String get commonChangerMonPin;
 
-  /// No description provided for @commonRevoquerTotp.
+  /// No description provided for @commonDesactiverDeuxEtapes.
   ///
   /// In fr, this message translates to:
-  /// **'Révoquer le TOTP'**
-  String get commonRevoquerTotp;
+  /// **'Désactiver la vérification en deux étapes'**
+  String get commonDesactiverDeuxEtapes;
 
-  /// No description provided for @commonConfigurerTotp.
+  /// No description provided for @commonActiverDeuxEtapes.
   ///
   /// In fr, this message translates to:
-  /// **'Configurer le TOTP'**
-  String get commonConfigurerTotp;
+  /// **'Activer la vérification en deux étapes'**
+  String get commonActiverDeuxEtapes;
 }
 
 class _AppLocalizationsDelegate

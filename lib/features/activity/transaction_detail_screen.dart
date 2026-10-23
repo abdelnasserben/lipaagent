@@ -142,10 +142,6 @@ class _Body extends StatelessWidget {
                   value: tx.declineReason!,
                   valueColor: AppColors.danger,
                 ),
-              DetailRow(
-                label: l10n.transactionDetailInitiateur,
-                value: tx.initiatorType ?? '',
-              ),
               _CopyRow(
                 label: l10n.transactionDetailRefTransaction,
                 value: tx.id ?? '',

@@ -44,7 +44,7 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: l10n.commonRevoquerTotp,
+              title: l10n.commonDesactiverDeuxEtapes,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(
@@ -72,7 +72,7 @@ class _TotpRevokeScreenState extends ConsumerState<TotpRevokeScreen> {
                   ],
                   const SizedBox(height: 22),
                   LipaButton(
-                    label: l10n.commonRevoquerTotp,
+                    label: l10n.commonDesactiverDeuxEtapes,
                     variant: BtnVariant.danger,
                     size: BtnSize.lg,
                     full: true,

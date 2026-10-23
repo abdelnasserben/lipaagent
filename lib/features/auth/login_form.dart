@@ -148,14 +148,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     ),
                     children: [
                       TextSpan(
-                        text: l10n.loginSecuriteRenforceeLipa,
+                        text: l10n.loginPinPersonnel,
                         style: AppText.ui(
                           size: 12.5,
                           weight: FontWeight.w600,
                           color: AppColors.inkHi,
                         ),
                       ),
-                      TextSpan(text: l10n.loginPinResteConfidentielProtege),
+                      TextSpan(text: l10n.loginNeCommuniquezJamaisPin),
                     ],
                   ),
                 ),

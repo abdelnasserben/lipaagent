@@ -53,8 +53,8 @@ class SecurityScreen extends ConsumerWidget {
                               ? Icons.no_encryption_rounded
                               : Icons.qr_code_2_rounded,
                           title: totpOn
-                              ? l10n.commonRevoquerTotp
-                              : l10n.commonConfigurerTotp,
+                              ? l10n.commonDesactiverDeuxEtapes
+                              : l10n.commonActiverDeuxEtapes,
                           subtitle: totpOn
                               ? l10n.securityDesactiverDoubleFacteurCode
                               : l10n.securityActiverDoubleFacteurAuthentification,

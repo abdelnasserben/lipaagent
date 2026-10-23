@@ -55,7 +55,7 @@ class _FloatCardState extends State<FloatCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      l10n.floatCardFloatDisponible,
+                      l10n.floatCardFloatDisponible.toUpperCase(),
                       style: AppText.ui(
                         size: 12.5,
                         weight: FontWeight.w600,

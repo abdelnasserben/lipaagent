@@ -19,31 +19,45 @@ class QuickOps extends StatelessWidget {
         _OpTile(
           icon: Icons.south_west_rounded,
           label: l10n.commonDepotClient,
-          sub: l10n.commonCashIn,
+          sub: l10n.quickOpsCrediterClient,
           onTap: () => _push(context, const CashInScreen()),
         ),
       if (profile.canDoCashOut ?? false)
         _OpTile(
           icon: Icons.north_east_rounded,
           label: l10n.commonRetraitMarchand,
-          sub: l10n.commonCashOut,
+          sub: l10n.quickOpsRemettreEspeces,
           onTap: () => _push(context, const CashOutScreen()),
         ),
       _OpTile(
         icon: Icons.person_add_alt_1_rounded,
         label: l10n.commonEnrolerClient,
-        sub: 'KYC',
+        sub: l10n.quickOpsCompteKyc,
         onTap: () => _push(context, const EnrollScreen()),
       ),
     ];
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 2.6,
-      children: tiles,
+    // Two tiles per row; each row is as tall as its tallest tile, so a
+    // subtitle on two lines never overflows (a fixed-ratio grid did).
+    return Column(
+      children: [
+        for (var i = 0; i < tiles.length; i += 2) ...[
+          if (i > 0) const SizedBox(height: 10),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: tiles[i]),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: i + 1 < tiles.length
+                      ? tiles[i + 1]
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 
