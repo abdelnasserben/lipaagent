@@ -39,7 +39,6 @@ class CashInScreen extends ConsumerWidget {
           children: [
             ScreenHeader(
               title: l10n.commonDepotClient,
-              subtitle: l10n.commonCashIn,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(

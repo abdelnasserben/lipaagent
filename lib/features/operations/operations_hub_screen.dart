@@ -26,10 +26,7 @@ class OperationsHubScreen extends ConsumerWidget {
 
     return Column(
       children: [
-        ScreenHeader(
-          title: l10n.commonOperer,
-          subtitle: l10n.operationsHubToutesOperations,
-        ),
+        ScreenHeader(title: l10n.commonOperer),
         Expanded(
           child: profile.when(
             loading: () => const Center(
@@ -62,14 +59,14 @@ class _Body extends StatelessWidget {
             if (profile.canDoCashIn ?? false)
               _OpRow(
                 icon: Icons.south_west_rounded,
-                title: l10n.operationsHubDepotClientCashIn,
+                title: l10n.commonDepotClient,
                 subtitle: l10n.operationsHubCrediterCompteClient,
                 onTap: () => _push(context, const CashInScreen()),
               ),
             if (profile.canDoCashOut ?? false)
               _OpRow(
                 icon: Icons.north_east_rounded,
-                title: l10n.commonRetraitMarchandCashOut,
+                title: l10n.commonRetraitMarchand,
                 subtitle: l10n.operationsHubDecaisserMarchand,
                 onTap: () => _push(context, const CashOutScreen()),
               ),

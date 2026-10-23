@@ -179,12 +179,6 @@ class _CardSaleScreenState extends ConsumerState<CardSaleScreen> {
                               _controller.sell(nfcUid: _nfcUid!, price: _price)
                         : null,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.cardSalePrixFinalPeutEtre,
-                    textAlign: TextAlign.center,
-                    style: AppText.ui(size: 12, color: AppColors.inkLow),
-                  ),
                 ],
               ),
             ),

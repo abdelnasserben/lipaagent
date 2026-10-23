@@ -36,31 +36,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get labelRenforce => 'Renforcé';
 
   @override
-  String get labelDepotCashIn => 'Dépôt (cash-in)';
-
-  @override
   String get labelPaiementMarchand => 'Paiement marchand';
 
   @override
-  String get labelApprovisionnementFloat => 'Approvisionnement float';
+  String get labelApprovisionnementFloat => 'Approvisionnement du float';
 
   @override
-  String get labelRetraitFloat => 'Retrait float';
+  String get labelRetraitFloat => 'Retrait du float';
 
   @override
   String get labelAnnulation => 'Annulation';
 
   @override
-  String get labelTransfertMarchand => 'Transfert marchand';
+  String get labelTransfertMarchand => 'Virement entre marchands';
 
   @override
   String get labelPaiementFacture => 'Paiement de facture';
 
   @override
-  String get labelReglementFacturier => 'Règlement facturier';
+  String get labelReglementFacturier => 'Règlement des facturiers';
 
   @override
-  String get labelRetraitPlateforme => 'Retrait plateforme';
+  String get labelRetraitPlateforme => 'Retrait des revenus';
+
+  @override
+  String get labelVersementCommission => 'Versement de commission';
 
   @override
   String get labelTransaction => 'Transaction';
@@ -159,7 +159,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorActivezTotpContactezBack =>
-      'Activez le TOTP ou contactez le back-office pour réinitialiser votre PIN.';
+      'Activez la vérification en deux étapes ou contactez le back-office pour réinitialiser votre PIN.';
 
   @override
   String get errorLienExpireRecommencezConnexion =>
@@ -257,7 +257,8 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce numéro ne correspond à aucun marchand Lipa.';
 
   @override
-  String get errorCarteIntrouvableCetUid => 'Carte introuvable pour cet UID.';
+  String get errorCarteIntrouvableCetUid =>
+      'Aucune carte ne correspond à cet identifiant.';
 
   @override
   String get errorIntrouvable => 'Introuvable.';
@@ -311,7 +312,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get scannerCarteNonReconnueReessayez =>
-      'Carte non reconnue. Réessayez ou saisissez l’UID.';
+      'Carte non reconnue. Réessayez ou saisissez son identifiant.';
 
   @override
   String get scannerLectureNfcInterrompueReessayez =>
@@ -326,18 +327,18 @@ class AppLocalizationsFr extends AppLocalizations {
       'Approchez la carte du dos du téléphone pour la lire.';
 
   @override
-  String get scannerSaisirUidManuellement => 'Saisir l’UID manuellement';
+  String get scannerSaisirUidManuellement => 'Saisir l’identifiant de la carte';
 
   @override
-  String get scannerSaisirUid => 'Saisir l’UID';
+  String get scannerSaisirUid => 'Identifiant de la carte';
 
   @override
   String get scannerSaisissezIdentifiantUidCarte =>
-      'Saisissez l’identifiant (UID) de la carte à 14 caractères hexadécimaux.';
+      'Saisissez l’identifiant (UID) de la carte : 14 caractères, chiffres 0–9 et lettres A–F.';
 
   @override
   String get scannerUidInvalide14Caracteres =>
-      'UID invalide : 14 caractères hex attendus.';
+      'Identifiant invalide : 14 caractères attendus (0–9, A–F).';
 
   @override
   String get formattersInstant => 'à l’instant';
@@ -437,7 +438,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transactionReceiptAucuneEcriturePeriode =>
-      'Aucune écriture sur cette période.';
+      'Aucun mouvement sur cette période.';
 
   @override
   String get validatorsNumeroDoitCommencer3 =>
@@ -455,7 +456,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get resultOperationDejaTraiteeResultat =>
-      'Opération déjà traitée — résultat précédent renvoyé (idempotent).';
+      'Cette opération avait déjà été enregistrée : voici son résultat.';
 
   @override
   String get resultTermine => 'Terminé';
@@ -480,7 +481,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vos dépôts, retraits et ventes de cartes apparaîtront ici.';
 
   @override
-  String get statementEcrituresCompte => 'Écritures du compte';
+  String get statementEcrituresCompte => 'Mouvements du compte';
 
   @override
   String get statementReleveIndisponible => 'Relevé indisponible.';
@@ -490,7 +491,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statementAucuneEcriturePeriode =>
-      'Aucune écriture pour cette période.';
+      'Aucun mouvement sur cette période.';
 
   @override
   String get statementImpossibleGenererRelevePdf =>
@@ -514,19 +515,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get transactionDetailCree => 'Créé le';
 
   @override
-  String get transactionDetailNetDestinataire => 'Net destinataire';
+  String get transactionDetailNetDestinataire => 'Montant reçu';
 
   @override
   String get transactionDetailMotifRefus => 'Motif du refus';
 
   @override
-  String get transactionDetailInitiateur => 'Initiateur';
-
-  @override
   String get transactionDetailRefTransaction => 'Réf. transaction';
 
   @override
-  String get transactionDetailCorrelation => 'Corrélation';
+  String get transactionDetailCorrelation => 'Référence support';
 
   @override
   String get transactionDetailRecuPdf => 'Reçu PDF';
@@ -540,9 +538,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transactionDetailRecuLipa => 'Reçu Lipa';
-
-  @override
-  String get txRowApprovisionnement => 'Approvisionnement';
 
   @override
   String get agentShellAccueil => 'Accueil';
@@ -611,11 +606,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get forgotPinReinitialisationPossibleUniquementSi =>
-      'Réinitialisation possible uniquement si le TOTP est activé. Sinon, contactez le back-office Lipa.';
+      'Réinitialisation possible uniquement si la vérification en deux étapes est activée. Sinon, contactez le back-office Lipa.';
 
   @override
   String get forgotPinCodeAuthentificationTotp =>
-      'Code d’authentification (TOTP)';
+      'Code de l’application d’authentification';
 
   @override
   String get forgotPinReinitialiserPin => 'Réinitialiser le PIN';
@@ -637,11 +632,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginPinOublie => 'PIN oublié ?';
 
   @override
-  String get loginSecuriteRenforceeLipa => 'Sécurité renforcée par Lipa. ';
+  String get loginPinPersonnel => 'Votre PIN est personnel. ';
 
   @override
-  String get loginPinResteConfidentielProtege =>
-      'Votre PIN reste confidentiel et protégé.';
+  String get loginNeCommuniquezJamaisPin =>
+      'Ne le communiquez jamais, même au back-office Lipa.';
 
   @override
   String get mfaVerifierContinuer => 'Vérifier et continuer';
@@ -697,24 +692,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cardLookupCarteDeclareePerdue => 'Carte déclarée perdue';
 
   @override
-  String get cardLookupUidNfc => 'Par UID NFC';
+  String get cardLookupUidNfc => 'Carte perdue, volée ou à remplacer';
 
   @override
   String get cardLookupScannezCarteClientSaisissez =>
-      'Scannez la carte du client (ou saisissez son UID) pour la retrouver, puis déclarez-la perdue/volée ou remplacez-la.';
+      'Scannez la carte du client (ou saisissez son identifiant) pour la retrouver, puis déclarez-la perdue ou volée, ou remplacez-la.';
 
   @override
   String get cardLookupScannerAutreCarte => 'Scanner une autre carte';
 
   @override
   String get cardLookupCarteNPasEncore =>
-      'Cette carte n’est pas encore liée à un client. Les actions perte/vol/remplacement ne s’appliquent qu’aux cartes vendues.';
+      'Cette carte n’est pas encore liée à un client. Perte, vol et remplacement ne concernent que les cartes vendues.';
 
   @override
   String get cardLookupCarte => 'Carte';
 
   @override
-  String get cardLookupUidNfc2 => 'UID NFC';
+  String get cardLookupUidNfc2 => 'Identifiant (UID)';
 
   @override
   String get cardLookupTitulaire => 'Titulaire';
@@ -781,7 +776,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cardSaleClient2 => 'Client';
 
   @override
-  String get cardSaleCarteNfc => 'Carte (NFC)';
+  String get cardSaleCarteNfc => 'Carte';
 
   @override
   String get cardSalePrixCarte => 'Prix de la carte';
@@ -793,10 +788,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cardSaleVendreCarte => 'Vendre la carte';
-
-  @override
-  String get cardSalePrixFinalPeutEtre =>
-      'Le prix final peut être ajusté par configuration.';
 
   @override
   String get cardSaleCarteSelectionnee => 'Carte sélectionnée';
@@ -925,7 +916,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vos commissions sur dépôts, retraits et ventes apparaîtront ici.';
 
   @override
-  String get commissionsTotalVerse => 'TOTAL VERSÉ';
+  String get commissionsTotalVerse => 'Total versé';
 
   @override
   String commissionsSur(Object amount) {
@@ -936,7 +927,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enrollDateNaissance => 'Date de naissance';
 
   @override
-  String get enrollNouveauCompteKyc => 'Nouveau compte + KYC';
+  String get enrollNouveauCompteKyc => 'Compte et pièces KYC';
 
   @override
   String get enrollNomComplet => 'Nom complet';
@@ -1069,7 +1060,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get kycDocumentsReprendre => 'Reprendre';
 
   @override
-  String get floatCardFloatDisponible => 'FLOAT DISPONIBLE';
+  String get floatCardFloatDisponible => 'Float disponible';
 
   @override
   String floatCardKmfReservesCompte(Object amount) {
@@ -1082,7 +1073,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get homeAgentLipa => 'Agent Lipa';
+  String get homeAgentLipa => 'Lipa Agent';
 
   @override
   String get homeAujourdHui => 'Aujourd\'hui';
@@ -1133,20 +1124,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationsNotification => 'Notification';
 
   @override
-  String get operationsHubToutesOperations => 'Toutes vos opérations';
-
-  @override
   String get operationsHubEspeces => 'Espèces';
-
-  @override
-  String get operationsHubDepotClientCashIn => 'Dépôt client (cash-in)';
 
   @override
   String get operationsHubCrediterCompteClient =>
       'Créditer le compte d’un client';
 
   @override
-  String get operationsHubDecaisserMarchand => 'Décaisser pour un marchand';
+  String get quickOpsCrediterClient => 'Créditer un client';
+
+  @override
+  String get quickOpsRemettreEspeces => 'Remettre des espèces';
+
+  @override
+  String get quickOpsCompteKyc => 'Compte et KYC';
+
+  @override
+  String get operationsHubDecaisserMarchand =>
+      'Remettre des espèces à un marchand';
 
   @override
   String get operationsHubOperationsEspecesNeSont =>
@@ -1156,7 +1151,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get operationsHubClients => 'Clients';
 
   @override
-  String get operationsHubCreerCompteKyc => 'Créer un compte + KYC';
+  String get operationsHubCreerCompteKyc =>
+      'Créer son compte et ajouter ses pièces KYC';
 
   @override
   String get operationsHubCompleterDossierClientExistant =>
@@ -1164,7 +1160,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get operationsHubUidNfcPerteVol =>
-      'Par UID NFC — perte, vol, remplacement';
+      'Carte perdue, volée ou à remplacer';
 
   @override
   String get operationsHubDepuisStockAttribue => 'Depuis votre stock attribué';
@@ -1245,7 +1241,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileVenteCartes => 'Vente de cartes';
 
   @override
-  String get profileSecuritePinTotp => 'Sécurité (PIN, TOTP)';
+  String get profileSecuritePinTotp => 'Sécurité';
 
   @override
   String get profileSeDeconnecter => 'Se déconnecter';
@@ -1281,22 +1277,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get securitySecurite => 'Sécurité';
 
   @override
-  String get securityPinAuthentification => 'PIN et authentification';
+  String get securityPinAuthentification =>
+      'PIN et vérification en deux étapes';
 
   @override
   String get securityProtegezCompteAgentPin =>
-      'Protégez votre compte agent : un PIN fort et le TOTP réduisent les risques de fraude au comptoir.';
+      'Protégez votre compte agent : un PIN fort et la vérification en deux étapes réduisent les risques de fraude au comptoir.';
 
   @override
   String get securityNecessitePinActuel => 'Nécessite votre PIN actuel';
 
   @override
   String get securityDesactiverDoubleFacteurCode =>
-      'Désactiver le double facteur (code requis)';
+      'Un code de votre application est demandé';
 
   @override
   String get securityActiverDoubleFacteurAuthentification =>
-      'Activer le double facteur d’authentification';
+      'Un code à 6 chiffres en plus du PIN à chaque connexion';
 
   @override
   String get securityActive => 'Activé';
@@ -1305,11 +1302,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get securityInactif => 'Inactif';
 
   @override
-  String get totpEnrollTotpActive => 'TOTP activé';
+  String get totpEnrollTotpActive => 'Vérification en deux étapes activée';
 
   @override
   String get totpEnrollActivezDoubleFacteurTotp =>
-      'Activez le double facteur (TOTP) avec une application comme Google Authenticator. Il sera demandé à chaque connexion et permet de réinitialiser votre PIN vous-même.';
+      'Activez la vérification en deux étapes avec une application comme Google Authenticator. Un code vous sera demandé à chaque connexion, et vous pourrez réinitialiser votre PIN vous-même.';
 
   @override
   String get totpEnrollCommencerActivation => 'Commencer l’activation';
@@ -1325,24 +1322,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get totpEnrollCodeVerification => 'Code de vérification';
 
   @override
-  String get totpEnrollActiverTotp => 'Activer le TOTP';
+  String get totpEnrollActiverTotp => 'Activer';
 
   @override
   String get totpEnrollCleCopiee => 'Clé copiée';
 
   @override
-  String get totpRevokeTotpRevoque => 'TOTP révoqué';
+  String get totpRevokeTotpRevoque => 'Vérification en deux étapes désactivée';
 
   @override
   String get totpRevokeDesactiverTotpReduitSecurite =>
-      'Désactiver le TOTP réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.';
+      'Désactiver la vérification en deux étapes réduit la sécurité de votre compte et vous empêchera de réinitialiser votre PIN vous-même.';
 
   @override
   String get totpRevokeSaisissezCodeTotpActuel =>
-      'Saisissez un code TOTP actuel pour confirmer';
-
-  @override
-  String get commonRetraitMarchandCashOut => 'Retrait marchand (cash-out)';
+      'Saisissez le code affiché dans votre application pour confirmer';
 
   @override
   String get commonVenteCarte => 'Vente de carte';
@@ -1486,16 +1480,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonRechercherClient => 'Rechercher le client';
 
   @override
-  String get commonCashIn => 'Cash-in';
-
-  @override
   String get commonNumeroClient => 'Numéro du client';
 
   @override
   String get commonDepot => 'Dépôt';
-
-  @override
-  String get commonCashOut => 'Cash-out';
 
   @override
   String get commonRetrait => 'Retrait';
@@ -1519,8 +1507,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get commonChangerMonPin => 'Changer mon PIN';
 
   @override
-  String get commonRevoquerTotp => 'Révoquer le TOTP';
+  String get commonDesactiverDeuxEtapes =>
+      'Désactiver la vérification en deux étapes';
 
   @override
-  String get commonConfigurerTotp => 'Configurer le TOTP';
+  String get commonActiverDeuxEtapes =>
+      'Activer la vérification en deux étapes';
 }

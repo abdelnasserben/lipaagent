@@ -49,7 +49,7 @@ class _TotpEnrollScreenState extends ConsumerState<TotpEnrollScreen> {
         child: Column(
           children: [
             ScreenHeader(
-              title: l10n.commonConfigurerTotp,
+              title: l10n.commonActiverDeuxEtapes,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(

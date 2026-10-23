@@ -19,20 +19,20 @@ class QuickOps extends StatelessWidget {
         _OpTile(
           icon: Icons.south_west_rounded,
           label: l10n.commonDepotClient,
-          sub: l10n.commonCashIn,
+          sub: l10n.quickOpsCrediterClient,
           onTap: () => _push(context, const CashInScreen()),
         ),
       if (profile.canDoCashOut ?? false)
         _OpTile(
           icon: Icons.north_east_rounded,
           label: l10n.commonRetraitMarchand,
-          sub: l10n.commonCashOut,
+          sub: l10n.quickOpsRemettreEspeces,
           onTap: () => _push(context, const CashOutScreen()),
         ),
       _OpTile(
         icon: Icons.person_add_alt_1_rounded,
         label: l10n.commonEnrolerClient,
-        sub: 'KYC',
+        sub: l10n.quickOpsCompteKyc,
         onTap: () => _push(context, const EnrollScreen()),
       ),
     ];

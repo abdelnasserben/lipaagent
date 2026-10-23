@@ -58,7 +58,6 @@ class _CashOutScreenState extends ConsumerState<CashOutScreen> {
           children: [
             ScreenHeader(
               title: l10n.commonRetraitMarchand,
-              subtitle: l10n.commonCashOut,
               onBack: () => Navigator.of(context).pop(),
             ),
             Expanded(

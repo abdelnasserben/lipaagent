@@ -102,7 +102,7 @@ class _TotalCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.commissionsTotalVerse,
+              l10n.commissionsTotalVerse.toUpperCase(),
               style: AppText.ui(
                 size: 12,
                 weight: FontWeight.w600,

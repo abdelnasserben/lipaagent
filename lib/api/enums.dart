@@ -175,12 +175,12 @@ enum TransactionType {
   /// Long-form label (lib/l10n). Pure-Dart so non-widget layers (e.g. statement
   /// entries) can localize a raw wire token (cf. Lipa statement description).
   String get label => switch (this) {
-    cashIn => l10n.labelDepotCashIn,
-    merchantCashOut => l10n.commonRetraitMarchandCashOut,
+    cashIn => l10n.commonDepot,
+    merchantCashOut => l10n.commonRetraitMarchand,
     merchantPayment => l10n.labelPaiementMarchand,
     cardSale => l10n.commonVenteCarte,
     cardReplacement => l10n.commonRemplacementCarte,
-    commissionPayout => l10n.commonCommission,
+    commissionPayout => l10n.labelVersementCommission,
     agentFloatTopUp => l10n.labelApprovisionnementFloat,
     agentFloatWithdrawal => l10n.labelRetraitFloat,
     standaloneFee => l10n.commonFrais,
